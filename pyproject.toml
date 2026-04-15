@@ -1,0 +1,55 @@
+[project]
+name = "graphite"
+version = "0.1.0"
+description = "Topological metering ontology for AZ Södertälje (Brick Schema + DuckDB + Streamlit)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ontology",
+    "validation",
+    "calc",
+    "refsite",
+    "app",
+]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+ontology = { workspace = true }
+validation = { workspace = true }
+calc = { workspace = true }
+refsite = { workspace = true }
+app = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-json-report>=1.5",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["packages/ontology/src", "packages/validation/src", "packages/calc/src", "packages/refsite/src", "packages/app/src", "tests"]
+extend-exclude = ["reference"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "packages/ontology/tests", "packages/validation/tests", "packages/calc/tests", "packages/refsite/tests", "packages/app/tests"]
+addopts = "--import-mode=importlib"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+explicit_package_bases = true
+mypy_path = "packages/ontology/src:packages/validation/src:packages/calc/src:packages/refsite/src:packages/app/src"
+exclude = ["tests/", "reference/"]
+
+[[tool.mypy.overrides]]
+module = ["pandas", "pandas.*", "altair", "altair.*"]
+ignore_missing_imports = true

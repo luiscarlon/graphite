@@ -8,3 +8,22 @@ Exporter EBO/
 SQL Samples/
 reference/monthly_reporting_documents/logs/topology/
 .DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+dist/
+build/
+
+# Generated data (timeseries, etc.) — topology CSVs are committed per-site.
+data/reference_site/*
+!data/reference_site/abbey_road/
+data/reference_site/abbey_road/*
+!data/reference_site/abbey_road/*.csv
+data/gtn_slice/
+.pytest-report.json

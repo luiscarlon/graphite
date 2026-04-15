@@ -1,5 +1,16 @@
 # Graphite Ontology Draft — WOP
 
+> **Schema v2 update (2026-04-15).** Sections 5, 6, 7.5, 7.6, 8, and 9 have
+> been revised to reflect decisions made while building the Abbey Road
+> reference site. Key changes: `ext:flowCoefficient` now lives on the
+> `feeds` edge (not the virtual sensor); timeseries references carry the
+> full addressing triple `(database_id, path, external_id)`; derived series
+> are declared in the ontology and materialized by the DW (new §9); readings
+> support a `recorded_at` correction trail; `ext:meterStatus` dropped;
+> validity may appear on both entities and relationships. Earlier wording
+> is kept where correct and marked inline where superseded.
+
+
 ## 1. Objective
 
 - Brick Schema implementation for AZ's metering landscape in Snäckviken and Gärtuna.
@@ -26,12 +37,17 @@
   - Building, `brick:Building`, *B307*
     - Zone, `brick:Zone`, *API*, *Steriles*, *Engineering*, …
     - Logical meter, `brick:Electrical_Meter`, *B307.T10* (stable identity)
+      - `brick:meters` → Zone / Building / Campus (what the meter measures)
+      - `ext:mediaType` → `ext:MediaType`, *:media_EL*
       - Sensor, standard Brick path, via `brick:hasPoint`, `brick:Energy_Sensor`, *B307.T10.energy*
         - Unit, `brick:hasUnit`, `unit:KiloW-HR`
         - Timeseries reference, `ref:hasExternalReference` → `ref:TimeseriesReference`
-          - ID, `ref:hasTimeseriesId`, *"631:129"*
+          - ID (Brick instance), used as node IRI and via `dcterms:identifier`, *"B307.T10.energy.ref"*
+          - External id, `ref:hasTimeseriesId`, *"631:129"*  *(key within the database)*
           - Database, `ref:storedAt` → `ref:Database`, *PME_SQL*
-          - Device, `ext:producedBy` → `ext:Device`, *MZ-1812A095-01*
+          - Path (schema.table within the database), `ext:path`, *"ingest.hourly"*
+          - Kind, `ext:kind`, *"raw"* | *"derived"*
+          - Device (optional, raw only), `ext:producedBy` → `ext:Device`, *MZ-1812A095-01*
             - Serial, `ext:serial`, *"MZ-1812A095-01"*
             - Manufacturer, `ext:manufacturer`, *"Schneider"*
 
@@ -73,6 +89,7 @@ Most buildings have a single zone (e.g. B307 belongs entirely to API). Some buil
 | Timeseries reference | `ref:TimeseriesReference` | Yes |
 | Database | `ref:Database` | Yes |
 | Physical device (on timeseries) | `ext:Device` | Extension |
+| Media type (operational grouping instance: `:media_EL`, `:media_KYLA`, …) | `ext:MediaType` | Extension |
 | Installation system (Vatten / Kyla / Värme) | `ext:System` | Extension, deferred |
 
 ## 5. Relationship examples
@@ -104,9 +121,14 @@ Most buildings have a single zone (e.g. B307 belongs entirely to API). Some buil
 | Year built | `brick:yearBuilt` | Yes |
 | Electrical phases | `brick:electricalPhases` | Yes |
 | Virtual meter flag | `brick:isVirtualMeter` | Yes |
-| Timeseries identifier | `ref:hasTimeseriesId` | Yes |
+| Timeseries external id (key within `path` in the database) | `ref:hasTimeseriesId` | Yes |
+| DB path (schema.table within the database) | `ext:path` | Extension |
+| Timeseries kind (`raw` \| `derived`) | `ext:kind` | Extension |
+| Derived-ref source list | `ext:sources` | Extension |
+| Derived-ref aggregation (`sum` \| `rolling_sum`) | `ext:aggregation` | Extension |
+| Reading correction trail timestamp | `ext:recordedAt` | Extension |
 | Preferred external reference (multi-source) | `ref:preferred` | Yes (standard `ref-schema`) |
-| Allocation factor for virtual meters | `ext:flowCoefficient` | Extension |
+| Allocation factor for virtual meters (on the `feeds` edge) | `ext:flowCoefficient` | Extension |
 | Validity start | `ext:validFrom` | Extension |
 | Validity end | `ext:validTo` | Extension |
 | Device serial number | `ext:serial` | Extension |
@@ -203,7 +225,7 @@ The coefficients (`0.4`, `0.33`, `0.5`, …) are not properties of any individua
 
 Every time a sub-meter is added or removed, someone has to find every building formula referencing the parent and manually update the term. Miss one and the energy balance silently breaks.
 
-The model. The physical meter hierarchy is captured with standard `brick:hasSubMeter`. For each unmetered split, a virtual meter is created in each receiving building. The virtual meter is a normal `brick:Electrical_Meter` (or equivalent) with `brick:isVirtualMeter true`, and a sensor that carries the allocation factor as `ext:flowCoefficient`.
+The model. The physical meter hierarchy is captured with standard `brick:hasSubMeter`. For each unmetered split, a virtual meter is created in each receiving building. The virtual meter is a normal `brick:Electrical_Meter` (or equivalent) with `brick:isVirtualMeter true`. The allocation factor lives on the `brick:feeds` **edge** from the real parent to the virtual child as `ext:flowCoefficient` — not on the virtual's sensor. (Earlier drafts placed it on the sensor; that was revised because virtuals in our model carry no sensor and because the coefficient is a property of the split, not of any measurement point.)
 
 ```turtle
 # Physical topology, standard Brick
@@ -224,24 +246,21 @@ The model. The physical meter hierarchy is captured with standard `brick:hasSubM
         ref:storedAt         :PME_SQL
     ] .
 
-# B310's virtual share, standard Brick + one extension property
+# B310's virtual share, standard Brick + one extension property on the feeds edge
 :B310_T49_virtual
     a                     brick:Electrical_Meter ;
     rdfs:label            "B310 share of B317.T49" ;
     brick:isVirtualMeter  true ;
-    brick:isPartOf        :B310 ;
-    brick:hasPoint        :B310_T49_virtual_sensor .
+    brick:isPartOf        :B310 .
+    # Virtuals carry no sensor and no own series - they are a model
+    # declaration. The DW materializes the value by multiplying the
+    # parent's net by ext:flowCoefficient on the feeds edge.
 
-:B310_T49_virtual_sensor
-    a                          brick:Energy_Sensor ;
-    brick:hasUnit              unit:KiloW-HR ;
-    ext:flowCoefficient        0.4 ;
-    ref:hasExternalReference   [
-        ref:hasTimeseriesId  "317:49" ;       # same timeseries as the real T49 sensor
-        ref:storedAt         :PME_SQL
-    ] .
-
-:B317_T49  brick:feeds  :B310_T49_virtual .
+# Allocation factor lives on the feeds relation, not on a sensor.
+# Using RDF-star annotations so ext:flowCoefficient attaches to the
+# specific edge instance.
+<< :B317_T49  brick:feeds  :B310_T49_virtual >>
+    ext:flowCoefficient  0.4 .
 ```
 
 The calculation engine walks `brick:hasSubMeter` to compute the net remainder (`T49 − T49_4_2 − T49_4_3 − …`), follows `brick:feeds` to find the virtual meter in each receiving building, and multiplies by that meter's `ext:flowCoefficient`.
@@ -260,7 +279,13 @@ Brick is a snapshot model. Without explicit temporal bounds, the question "what 
 2. Version the entire graph at points in time (Gabe Fierro, Brick maintainer).
 3. Make temporal qualifiers optional so consumers that don't need history aren't burdened (Erik Paulson).
 
-Our approach: attach a validity interval to any relationship.
+Our approach: attach a validity interval to any relationship **or entity**, optional and only declared when used.
+
+- On a **relationship** (e.g. `brick:hasSubMeter M0 → M1`): the edge becomes active / inactive at the given dates. Most topology validity lives here.
+- On an **entity** (e.g. `brick:Electrical_Meter M1`): the meter point itself came online / was retired. Useful for "M1 was installed 2026-02-01", without needing to decorate every incident edge.
+- On a **timeseries reference**: a device's in-service window. The key use case is device replacement — see §7.10 and §9.
+
+All three are optional; omitting them means "always valid during the period of interest."
 
 Questions:
 
@@ -449,7 +474,7 @@ Questions:
 
 ## 8. Extension summary
 
-If every extension recommended in 7 is adopted, the model carries the following non-Brick concepts:
+If every extension recommended in 7 + 9 is adopted, the model carries the following non-Brick concepts:
 
 | Extension | Kind | Purpose |
 |---|---|---|
@@ -457,9 +482,63 @@ If every extension recommended in 7 is adopted, the model carries the following 
 | `ext:producedBy` | Relationship (on timeseries ref) | Timeseries reference → physical device that produced the data |
 | `ext:serial` | Property | Device serial number (or borrow `sdo:serialNumber`) |
 | `ext:manufacturer` | Property | Device manufacturer (or borrow `sdo:manufacturer`) |
-| `ext:flowCoefficient` | Property | Allocation factor on a virtual meter sensor |
-| `ext:validFrom` / `ext:validTo` | Properties on relationships (RDF-star) | Temporal validity, aligned with Brick issue #447 |
+| `ext:flowCoefficient` | Property (on the `feeds` edge, RDF-star) | Allocation factor for a share split to a virtual meter |
+| `ext:validFrom` / `ext:validTo` | Properties on relationships or entities (RDF-star on edges) | Temporal validity, aligned with Brick issue #447 |
 | `ext:MediaType` | Class | Operational media category (EL, KYLA, VÄRME, KALLVATTEN, etc.) |
-| `ext:mediaType` | Property (on meter) | Meter → ext:MediaType instance for arbitrary grouping |
-| `ext:meterStatus` | Property (on meter) | Operational status: "active" (in formula) or "unmapped" (exists in PME, not in any formula) |
-| `ext:System` | Class | Installation discipline and subsystem (Vatten / Kyla / Värme) |
+| `ext:mediaType` | Property (on meter) | Meter → `ext:MediaType` instance for arbitrary grouping |
+| `ext:path` | Property (on timeseries ref) | `schema.table` within a database — completes the addressing triple (see §9) |
+| `ext:kind` | Property (on timeseries ref) | `raw` (points at upstream data) or `derived` (declaration, materialized by the DW) |
+| `ext:sources` | Property (on derived ref) | List of source timeseries ids aggregated by the derived ref |
+| `ext:aggregation` | Property (on derived ref) | Aggregation rule: `sum` or `rolling_sum` (see §9) |
+| `ext:recordedAt` | Property (on reading) | Timestamp a value was entered; distinct from the reading's period `timestamp`. Enables correction trails for Avläsning-style inputs |
+| `ext:System` | Class | Installation discipline and subsystem (Vatten / Kyla / Värme) — deferred |
+
+## 9. Addressing and derived timeseries
+
+Decisions made while building the reference site (Abbey Road) that aren't in the original draft above.
+
+### 9.1 Addressing triple on timeseries references
+
+Every timeseries reference has two levels of identity:
+
+- **Ontology-level id** — the node's own IRI, emitted as `dcterms:identifier` when appropriate. Example: `M6:h`.
+- **Upstream key** — where to find the data outside the ontology. Captured by the triple:
+  - `ref:storedAt` → `ref:Database` *(e.g. `PME_SQL`)*
+  - `ext:path` — `schema.table` within that database *(e.g. `ingest.hourly`)*
+  - `ref:hasTimeseriesId` — row/column key within that table *(e.g. `"631:129"`)*
+
+The triple is required for raw refs and absent on derived refs.
+
+### 9.2 Raw vs. derived references
+
+A `ref:TimeseriesReference` is one of two kinds, distinguished by `ext:kind`:
+
+- **`raw`** — points at pre-existing upstream data via the addressing triple. May carry `ext:producedBy` if the producing device is known. Most refs are raw.
+- **`derived`** — a declaration. Carries `ext:sources` (a list of other ts-ref ids) and `ext:aggregation` (the rule). No addressing triple; the DW layer reads this declaration and materializes the series on demand (typically into a conventional `marts.derived_series` view keyed by the ontology id).
+
+The two shapes are disjoint. Validators enforce this.
+
+### 9.3 Aggregation vocabulary
+
+Two operators only:
+
+- **`sum`** — combine sources at the same timestep. Example use: building-level rollup `B1.office:m = M1:m + M2:m + M3:m` per month.
+- **`rolling_sum`** — accumulate per-period deltas over time, respecting each source's validity. Counter semantics fall out: a stitched "as if never replaced" counter for a meter that saw a device swap is `rolling_sum` over the device-scoped refs.
+
+Additional operators (`weighted_sum`, `diff`, rolling aggregations beyond sum) are deferred — the two we have cover zone rollups and device replacement. Rollups over time are a special case of derived, not a separate category.
+
+### 9.4 Device replacement pattern
+
+When a device at a meter point is replaced mid-period (physical swap, logical meter identity stable):
+
+1. The old `ref:TimeseriesReference` has its `ext:validTo` set to the swap date; `ext:producedBy` still points at the retired device.
+2. A new `ref:TimeseriesReference` is added with `ext:validFrom` on the swap date and the new device.
+3. A single derived ref, `ext:kind = "derived"`, `ext:aggregation = "rolling_sum"`, `ext:sources = [old, new]`, sits alongside. This is the canonical series consumers read (`ref:preferred true`). The DW materializes it.
+
+Abbey Road demonstrates this on `M6`: `M6:h.A` (device A, Jan 1 – Feb 10), `M6:h.B` (device B, Feb 10 – Mar 1), `M6:h` (derived, preferred, rolling_sum).
+
+### 9.5 Correction trails on readings
+
+Readings carry an optional `ext:recordedAt`. Two rows sharing `(timeseries_id, timestamp)` but differing in `recordedAt` form a correction trail; the latest `recordedAt` wins for reporting. Used for backdated Avläsning corrections (a January monthly reading re-entered in March).
+
+This is orthogonal to the §7.11 "nulling" discipline: `recordedAt` is for corrections that overwrite a previously accepted value; nulling via `ext:validTo` is for marking periods as invalid.
