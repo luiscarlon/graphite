@@ -1,0 +1,10 @@
+*.xml
+*.xls
+*.xlsx
+*.duckdb
+*.duckdb.wal
+*.csv
+Exporter EBO/
+SQL Samples/
+reference/monthly_reporting_documents/logs/topology/
+.DS_Store
