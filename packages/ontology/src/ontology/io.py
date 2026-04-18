@@ -8,10 +8,12 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from .schema import (
+    Annotation,
     Building,
     Campus,
     Database,
     Dataset,
+    Device,
     MediaType,
     Meter,
     MeterMeasures,
@@ -31,9 +33,11 @@ FILES: dict[str, tuple[str, type[BaseModel]]] = {
     "relations": ("meter_relations.csv", MeterRelation),
     "meter_measures": ("meter_measures.csv", MeterMeasures),
     "databases": ("databases.csv", Database),
+    "devices": ("devices.csv", Device),
     "sensors": ("sensors.csv", Sensor),
     "timeseries_refs": ("timeseries_refs.csv", TimeseriesRef),
     "readings": ("readings.csv", Reading),
+    "annotations": ("annotations.csv", Annotation),
 }
 
 
@@ -80,9 +84,11 @@ def load_dataset(root: Path) -> Dataset:
         relations=_read_csv(root / FILES["relations"][0], MeterRelation),
         meter_measures=_read_csv(root / FILES["meter_measures"][0], MeterMeasures),
         databases=_read_csv(root / FILES["databases"][0], Database),
+        devices=_read_csv(root / FILES["devices"][0], Device),
         sensors=_read_csv(root / FILES["sensors"][0], Sensor),
         timeseries_refs=_read_csv(root / FILES["timeseries_refs"][0], TimeseriesRef),
         readings=_read_csv(root / FILES["readings"][0], Reading),
+        annotations=_read_csv(root / FILES["annotations"][0], Annotation),
     )
 
 
@@ -105,6 +111,7 @@ def write_dataset(ds: Dataset, root: Path) -> None:
         list(MeterMeasures.model_fields),
     )
     _write_csv(root / FILES["databases"][0], list(ds.databases), list(Database.model_fields))
+    _write_csv(root / FILES["devices"][0], list(ds.devices), list(Device.model_fields))
     _write_csv(root / FILES["sensors"][0], list(ds.sensors), list(Sensor.model_fields))
     _write_csv(
         root / FILES["timeseries_refs"][0],
@@ -112,3 +119,4 @@ def write_dataset(ds: Dataset, root: Path) -> None:
         list(TimeseriesRef.model_fields),
     )
     _write_csv(root / FILES["readings"][0], list(ds.readings), list(Reading.model_fields))
+    _write_csv(root / FILES["annotations"][0], list(ds.annotations), list(Annotation.model_fields))

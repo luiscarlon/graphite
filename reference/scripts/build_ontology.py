@@ -80,24 +80,27 @@ def main() -> int:
         ts_by_meter[r["meter_id"]].append(r)
 
     # ---------------- meters.csv ----------------
+    # Skip virtual building meters (ANGA_BUILDING etc.) — they were
+    # invented to encode Excel accounting formulas but are redundant
+    # with the physical hasSubMeter topology + meter_measures. The
+    # accounting formulas are preserved in meter_allocations.csv.
     meters_out: list[dict] = []
     for rec in meters_src:
         fid = rec["meter_id"]
+        if rec.get("meter_type") == "virtual":
+            continue
         xw = xwalk.get(fid, {})
         sf_id = xw.get("snowflake_id", "")
-        # valid_from/to from timeseries: if the meter has a clearly partial window
-        # (starts > Jan or ends < Dec), record it
         valid_from = ""
         valid_to = ""
         ts = ts_by_meter.get(sf_id, [])
         if ts:
             months = sorted({t["month"] for t in ts})
-            if months and months[0] > "2025-02":  # started after January 2025
+            if months and months[0] > "2025-02":
                 valid_from = ts[0]["first_day"]
-            # a flat-all-window meter gets valid_to = extracted date, signalling "gone dark"
             all_zero = all(float(t["delta"]) == 0 for t in ts)
             if all_zero:
-                valid_to = ts[0]["first_day"]  # marker: no activity since start of window
+                valid_to = ts[0]["first_day"]
         identifier_parts = [
             f"snowflake={sf_id}" if sf_id else "",
             f"strux={xw.get('strux_id')}" if xw.get("strux_id") else "",
@@ -127,15 +130,25 @@ def main() -> int:
     relations_src = read_csv_rows(recon / "facit_relations.csv")
     relations_out: list[dict] = []
     for r in relations_src:
+        derived_from = r.get("derived_from", "")
+        if derived_from.startswith("building_virtual"):
+            continue
+        coeff = float(r.get("coefficient", "1.0") or "1.0")
+        if coeff not in (1.0, 0.001):
+            relation_type = "feeds"
+            flow_coefficient = str(coeff)
+        else:
+            relation_type = "hasSubMeter"
+            flow_coefficient = ""
         relations_out.append(
             {
                 "parent_meter_id": r["from_meter"],
                 "child_meter_id": r["to_meter"],
-                "relation_type": "feeds",
-                "flow_coefficient": r.get("coefficient", "1.0") or "1.0",
+                "relation_type": relation_type,
+                "flow_coefficient": flow_coefficient,
                 "valid_from": "",
                 "valid_to": "",
-                "derived_from": r.get("derived_from", ""),
+                "derived_from": derived_from,
             }
         )
     write_csv(
@@ -172,6 +185,8 @@ def main() -> int:
     # ---------------- sensors.csv ----------------
     sensors_out = []
     for rec in meters_src:
+        if rec.get("meter_type") == "virtual":
+            continue
         fid = rec["meter_id"]
         sensors_out.append(
             {
@@ -189,30 +204,79 @@ def main() -> int:
     )
 
     # ---------------- timeseries_refs.csv ----------------
+    # Load meter swap events (from detect_meter_swaps.py).
+    swap_rows = read_csv_rows(extracted / "meter_swaps.csv") if (extracted / "meter_swaps.csv").exists() else []
+    swaps_by_sf: dict[str, dict] = {r["meter_id"]: r for r in swap_rows}
+
     ts_refs_out = []
+    ts_fields = ["timeseries_id", "sensor_id", "aggregate", "reading_type", "kind",
+                 "preferred", "valid_from", "valid_to", "database_id", "path",
+                 "external_id", "device_id", "sources", "aggregation"]
     for rec in meters_src:
+        if rec.get("meter_type") == "virtual":
+            continue
         fid = rec["meter_id"]
         sf_id = xwalk.get(fid, {}).get("snowflake_id", "")
         if not sf_id:
             continue
-        ts_refs_out.append(
-            {
-                "timeseries_id": f"{fid}:d",
-                "sensor_id": f"{fid}.energy",
-                "aggregate": "daily",
-                "reading_type": "counter",
-                "kind": "raw",
-                "preferred": "True",
-                "valid_from": "",
-                "valid_to": "",
-                "database_id": args.database,
-                "path": "OPS_WRK.ION_SWEDEN.DATALOG2",
-                "external_id": sf_id,
-                "device_id": "",
-                "sources": "",
-                "aggregation": "",
-            }
+
+        meter_events = sorted(
+            [s for s in swap_rows if s["meter_id"] == sf_id],
+            key=lambda s: s["swap_date"],
         )
+
+        base = {
+            "sensor_id": f"{fid}.energy",
+            "aggregate": "daily",
+            "reading_type": "counter",
+            "database_id": args.database,
+            "path": "OPS_WRK.ION_SWEDEN.DATALOG2",
+            "external_id": sf_id,
+            "device_id": "", "sources": "", "aggregation": "",
+        }
+
+        if not meter_events:
+            ts_refs_out.append({**base, "timeseries_id": f"{fid}:d", "kind": "raw",
+                                "preferred": "True", "valid_from": "", "valid_to": ""})
+        else:
+            # Build segments from events chronologically.
+            # Each event either splits the timeline (swap/glitch) or ends it (offline).
+            segments: list[tuple[str, str]] = []  # (valid_from, valid_to)
+            cursor = ""  # start of current segment
+            for ev in meter_events:
+                if ev["event_type"] == "swap":
+                    segments.append((cursor, ev["swap_date"]))
+                    cursor = ev["swap_date"]
+                elif ev["event_type"] == "glitch":
+                    segments.append((cursor, ev["swap_date"]))
+                    cursor = ev.get("glitch_end", ev["swap_date"])
+                elif ev["event_type"] == "offline":
+                    segments.append((cursor, ev["swap_date"]))
+                    cursor = None
+            if cursor is not None:
+                segments.append((cursor, ""))
+
+            if len(segments) == 1:
+                vf, vt = segments[0]
+                ts_refs_out.append({**base, "timeseries_id": f"{fid}:d", "kind": "raw",
+                                    "preferred": "True", "valid_from": vf, "valid_to": vt})
+            else:
+                seg_ids = []
+                for idx, (vf, vt) in enumerate(segments):
+                    label = chr(ord("A") + idx)
+                    seg_id = f"{fid}:d.{label}"
+                    seg_ids.append(seg_id)
+                    ts_refs_out.append({**base, "timeseries_id": seg_id, "kind": "raw",
+                                        "preferred": "False", "valid_from": vf, "valid_to": vt})
+                ts_refs_out.append({
+                    "timeseries_id": f"{fid}:d", "sensor_id": f"{fid}.energy",
+                    "aggregate": "daily", "reading_type": "counter",
+                    "kind": "derived", "preferred": "True",
+                    "valid_from": "", "valid_to": "",
+                    "database_id": "", "path": "", "external_id": "",
+                    "device_id": "", "sources": "|".join(seg_ids),
+                    "aggregation": "rolling_sum",
+                })
     write_csv(
         out / "timeseries_refs.csv",
         ["timeseries_id", "sensor_id", "aggregate", "reading_type", "kind", "preferred", "valid_from", "valid_to", "database_id", "path", "external_id", "device_id", "sources", "aggregation"],

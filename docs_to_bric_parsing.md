@@ -25,14 +25,21 @@ Two sites × ~6 media each = **12 workstreams**. Not all sources are available f
 Flow-chart PDFs available under `reference/flow_charts/`:
 
 - `V600-52.E.{1,8}-001.pdf` — GTN ånga (done ✓)
-- `V600-52.B.{1,8}-001.pdf` — GTN 52-B subsystem (kallvatten likely)
+- `V600-52.B.{1,8}-001.pdf` — GTN kallvatten (stadsvatten)
 - `V600-56.{1,8}-001.pdf` — GTN värme (56 = värmesystem)
 - `V390-52.E.{1,8}-001.pdf` — SNV ånga (done ✓)
-- `V390-52.B.{1,8}-001.pdf` — SNV 52-B subsystem
+- `V390-52.B.{1,8}-001.pdf` — SNV kallvatten
 - `V390-56.{1,8}-001.pdf` — SNV värme
-- `HF Rörsystem.pdf` — pipe-system overview (index / cross-reference)
+- `HF Rörsystem.pdf` — the master index of the six flödesscheman above (distributionsnät Stadsvatten / Ånga / Värme × GTN / SNV). Confirms definitively that **no PDF exists for kyla, sjövatten, kyltornsvatten, or el** — those must use Excel + BMS only.
 
-Electricity has **no PDF** — topology for el will have to come from Excel + Snowflake naming only. Some workstreams also lack a PDF (confirm per workstream when opened).
+**Current workstream status (2026-04-17):**
+
+| workstream | pipeline stage reached | notes |
+|---|---|---|
+| `gtn_anga` | through `04_validation` | 19 edges, match Excel Jan/Feb 2026 within 0.2% per building except B616 (see §10) |
+| `gtn_varme` | through `04_validation` | 26 edges, totals within 0.15%, zero per-building anomalies |
+| `gtn_kyla` | through `04_validation` | 13 edges (no PDF); several virtual-meter cascades blocked by dead leaf meters (§10) |
+| `gtn_el` | through `04_validation` | 26 edges (no PDF); totals within 0.04% — tightest match of any media |
 
 ## 3. Sources and authority scopes
 
@@ -96,11 +103,14 @@ Read-only. Either symlinks to the canonical files or dated copies if the canonic
 
 ### 01_extracted — per-source machine output
 
-One extractor per source; each writes into 01 without looking at the others.
+One extractor per source; each writes into 01 without looking at the others. See §11.7 for the layer table and the rule that no tool writes into `03_reconciliation/`.
 
-- **Flow schema** → `parse_flow_schema.py` (existing). Produces meters, relations, preview HTML. Source-of-truth for topology.
-- **Excel** → a new extractor (see Tooling, §8). Must lift: (a) formulas as text per cell, (b) tab inventory with purpose, (c) cell comments and sheet-level notes, (d) intake/manual-reading meters, (e) cross-sheet references. **Don't collapse formulas to numeric results**; the formula text is the evidence.
-- **Snowflake timeseries** → a new extractor that takes the Snowflake CSV, slices it to the meters relevant for this workstream (via crosswalk seed), and emits `timeseries_monthly.csv` plus `timeseries_anomalies.csv` (dead meters, swap days, gaps). Uses `last − first` segmented at decrements, not `max − min`.
+- **Flow schema** → `parse_flow_schema.py`. Produces `flow_schema_{meters,relations}.csv` + `flow_schema_preview.html`. Handles three-tier bridging (same-axis ≤20u, ray-walk ≤80u, arrow-guided ≤160u). Source-of-truth for topology when available.
+- **Excel formulas** → `parse_reporting_xlsx.py`. Produces `excel_formulas.csv`, `excel_intake_meters.csv`, `excel_meters_used.csv`, `excel_comments.md`, `excel_tabs_inventory.md`. Per-term sign and factor are extracted from the raw formula (handles pre-factors like `0.9*XLOOKUP(...)`, post-factors like `XLOOKUP(...)*24*31/1000`, and workbook scalar cells like `$F$5 = 0.001` for kWh→MWh).
+- **Excel-derived relations** → `excel_relations.py`. Reads `excel_formulas.csv`, picks one principal inlet per building (role priority VP1→VS1→Å1), emits one candidate edge per `−` term. Produces `excel_relations.csv` and `excel_relations_dropped.csv` (for meters not in the PDF).
+- **Snowflake timeseries** → `slice_timeseries.py`. Monthly delta = `last_day.V_LAST − first_day.V_FIRST` (register-difference, capturing full month including final hours). Segmented at inter-day decrements (counter reset / swap). Emits `timeseries_{daily,monthly}.csv` + `timeseries_anomalies.csv`.
+- **Meter naming** → `parse_meter_names.py`. Canonicalises raw IDs, catalogs role semantics. Emits `meter_roles.csv`.
+- **VLM edge suggestions** (optional) → `vlm_edge_check.py`. Crops the PDF around each orphan meter, asks Claude Opus vision which neighbours are pipe-connected. Emits `vlm_edge_suggestions.csv`. Requires `ANTHROPIC_API_KEY`.
 
 No merging happens here. Outputs are sibling views of the same underlying reality.
 
@@ -143,9 +153,11 @@ This is the most load-bearing artifact across the whole project — get it right
 
 **`open_questions.md` format** — one entry per unresolved issue, same evidence style, but explicitly **no decision yet**. Kept open until resolved; resolution moves it to `decisions.md` with a closing date.
 
-### 04_validation — conservation
+### 04_validation — conservation, cross-source, spot-check
 
-Monthly conservation check against `timeseries_monthly.csv`. Output `monthly_conservation.csv` has columns: `parent, month, delta_parent, sum_children_delta, residual, residual_pct, child_count, dead_children, flags`. `anomalies.md` groups findings into categories (dead meters, swap events, seasonal drift, missing children) with the evidence that implicates each.
+Multiple validation artifacts, all read-only (no reconciliation decisions made here):
+
+**Conservation:** `validate_conservation.py` → `monthly_conservation.csv` + `anomalies.md`. Columns: `parent, month, delta_parent, sum_children_delta, residual, residual_pct, child_count, dead_children, flags`.
 
 Thresholds for flagging (defaults — overridable in `methodology.md`):
 
@@ -153,6 +165,14 @@ Thresholds for flagging (defaults — overridable in `methodology.md`):
 - Residual stable at 100% → **dead children**.
 - Residual shifts >20 pp across adjacent months → **commissioning / swap event**.
 - Residual correlates with season → **missing seasonal consumer**.
+
+**Cross-source edge analysis:** `source_conflicts.py` → `source_conflicts.md`. Per-edge agreement/conflict across every topology-bearing extractor in `01_extracted/`. Categories: `confirmed` (≥2 sources same direction), `single_source`, `direction_conflict`. Orphans classified via Excel formula (+input = terminal leaf, −child = missing parent, absent = naming drift). See §11.7 for reconciler reading order.
+
+**Parser regression fixture:** `parse_audit.py` → `parse_audit.md`. Diffs parser output against hand-curated `expected_relations.csv` fixture in `03_reconciliation/`. Reports `parser_missed`, `parser_extra`, `direction_flip`.
+
+**Excel-totals spot check:** `validate_building_totals.py` → `building_totals_spot_check.csv`. Evaluates each Excel formula row from Snowflake-derived monthly deltas and compares to Excel's reported building total. Supports recursive virtual meters (e.g. kyla's `B600-KB2` and `Prod-600`), per-term factors, and workbook scalar cells. The canonical end-to-end accuracy test for the whole pipeline.
+
+**Audit PNG overlay:** `render_audit_png.py` → `flow_schema_audit.png`. Renders the PDF at 150dpi with parser-inferred edges colour-coded by provenance; orphan meters ringed red.
 
 ### 05_ontology — Brick-style deliverable
 
@@ -171,38 +191,75 @@ One page. Sections: what this media looks like on this site, which sources were 
 
 ## 7. Crosswalk — how to build it
 
-Working rule for meter ID reconciliation observed so far:
+Working rules for meter ID reconciliation, per media:
 
-- Flow-schema IDs use uniform `VMM##` (no suffix).
-- Excel labels are inconsistent and often drop qualifiers.
-- Snowflake names fall in two buckets: `VM##` (flow meters) and `VMM##_E` (energy meters). The `_E` suffix is not a separate meter, it's a naming variant.
+**Shared across all media:**
+- Strip trailing `_E` (energy-variant suffix; not a separate meter).
+- Normalise `VM##` → `VMM##` on the trailing meter index.
 
-Build the crosswalk seed by: (a) normalising all three — strip `_E`, `VM` ↔ `VMM` — and matching; (b) disambiguating leftover cases manually with evidence from cell comments or timeseries behaviour. Record the normalisation used in `crosswalk_notes.md` so it's auditable.
+**Ånga + Värme (standard naming):**
+- Flow-schema: uniform `B###.{role}_VMM##`.
+- Snowflake: `B###.{role}_VMM##_E` or `B###.{role}_VM##`.
+- Canonical: `B###.{role}_VMM##`. Exact match after `_E`-strip and `VM`→`VMM`.
+
+**Kyla (non-standard naming):**
+- Roles include `KB1`, `KB2` (kyla batt 1/2). Meter IDs are often descriptive: `B654.KB1_KylEffekt_Ack`, `B612-KB1-PKYL`, `B637.KB2_INT_VERK`.
+- Dash vs dot separator: Excel uses `B612-KB1-PKYL` (dashes), Snowflake uses `B612.KB1_PKYL` (dot+underscore). Canonicalise first dash to dot, remaining to underscores.
+- `_ACK` suffix = accumulator (cumulative energy meter). The non-`_ACK` variant (e.g. `B653.KB2_WVÄRME` vs `B653.KB2_WVÄRME_ACK`) is typically instantaneous power, NOT the same meter.
+- System-code tokens in Excel labels (`B821-55-KB2-VMM1` where `55` is the system code) sometimes need stripping to match Snowflake.
+
+**Electricity (transformer naming):**
+- EL meters use `B###.T##` / `B###.T##-#-#` (T = transformer station / feeder). No `VMM##` suffix.
+- **`-S` suffix convention**: Excel references bare transformer IDs (`B611.T1`); Snowflake carries them with a `-S` suffix (`B611.T1-S`). The crosswalk builder must try `<id>-S` when exact match fails. Discovered on GTN; presumed campus-wide.
+- Some Excel transformer IDs have no Snowflake match at all (`B660.H23-1`, `B951.H3-B`) — these are likely provider/utility meters (H-prefix) with manual reads, not on BMS.
+
+Build the crosswalk seed by: (a) normalising per the media-specific rules above and matching; (b) trying `-S` suffix for EL; (c) disambiguating leftover cases manually with evidence from cell comments or timeseries behaviour. Record the normalisation used in `crosswalk_notes.md` so it's auditable.
 
 ## 8. Tooling inventory
 
-Existing:
+All scripts live under `reference/scripts/`. Every one is a standalone CLI with `--help`.
 
-- `reference/scripts/parse_flow_schema.py` — PDF → meters + relations + preview HTML. Handles inline/dead-end/corner meters, T-junction splitting, orphan-endpoint recovery.
-- `reference/scripts/README.md` — usage and caveats.
-- `outputs/from_pdf/{gtn_anga,snv_anga}_*.csv` — example facit outputs for validation.
-- `logs/topology/flow_schema_parsing_notes.md` — parsing methodology and per-workstream notes.
+### Extractors (01_extracted)
 
-To build (in order of need):
+| script | layer | what it does |
+|---|---|---|
+| `parse_flow_schema.py` | PDF topology | Three-tier bridging (same-axis, ray-walk, arrow-guided). Arrow-based direction. Source tag from resolved symlink stem. |
+| `parse_reporting_xlsx.py` | Excel formulas | Per-term sign+factor via XLOOKUP substitution (handles pre/post factors, `$F$5`-style scalars, workbook `data_only` dual-load). |
+| `excel_relations.py` | Excel→edges | One principal inlet per building (VP1>VS1>Å1 priority). `_dropped` file for meters absent from PDF. |
+| `slice_timeseries.py` | Snowflake BMS | Monthly delta = `last_day.V_LAST − first_day.V_FIRST` (register diff, not per-day sum — that had a 4.2% boundary bias). Segmented at resets. Flags `is_reset=1` on counter reset days. |
+| `detect_meter_swaps.py` | Counter resets | Reads `timeseries_daily.csv`, classifies each `is_reset=1` row as `swap` (counter resets, readings resume — device replacement) or `offline` (counter drops to zero, stays dead). Outputs `meter_swaps.csv`. |
+| `parse_meter_names.py` | Naming convention | Canonical `VMM##` form, role catalog (VP1 primary, VÅ9 recovery, etc.), `_E` variant flag. |
+| `vlm_edge_check.py` | Claude vision | Crops around orphans, asks Opus 4.6 which neighbours connect. Optional; needs `ANTHROPIC_API_KEY`. |
 
-1. **Excel extractor** (`reference/scripts/parse_reporting_xlsx.py`): reads an `.xlsx`, emits `excel_formulas.csv`, `excel_tabs_inventory.md`, `excel_comments.md`, `excel_intake_meters.csv`. Uses `openpyxl` (needs adding to `uv` deps) to preserve formula text; `pandas` alone loses formulas.
-2. **Timeseries slicer** (`reference/scripts/slice_timeseries.py`): takes the Snowflake CSV + a crosswalk, emits `timeseries_monthly.csv` and `timeseries_anomalies.csv` for a given workstream. Enforces `last − first` per monotonic segment; flags non-monotonic days, zero runs, gaps.
-3. **Conservation runner** (`reference/scripts/validate_conservation.py`): takes `facit_relations.csv` + `timeseries_monthly.csv`, emits `monthly_conservation.csv` and a draft `anomalies.md`.
-4. **Workstream scaffolder** (`reference/scripts/new_workstream.py`, optional): creates a fresh `{site}_{media}/` folder tree with empty template files, so every workstream starts identical.
+### Reconciliation (03_reconciliation)
 
-Conservation methodology (persisted from earlier work):
+| script | what it does |
+|---|---|
+| `apply_topology_overrides.py` | Merges all extractor sources (PDF + Excel + naming + timeseries) in priority order. Applies human `topology_overrides.csv`. Writes `facit_relations.csv` with per-edge `derived_from` provenance. |
+| `generate_building_virtuals.py` | Creates one virtual meter per (building, media) from `facit_accounting.csv`. Adds `+` meter → virtual and virtual → `−` meter relations with coefficients. |
 
-- Use `last − first` sorted by timestamp, not `max − min`.
-- Segment at any decrement; sum segment deltas.
-- Don't interpolate across multi-day gaps.
-- Report zero deltas as a **separate category**, not rolled into residuals.
-- Compare parent and children over the same `[t_start, t_end]`, not each meter's own min/max timestamps.
-- Always report per-month; collapse to annual only after confirming stability.
+### Validators (04_validation)
+
+| script | what it does |
+|---|---|
+| `source_conflicts.py` | Per-edge agreement across all extractors. Orphan classification via Excel. |
+| `parse_audit.py` | Diffs parser output vs hand-curated `expected_relations.csv` fixture. |
+| `validate_conservation.py` | Per-parent-per-month conservation residuals. |
+| `validate_accounting.py` | Per-building accounting balance using Excel formula structure. |
+| `validate_building_totals.py` | End-to-end: evaluates Excel formulas from Snowflake deltas, compares to Excel's reported building totals. Supports recursive virtual meters + per-term factors. |
+| `render_audit_png.py` | PDF → PNG with edge overlay, colour-coded by provenance, orphans ringed red. |
+
+### Pipeline runner
+
+| script | what it does |
+|---|---|
+| `regenerate_workstream.py` | Runs all extractors → reconciliation → validators in dependency order for a given workstream. Per-(site, media) config at top of file. `--skip-ontology` flag for in-progress workstreams. |
+
+### Timeseries delta methodology
+
+**Corrected 2026-04-17.** The earlier per-day-sum approach (`Σ (day.v_last − day.v_first)`) systematically under-counted by ~4.2% because each day's `v_first` is the first intra-day reading (not the prior day's closing reading), leaving a small gap between days.
+
+**Current method:** `last_day_of_month.V_LAST − first_day_of_month.V_FIRST`, capturing the full register increment. Segments at any inter-day decrement (counter reset / meter swap); sums per-segment register diffs. Validated against all four GTN media — per-building deviation vs Excel is now **0.0–0.5%** (previously 4.0–4.5%).
 
 ## 9. Execution order
 
@@ -214,12 +271,25 @@ Conservation methodology (persisted from earlier work):
 
 ## 10. Known risks / open questions (to track project-wide)
 
+### Still open
+
 - Excel files may encode per-tenant allocations via merged cells and formatting — these are hard to extract mechanically; manual transcription into `excel_comments.md` may be necessary for cases the extractor misses.
 - Boiler-side / plant-side meters (e.g. `B325.Panna2/3_MWH` in SNV) sit *upstream* of the flow schema's entry point and will never appear in the PDF parser output. Decide per-workstream whether to represent them as an implicit parent above the schema root, or as a separate upstream node in `05_ontology`.
 - Virtual accounting meters (B611 Excel case) may have non-unit coefficients. Flow schema is pure topology (coeff = 1.0); Excel carries the coefficients. Reconciliation step must layer the coefficient onto the topology edge without pretending the coefficient is physical.
 - Flow-schema PDFs are dated 2025-02-26. Pre-Feb-2025 timeseries may reflect an older topology; flag any per-month residual shifts crossing that date specifically.
 - The conservation threshold defaults (5pp stable, 20pp shift) are guesses. Expect to tune them per-media once we've seen 2–3 workstreams.
 - Flow-schema parser fails silently if a meter's ⊗ glyph is drawn *on top of* a continuous pipe (no gap) — the meter becomes a dead-end stub on the adjacent tap. See the `B611.VMM72` case in GTN ånga. The preview HTML is the defence; eyeball it for every workstream.
+
+### Discovered in validation (2026-04-17)
+
+- **"Excel=0 but meter live" pattern** — detected across 3 of 4 media: B616 steam (~900 MWh/month genuinely unallocated), B658 kyla (~12 MWh/month misattributed to B600-KB2), B665.T42-2-1 el (~5 MWh/month misattributed to building 665). B616 is the only case where consumption is completely absent from the per-building rollup; the other two are misattributions where the campus total is correct. Root cause: Excel's STRUX_data table has stale or zero values for these meters while Snowflake reads real consumption. The automated spot check (`validate_building_totals.py`) catches these on every run.
+- **EL main-transformer naming: `-S` suffix convention.** Excel references bare transformer IDs (`B611.T1`); Snowflake carries them with a `-S` suffix (`B611.T1-S`, presumably "Sum/Summary"). The crosswalk builder must try `<excel_id>-S` when an exact match fails. Discovered on gtn_el; likely campus-wide for all EL meters.
+- **Excel formula per-term factors are media-specific.** Ånga/värme formulas mostly use unit coefficients. Kyla has `0.8×XLOOKUP(...)`, `0.9×XLOOKUP(...)`, and even post-factors like `XLOOKUP(...)*24*31/1000` (power-to-energy conversion). EL wraps every formula in `$F$5*(...)` where F5 = 0.001 (kWh→MWh). `parse_reporting_xlsx.py` handles all of these via an XLOOKUP-substitution approach that evaluates the formula with each term set to 1.
+- **Dead-meter cascades in kyla virtual meters.** `B653.KB2_WVÄRME_ACK` stopped emitting Oct 2025. Because kyla's accounting uses virtual meters (`B600-KB2`, `Prod-600`) that sum physical meters, one dead leaf blocks an entire subtree — B611, B613, B621, B622 all depend on B600-KB2 which needs B653.ACK. Documented in `gtn_kyla/03_reconciliation/open_questions.md`.
+
+### Resolved
+
+- **4.2% timeseries methodology bias** — `slice_timeseries.py` was summing per-day `v_last − v_first`, losing the boundary between days. Fixed 2026-04-17 to use `last_day.V_LAST − first_day.V_FIRST` register-difference method. All four GTN media now match Excel within 0.0–0.5% per building.
 
 ## 11. Flow-schema parser — accuracy & robustness plan
 
@@ -303,13 +373,26 @@ Not every PDF will yield to generic heuristics. Some drawings are idiosyncratic 
 
 ### 11.4 What good provenance looks like on every edge
 
-Every row in `facit_relations.csv` (and `05_ontology/meter_relations.csv`) already carries a `derived_from` tag. After the improvements above, the tag vocabulary should be:
+Every row in `facit_relations.csv` (and `05_ontology/meter_relations.csv`) carries a `derived_from` tag. The tag vocabulary:
 
-- `flow_schema_V###-XX.X-NNN` — parser produced this edge, direction from user-declared `--sources` or Excel S-column (the baseline)
-- `flow_schema_V###-XX.X-NNN/arrow` — direction independently confirmed by a detected arrow on this pipe
-- `flow_schema_V###-XX.X-NNN/bridged` — edge exists thanks to a VVX/symbol-gap bridge (lower confidence)
-- `flow_schema_V###-XX.X-NNN/auto_root_degree` — no declared source, direction picked by graph heuristic (lower confidence; warn in audit)
+**Layer 1 — PDF flow schema:**
+- `flow_schema_V###-XX.X-NNN` — parser produced this edge from the pipe graph
+- `flow_schema_V###-XX.X-NNN/arrow` — direction independently confirmed by a detected arrow
+- `flow_schema_V###-XX.X-NNN/auto_root_degree` — direction picked by degree heuristic (lower confidence)
+
+**Layer 2 — Excel formulas:**
+- `excel_formula_B###` — edge derived from building ###'s accounting formula (a `−` term is a child of the principal `+` inlet)
+
+**Layer 3 — Naming convention:**
+- `naming_role_hierarchy` — edge derived from intra-building role rules (VP1→VÅ9, VP1→VS1, etc.)
+- `naming_index_chain` — edge derived from consecutive VMM index (VMM61→VMM62 in same building/role)
+
+**Layer 4 — Timeseries residual fit:**
+- `timeseries_residual_fit` — orphan meter's monthly pattern reduces an existing parent's conservation residual; includes fit statistic (improvement %)
+
+**Manual / VLM:**
 - `topology_override_{YYYY-MM-DD}_{author}` — manually added/corrected; reason must be cited
+- `vlm_edge_check_{YYYY-MM-DD}` — Claude vision identified the connection from a PDF crop
 
 Downstream consumers (ontology builder, conservation runner, app) can use these tags to colour-code confidence or filter out low-confidence edges.
 
@@ -340,13 +423,158 @@ Recommended order for the next push:
 - Multi-page PDFs are untested. All current drawings are single-page.
 - Swedish characters in meter IDs (`Å`, `Ä`, `Ö`) work because the code is UTF-8 end-to-end, but assume this on every new data source.
 
+### 11.7 Multi-source topology reconciliation — layer separation
+
+Topology isn't extracted from a single source; it's *reconciled* across four, each with a different authority scope (§3). This section encodes the rule tools must follow so the reconciliation work stays auditable.
+
+**Rule of thumb:** every tool is either an **extractor** (writes into `01_extracted/`) or a **validator** (writes into `04_validation/`). Only **`apply_topology_overrides.py`** writes into `03_reconciliation/`, and only by applying a *human-authored* `topology_overrides.csv` to the parser's output. Nothing else writes a decision silently.
+
+| layer | source | extractor | artifact(s) | authority | emits edges? |
+|---|---|---|---|---|---|
+| 1 | Flödesschema PDF | `parse_flow_schema.py` | `flow_schema_{meters,relations}.csv`, `flow_schema_preview.html` | **physical topology** (primary) | Yes |
+| 2 | Excel monthly-reporting | `parse_reporting_xlsx.py` + `excel_relations.py` | `excel_formulas.csv`, `excel_intake_meters.csv`, `excel_relations.csv` | accounting, coefficients | Yes |
+| 3 | Meter naming convention | `naming_relations.py` | `naming_relations.csv` | intra-building role hierarchy + index chains | **Yes (new)** |
+| 4 | Snowflake BMS timeseries | `slice_timeseries.py` + `timeseries_relations.py` | `timeseries_{daily,monthly}.csv`, `timeseries_relations.csv` | consumption magnitudes; conservation-residual fit | **Yes (new)** |
+
+Layer 4 **depends on layers 1–3**: it needs their edges already merged to compute meaningful conservation residuals. If it ran first, it would rediscover what naming already found. The dependency order is encoded in `regenerate_workstream.py`.
+
+Optional augmentations:
+
+- `vlm_edge_check.py` → `01_extracted/vlm_edge_suggestions.csv` — Claude vision crops for PDF-orphaned meters.
+- `parse_meter_names.py` → `01_extracted/meter_roles.csv` — canonical IDs and role catalog (input to `naming_relations.py`).
+
+**Pipeline dependency order:**
+
+```
+00_inputs/          (raw sources, read-only)
+       │
+       ▼
+01_extracted/  — independent extractors, no cross-talk:
+   ├─ flow_schema_relations.csv      ← layer 1: PDF parser
+   ├─ excel_relations.csv            ← layer 2: Excel formulas
+   ├─ meter_roles.csv                ← parse_meter_names.py (input to layer 3)
+   ├─ naming_relations.csv           ← layer 3: role hierarchy + index chain
+   ├─ timeseries_monthly.csv         ← slice_timeseries.py (input to layer 4)
+   └─ vlm_edge_suggestions.csv       ← optional VLM
+       │
+       ▼
+03_reconciliation/  — merge layers 1–3 (apply_topology_overrides.py):
+   └─ facit_relations.csv            ← union of {PDF, Excel, naming} + human overrides
+       │
+       ▼
+01_extracted/  — layer 4 runs AFTER merge:
+   └─ timeseries_relations.csv       ← layer 4: orphan residual fit against merged facit
+       │
+       ▼
+03_reconciliation/  — re-merge with layer 4 additions:
+   └─ facit_relations.csv            ← final (all 4 layers + overrides)
+       │
+       ▼
+04_validation/      (comparison, no decisions)
+   ├─ source_conflicts.md            ← cross-source agreement
+   ├─ building_totals_spot_check.csv ← end-to-end check vs Excel totals
+   ├─ monthly_conservation.csv       ← parent-child energy balance
+   └─ flow_schema_audit.png          ← visual overlay
+       │
+       ▼
+05_ontology/        (Brick-style deliverable)
+```
+
+**Provenance flows end-to-end.** Every edge in `facit_relations.csv` carries `derived_from` (see §11.4). `build_ontology.py` copies this tag into `05_ontology/meter_relations.csv` so downstream consumers can filter by confidence.
+
+**apply_topology_overrides.py** merges sources in priority order with **reverse-direction conflict detection**:
+1. Start with `flow_schema_relations.csv` (if PDF exists) OR `excel_relations.csv` (for PDF-less media).
+2. Merge `naming_relations.csv` — add edges not already present. If a naming edge `A→B` conflicts with an existing edge `B→A` from a higher-priority layer, the naming edge is **dropped** and logged to stderr. Higher-priority layers always win on direction.
+3. Apply human `topology_overrides.csv` (add/remove/force_direction).
+4. Merge `timeseries_relations.csv` — same reverse-direction check as step 2.
+5. Write `facit_relations.csv` with the union, each edge tagged by its source.
+
+**Conflict rules** enforced during merge (both logged to stderr):
+
+1. **Reverse-direction:** if edge `(A→B)` is proposed but `(B→A)` already exists from a higher-priority layer, the new edge is rejected. Prevents cycles.
+2. **Duplicate parent:** if edge `(P→C)` is proposed but child `C` already has a parent from a higher-priority layer, the new edge is rejected. The physical meter topology is a tree — each meter has at most one `hasSubMeter` parent.
+
+To override either rule, use `force_direction` / `add` + `remove` in `topology_overrides.csv`.
+
+**source_conflicts.py** checks all 5 sources (flow_schema, excel, naming, timeseries, vlm) for direction disagreements and reports them in `04_validation/source_conflicts.md`. Any `direction_conflict` count > 0 signals edges that `apply_topology_overrides.py` will have silently dropped from the lower-priority layer.
+
+**generate_building_virtuals.py** materializes building-level virtual meters in `03_reconciliation/`:
+
+Each Excel building row is an implicit virtual meter (e.g. `B611_VARME = VP1 + VÅ9 + VP2 − B613 − B631 − B622`). This script creates:
+1. A virtual meter entity `B{N}.{MEDIA}_BUILDING` in `facit_meters.csv` (`meter_type=virtual`).
+2. Relations: each `+` term → virtual (input, with coefficient); virtual → each `−` term (pass-through, with coefficient).
+3. Tag: `derived_from = building_virtual_B{N}`.
+
+**Important:** `build_ontology.py` **excludes** virtual building meters and their edges from `05_ontology/`. They are redundant with the physical `hasSubMeter` topology + `meter_measures` table, and their cross-building feeds edges (e.g. `B612.ANGA_BUILDING → B613.VMM71`) conflict with the calc engine's semantics. The accounting formulas they encode are preserved separately in `05_ontology/meter_allocations.csv` for documentation and auditing. Building-level consumption is computed topologically via `meter_measures` → `meter_net` → `consumption.sql`.
+
+**Naming-relation rules** (`naming_relations.py`):
+
+For each building with ≥2 meters on the same media, apply role-hierarchy rules:
+
+| rule | condition | edge | provenance tag |
+|---|---|---|---|
+| Supply feeds secondary | VP1 + VS1 in same building | VP1 → VS1 | `naming_role_hierarchy` |
+| Supply feeds recovery | VP1 + VÅ9 in same building | VP1 → VÅ9 | `naming_role_hierarchy` |
+| Index chain | VMM61 + VMM62 same building + role | VMM61 → VMM62 | `naming_index_chain` |
+
+These are deterministic (no data needed) and have zero false positives on the verified cases.
+
+**Timeseries-relation rules** (`timeseries_relations.py`):
+
+For each orphan meter (not in facit after layers 1–3), test:
+
+```
+for each parent P in facit with children {C1, C2, ...}:
+    if building(P) ≠ building(orphan): skip          ← same-building only
+    residual = P.delta − Σ Ci.delta  (per month)
+    new_residual = residual − orphan.delta  (per month)
+    if Σ|new_residual| < Σ|residual| × (1 − threshold):  ← default 20%
+        → candidate edge P → orphan, provenance = timeseries_residual_fit
+```
+
+Same-building filter eliminates seasonal-correlation noise. The 20% threshold avoids weak fits. Verified in spot trial: 5/5 same-building fits were physically plausible (child < parent, 5–91% ratio).
+
+### 11.8 Device swap and offline handling
+
+Counter resets in BMS data are detected by `slice_timeseries.py` (flags `is_reset=1`) and classified by `detect_meter_swaps.py` into:
+
+| event | meaning | ontology encoding |
+|---|---|---|
+| `swap` | Device replaced, counter resets, readings resume | Two raw refs with `valid_to`/`valid_from` at swap date + one derived `rolling_sum` ref (preferred). Same pattern as Abbey Road M6. |
+| `offline` | Meter decommissioned, counter drops to zero permanently | Single raw ref with `valid_to` at the offline date. |
+
+`build_ontology.py` reads `01_extracted/meter_swaps.csv` and generates the appropriate `timeseries_refs.csv` entries. `assemble_site.py` materializes the derived rolling_sum readings by stitching the two raw counter series with an offset (old device's last value becomes the new device's zero).
+
+This is the same pattern a field engineer would follow when installing a new meter: add two timeseries refs pointing to the old and new devices, then a derived ref that stitches them. The calc engine handles it automatically — `measured_flow` picks the preferred (stitched) ref, and the LAG diff produces clean deltas across the swap boundary.
+
+**What tools must NOT do:**
+
+- No tool writes directly into `03_reconciliation/` except `apply_topology_overrides.py`.
+- No tool "auto-promotes" a suggestion. Each layer writes its own extractor CSV; the merge script unions them with provenance preserved.
+- No tool seeds `expected_relations.csv` from parser output.
+
+**What `source_conflicts.md` is for (the reconciler's reading order):**
+
+1. **Direction conflicts** — always need a decision; PDF arrow or Excel sign settles it.
+2. **Confirmed** edges (≥2 sources agree) — high-confidence; no action needed.
+3. **Single-source edges** by layer, weighted by §3 authority.
+4. **Orphans** by Excel classification (terminal leaf / missing parent / absent).
+
+Every non-trivial call goes into `decisions.md` with evidence citations (file + row/cell).
+
 ---
 
 ## 12. Cross-references
 
-- Flow-schema parsing script: `reference/scripts/parse_flow_schema.py`
+- All scripts: `reference/scripts/` (see §8 for inventory)
+- Pipeline runner: `reference/scripts/regenerate_workstream.py` — per-(site, media) config; `python regenerate_workstream.py reference/media_workstreams/gtn_varme`
 - Flow-schema parsing notes: `reference/monthly_reporting_documents/logs/topology/flow_schema_parsing_notes.md`
-- GTN ånga facit: `reference/monthly_reporting_documents/outputs/from_pdf/gtn_anga_*.csv` + `gtn_anga_preview.html`
-- SNV ånga facit: `reference/monthly_reporting_documents/outputs/from_pdf/snv_anga_*.csv` + `snv_anga_preview.html`
-- Abbey Road template (ontology shape we're replicating): `data/reference_site/abbey_road/*.csv`
-- Snowflake query used for timeseries export: documented in `00_inputs/README.md` of the first workstream we stand up; the current query is 2025-01-01 → 2026-01-03 daily-aggregated all meters all quantities.
+- GTN ånga facit: `reference/media_workstreams/gtn_anga/03_reconciliation/facit_relations.csv` (19 edges)
+- GTN värme facit: `reference/media_workstreams/gtn_varme/03_reconciliation/facit_relations.csv` (26 edges)
+- GTN kyla facit: `reference/media_workstreams/gtn_kyla/03_reconciliation/facit_relations.csv` (13 edges, Excel-seeded)
+- GTN el facit: `reference/media_workstreams/gtn_el/03_reconciliation/facit_relations.csv` (26 edges, Excel-seeded)
+- Golden ånga output (pre-workstream era): `reference/monthly_reporting_documents/outputs/from_pdf/gtn_anga_*.csv` — still used as a regression target
+- Abbey Road template (ontology shape): `data/reference_site/abbey_road/*.csv`
+- Snowflake export: `reference/snowflake_meter_readings/Untitled 1_2026-04-16-1842.csv` — daily-aggregated all meters, date range 2025-01-01 → 2026-02-28 (updated 2026-04-17). Query documented in `gtn_anga/00_inputs/README.md`.
+- Building-totals spot-check results: `{workstream}/04_validation/building_totals_spot_check.csv`
+- Source-conflicts advisory: `{workstream}/04_validation/source_conflicts.md`

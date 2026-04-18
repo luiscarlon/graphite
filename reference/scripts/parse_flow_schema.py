@@ -478,37 +478,107 @@ def assign_meter_endpoints(
     return ep_to_meter
 
 
+def _local_axis(a: Point, adj: dict[object, set[object]]) -> tuple[str, int] | None:
+    """Return ('h' or 'v', sign) of the direction pointing AWAY from ``a``'s sole
+    neighbour. sign is +1 or -1 along that axis. None if a doesn't have exactly
+    one non-meter neighbour with a well-defined axis.
+    """
+    if a not in adj or len(adj[a]) != 1:
+        return None
+    nb = next(iter(adj[a]))
+    if isinstance(nb, str):
+        return None
+    dx, dy = a[0] - nb[0], a[1] - nb[1]
+    if abs(dx) > abs(dy) * 3:
+        return ("h", 1 if dx > 0 else -1)
+    if abs(dy) > abs(dx) * 3:
+        return ("v", 1 if dy > 0 else -1)
+    return None
+
+
+def _perp_crossing_between(
+    a: Point, b: Point, axis: str, segments: list[Segment], tol: float = 3.0
+) -> bool:
+    """Return True if a perpendicular pipe crosses the corridor between a & b.
+
+    If a & b sit on the same horizontal line, a vertical segment whose x lies
+    strictly between a.x and b.x (and which spans the shared y) means the
+    "passage" is blocked by a T-junction, not a symbol.
+    """
+    if axis == "h":
+        y = (a[1] + b[1]) / 2
+        xmin, xmax = sorted((a[0], b[0]))
+        for (x1, y1), (x2, y2) in segments:
+            if abs(x1 - x2) > 0.5:
+                continue  # not vertical
+            vx = x1
+            if vx <= xmin + tol or vx >= xmax - tol:
+                continue
+            ymin, ymax = sorted((y1, y2))
+            if ymin - tol <= y <= ymax + tol:
+                return True
+    else:
+        x = (a[0] + b[0]) / 2
+        ymin, ymax = sorted((a[1], b[1]))
+        for (x1, y1), (x2, y2) in segments:
+            if abs(y1 - y2) > 0.5:
+                continue  # not horizontal
+            hy = y1
+            if hy <= ymin + tol or hy >= ymax - tol:
+                continue
+            xmn, xmx = sorted((x1, x2))
+            if xmn - tol <= x <= xmx + tol:
+                return True
+    return False
+
+
 def bridge_pipe_gaps(
     adj: dict[object, set[object]],
     ep_to_meter: dict[Point, str],
+    pipe_segments: list[Segment] | None = None,
+    arrows: list[Arrow] | None = None,
     max_gap: float = 20.0,
-) -> tuple[dict[object, set[object]], int]:
-    """Bridge small same-axis gaps between pipe-only dead-end nodes.
+    max_ray: float = 80.0,
+    max_ray_arrow: float = 160.0,
+) -> tuple[dict[object, set[object]], int, list[tuple[Point, Point, str]]]:
+    """Bridge pipe-only dead-ends across symbols (VVX, valves, pumps, reducers).
 
-    AutoCAD flödesschema pipes often pass through a heat exchanger (VVX)
-    symbol drawn as a rectangle; the pipe "enters" the rectangle on one side
-    and "exits" on the opposite side, leaving a small (≈14-20u) gap in the
-    pipe graph where the rectangle interior sits. This function adds an
-    explicit edge between dead-end pipe nodes that are:
-      - on the same axis (tolerance 3)
-      - within ``max_gap`` of each other
-      - not already adjacent
-      - not meter IDs (already paired by assign_meter_endpoints)
-    Returns (modified adj, number_of_bridges_added).
+    Three bridging tiers, tried in priority order for each degree-1 pipe end:
+
+    1. *same-axis snap* — another dead-end within ``max_gap`` on the exact same
+       axis (e.g. a VVX rectangle drawn with a ~14u gap). Cheapest signal.
+    2. *ray walk* — project along the local axis (direction pointing AWAY from
+       the endpoint's neighbour) and snap to the nearest dead-end within
+       ``max_ray`` along that ray, corridor tolerance 4u, provided no
+       perpendicular pipe crosses the corridor between them. Captures pipes
+       that pass through longer symbols (FVM boxes, triple-valve stacks).
+    3. *arrow-guided* — if an arrow lies near the endpoint with its
+       direction pointing outward, extend the ray to ``max_ray_arrow``. An
+       arrow is the authoritative "pipe continues" signal.
+
+    Returns (modified adj, bridge_count, bridge_records) where each record is
+    (a, b, provenance) and provenance ∈ {"same_axis", "ray_walk", "arrow_ray"}.
     """
-    degree = {n: len(nb) for n, nb in adj.items()}
-    pipe_ends = [
-        n for n, d in degree.items()
-        if d == 1 and not isinstance(n, str)
-    ]
-    pipe_ends.sort()
+    segments = pipe_segments or []
+    arrows = arrows or []
+
+    def refresh_pipe_ends() -> list[Point]:
+        return sorted(
+            n for n, nb in adj.items()
+            if len(nb) == 1 and not isinstance(n, str)
+        )
 
     added = 0
+    records: list[tuple[Point, Point, str]] = []
+
+    # Tier 1: exact same-axis short gaps (old behaviour, kept for cheap wins)
+    pipe_ends = refresh_pipe_ends()
     for i, a in enumerate(pipe_ends):
         for b in pipe_ends[i + 1 :]:
-            # Early exit on x-sorted list
             if b[0] - a[0] > max_gap:
                 break
+            if len(adj[a]) != 1 or len(adj[b]) != 1:
+                continue
             same_x = abs(a[0] - b[0]) < 3
             same_y = abs(a[1] - b[1]) < 3
             if not (same_x or same_y):
@@ -518,22 +588,152 @@ def bridge_pipe_gaps(
                 continue
             if b in adj.get(a, set()):
                 continue
-            # Re-check degrees — earlier bridges may have promoted endpoints above degree 1
-            if len(adj[a]) != 1 or len(adj[b]) != 1:
-                continue
-            adj[a].add(b)
-            adj[b].add(a)
+            adj[a].add(b); adj[b].add(a)
+            records.append((a, b, "same_axis"))
             added += 1
-    return adj, added
+
+    # Tier 2: ray walk along local axis
+    pipe_ends = refresh_pipe_ends()
+    ends_by_x: dict[float, list[Point]] = defaultdict(list)
+    ends_by_y: dict[float, list[Point]] = defaultdict(list)
+    for p in pipe_ends:
+        ends_by_x[round(p[0] / 4) * 4].append(p)
+        ends_by_y[round(p[1] / 4) * 4].append(p)
+
+    for a in pipe_ends:
+        if len(adj[a]) != 1:
+            continue
+        la = _local_axis(a, adj)
+        if la is None:
+            continue
+        axis, sign = la
+        if axis == "h":
+            # Walk in +/- x direction along same y
+            cand = []
+            for dx_bucket in (-4, 0, 4):
+                cand.extend(ends_by_y.get(round(a[1] / 4) * 4 + dx_bucket, []))
+            best = None
+            for b in cand:
+                if b == a or b in adj.get(a, set()):
+                    continue
+                if len(adj[b]) != 1:
+                    continue
+                if abs(b[1] - a[1]) > 4:
+                    continue
+                gap = (b[0] - a[0]) * sign
+                if gap <= 1 or gap > max_ray:
+                    continue
+                # b's local axis must also be horizontal, pointing back at a
+                lb = _local_axis(b, adj)
+                if lb is None or lb[0] != "h" or lb[1] == sign:
+                    continue
+                if _perp_crossing_between(a, b, "h", segments):
+                    continue
+                if best is None or gap < best[0]:
+                    best = (gap, b)
+            if best is not None:
+                _, b = best
+                adj[a].add(b); adj[b].add(a)
+                records.append((a, b, "ray_walk"))
+                added += 1
+        else:
+            cand = []
+            for dy_bucket in (-4, 0, 4):
+                cand.extend(ends_by_x.get(round(a[0] / 4) * 4 + dy_bucket, []))
+            best = None
+            for b in cand:
+                if b == a or b in adj.get(a, set()):
+                    continue
+                if len(adj[b]) != 1:
+                    continue
+                if abs(b[0] - a[0]) > 4:
+                    continue
+                gap = (b[1] - a[1]) * sign
+                if gap <= 1 or gap > max_ray:
+                    continue
+                lb = _local_axis(b, adj)
+                if lb is None or lb[0] != "v" or lb[1] == sign:
+                    continue
+                if _perp_crossing_between(a, b, "v", segments):
+                    continue
+                if best is None or gap < best[0]:
+                    best = (gap, b)
+            if best is not None:
+                _, b = best
+                adj[a].add(b); adj[b].add(a)
+                records.append((a, b, "ray_walk"))
+                added += 1
+
+    # Tier 3: arrow-guided long-range bridging. For each remaining dead-end
+    # adjacent to an arrow pointing outward, extend the ray search.
+    if arrows:
+        pipe_ends = refresh_pipe_ends()
+        for a in pipe_ends:
+            if len(adj[a]) != 1:
+                continue
+            la = _local_axis(a, adj)
+            if la is None:
+                continue
+            axis, sign = la
+            # Is there an arrow near `a` pointing outward?
+            near_arrow = None
+            for apex, (adx, ady) in arrows:
+                d = ((apex[0]-a[0])**2 + (apex[1]-a[1])**2) ** 0.5
+                if d > 60:
+                    continue
+                if axis == "h" and abs(adx) > abs(ady) * 2:
+                    if (sign > 0 and adx > 0) or (sign < 0 and adx < 0):
+                        near_arrow = (d, (adx, ady)); break
+                if axis == "v" and abs(ady) > abs(adx) * 2:
+                    if (sign > 0 and ady > 0) or (sign < 0 and ady < 0):
+                        near_arrow = (d, (adx, ady)); break
+            if near_arrow is None:
+                continue
+            # Extended ray
+            best = None
+            for b in pipe_ends:
+                if b == a or b in adj.get(a, set()) or len(adj[b]) != 1:
+                    continue
+                if axis == "h":
+                    if abs(b[1] - a[1]) > 6:
+                        continue
+                    gap = (b[0] - a[0]) * sign
+                else:
+                    if abs(b[0] - a[0]) > 6:
+                        continue
+                    gap = (b[1] - a[1]) * sign
+                if gap <= 1 or gap > max_ray_arrow:
+                    continue
+                lb = _local_axis(b, adj)
+                if lb is None or lb[0] != axis or lb[1] == sign:
+                    continue
+                if _perp_crossing_between(a, b, axis, segments):
+                    continue
+                if best is None or gap < best[0]:
+                    best = (gap, b)
+            if best is not None:
+                _, b = best
+                adj[a].add(b); adj[b].add(a)
+                records.append((a, b, "arrow_ray"))
+                added += 1
+
+    return adj, added, records
 
 
 def build_graph(
     segments: list[Segment],
     meters: list[tuple[str, Point]],
+    arrows: list[Arrow] | None = None,
     radius: float = 100.0,
     bridge_gaps: float = 20.0,
-) -> tuple[dict[object, set[object]], dict[Point, str], int]:
-    """Split at tees, snap nodes, merge meter endpoints, then bridge VVX gaps."""
+    max_ray: float = 80.0,
+    max_ray_arrow: float = 160.0,
+) -> tuple[dict[object, set[object]], dict[Point, str], int, list[tuple[Point, Point, str]]]:
+    """Split at tees, snap nodes, merge meter endpoints, then bridge symbols.
+
+    Returns (adj, ep_to_meter, bridges_added, bridge_records). ``bridge_records``
+    carries (a, b, provenance) per bridge for audit/visualisation.
+    """
     split_segs = split_at_tees(segments)
 
     raw_adj: dict[Point, set[Point]] = defaultdict(set)
@@ -557,14 +757,20 @@ def build_graph(
                 adj[nb].add(na)
 
     bridges = 0
+    all_records: list[tuple[Point, Point, str]] = []
     if bridge_gaps > 0:
         # Iterate: bridging may expose new dead-ends that weren't degree-1 initially
         for _ in range(4):
-            adj, added = bridge_pipe_gaps(adj, ep_to_meter, max_gap=bridge_gaps)
+            adj, added, records = bridge_pipe_gaps(
+                adj, ep_to_meter,
+                pipe_segments=split_segs, arrows=arrows,
+                max_gap=bridge_gaps, max_ray=max_ray, max_ray_arrow=max_ray_arrow,
+            )
             bridges += added
+            all_records.extend(records)
             if added == 0:
                 break
-    return adj, ep_to_meter, bridges
+    return adj, ep_to_meter, bridges, all_records
 
 
 def find_components(adj: dict[object, set[object]]) -> list[set[object]]:
@@ -851,7 +1057,11 @@ def main() -> int:
     ap.add_argument("--preview", type=Path, help="Optional HTML preview path")
     ap.add_argument("--radius", type=float, default=100.0, help="Label→endpoint match radius")
     ap.add_argument("--bridge-gaps", type=float, default=20.0,
-                    help="Max same-axis gap (units) between pipe dead-ends to auto-bridge (covers VVX/valve symbols); 0 disables")
+                    help="Tier 1: exact same-axis gap (units) for cheap VVX-style bridges; 0 disables all bridging")
+    ap.add_argument("--max-ray", type=float, default=80.0,
+                    help="Tier 2: max same-axis gap when bridging along a pipe end's local axis; guards against perpendicular crossings")
+    ap.add_argument("--max-ray-arrow", type=float, default=160.0,
+                    help="Tier 3: max gap when an arrow near the pipe end confirms direction")
     args = ap.parse_args()
 
     pdf_path: Path = args.pdf
@@ -870,9 +1080,18 @@ def main() -> int:
     raw_segs, arrows, viewbox = extract_pipe_segments(pdf_path)
     segs = filter_pipe_segments(raw_segs, viewbox)
     pipe_directions = orient_segments(arrows, segs)
-    adj, ep_to_meter, bridges = build_graph(segs, meter_labels, radius=args.radius, bridge_gaps=args.bridge_gaps)
+    adj, ep_to_meter, bridges, bridge_records = build_graph(
+        segs, meter_labels, arrows=arrows,
+        radius=args.radius, bridge_gaps=args.bridge_gaps,
+        max_ray=args.max_ray, max_ray_arrow=args.max_ray_arrow,
+    )
     if bridges:
-        print(f"bridged {bridges} pipe-gap pairs (VVX / valve symbols)", file=sys.stderr)
+        from collections import Counter
+        prov = Counter(r[2] for r in bridge_records)
+        print(
+            f"bridged {bridges} pipe gaps (symbol/valve passages) — provenance={dict(prov)}",
+            file=sys.stderr,
+        )
 
     # Map snapped pipe endpoints to a downstream-vote per node. A meter node
     # is "downstream" according to a given arrow-oriented segment when the
@@ -937,8 +1156,11 @@ def main() -> int:
     out_dir: Path = args.out_dir
     meters_path = out_dir / f"{prefix}_meters.csv"
     relations_path = out_dir / f"{prefix}_relations.csv"
+    # Resolve symlinks so the provenance tag names the actual drawing (e.g.
+    # "V600-52.E.8-001"), not the workstream-local symlink name ("flow_schema").
+    source_tag = f"flow_schema_{pdf_path.resolve().stem}"
     write_meters_csv(meters_path, meter_labels)
-    write_relations_csv(relations_path, relations, f"flow_schema_{pdf_path.stem}")
+    write_relations_csv(relations_path, relations, source_tag)
 
     # Counts per provenance
     from collections import Counter

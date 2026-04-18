@@ -4,9 +4,8 @@
 *.duckdb
 *.duckdb.wal
 *.csv
-Exporter EBO/
-SQL Samples/
-reference/monthly_reporting_documents/logs/topology/
+*.png
+*.html
 .DS_Store
 
 # Python
@@ -19,11 +18,17 @@ __pycache__/
 .pytest_cache/
 dist/
 build/
-
-# Generated data (timeseries, etc.) — topology CSVs are committed per-site.
-data/reference_site/*
-!data/reference_site/abbey_road/
-data/reference_site/abbey_road/*
-!data/reference_site/abbey_road/*.csv
-data/gtn_slice/
 .pytest-report.json
+
+# Large binary/data directories
+reference/flow_charts/
+reference/snowflake_meter_readings/
+reference/monthly_reporting_documents/
+reference/media_workstreams/*/04_validation/vlm_crops/
+
+# Generated data
+data/reference_site/
+
+# Human-authored CSVs — override the global *.csv ignore
+!reference/media_workstreams/*/03_reconciliation/topology_overrides.csv
+!data/sites/*/annotations.csv

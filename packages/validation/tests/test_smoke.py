@@ -72,8 +72,8 @@ def test_cycle_detected() -> None:
     assert "no_cycles" in _rules(validate(ds))
 
 
-def test_feeds_requires_coefficient() -> None:
-    """A `feeds` edge without a coefficient is meaningless and must error."""
+def test_feeds_requires_flow_coefficient() -> None:
+    """A `feeds` edge without a flow_coefficient is meaningless and must error."""
     ds = Dataset(
         campuses=[C],
         buildings=[B],
@@ -84,15 +84,15 @@ def test_feeds_requires_coefficient() -> None:
             ),
         ],
         relations=[
-            # Missing coefficient on a feeds edge.
+            # Missing flow_coefficient on a feeds edge.
             MeterRelation(parent_meter_id="P", child_meter_id="V", relation_type="feeds"),
         ],
     )
-    assert "feeds_requires_coefficient" in _rules(validate(ds))
+    assert "feeds_requires_flow_coefficient" in _rules(validate(ds))
 
 
-def test_hassubmeter_forbids_coefficient() -> None:
-    """`hasSubMeter` is a physical containment edge — coefficients don't apply."""
+def test_hassubmeter_forbids_flow_coefficient() -> None:
+    """`hasSubMeter` is a physical containment edge — flow_coefficients don't apply."""
     ds = Dataset(
         campuses=[C],
         buildings=[B],
@@ -105,14 +105,14 @@ def test_hassubmeter_forbids_coefficient() -> None:
                 parent_meter_id="P",
                 child_meter_id="Q",
                 relation_type="hasSubMeter",
-                coefficient=0.5,  # should not be set
+                flow_coefficient=0.5,  # should not be set
             ),
         ],
     )
-    assert "hassubmeter_forbids_coefficient" in _rules(validate(ds))
+    assert "hassubmeter_forbids_flow_coefficient" in _rules(validate(ds))
 
 
-def test_feeds_coefficients_sum_to_one() -> None:
+def test_feeds_flow_coefficients_sum_to_one() -> None:
     """Outgoing share weights from one parent must partition flow exactly."""
     ds = Dataset(
         campuses=[C],
@@ -136,17 +136,17 @@ def test_feeds_coefficients_sum_to_one() -> None:
         ],
         relations=[
             MeterRelation(
-                parent_meter_id="P", child_meter_id="V1", relation_type="feeds", coefficient=0.3
+                parent_meter_id="P", child_meter_id="V1", relation_type="feeds", flow_coefficient=0.3
             ),
             MeterRelation(
-                parent_meter_id="P", child_meter_id="V2", relation_type="feeds", coefficient=0.3
+                parent_meter_id="P", child_meter_id="V2", relation_type="feeds", flow_coefficient=0.3
             ),  # sums to 0.6
         ],
     )
-    assert "feeds_coefficients_sum_to_one" in _rules(validate(ds))
+    assert "feeds_flow_coefficients_sum_to_one" in _rules(validate(ds))
 
 
-def test_feeds_coefficient_positive() -> None:
+def test_feeds_flow_coefficient_positive() -> None:
     """Negative shares are physically nonsensical and must be rejected."""
     ds = Dataset(
         campuses=[C],
@@ -159,11 +159,11 @@ def test_feeds_coefficient_positive() -> None:
         ],
         relations=[
             MeterRelation(
-                parent_meter_id="P", child_meter_id="V", relation_type="feeds", coefficient=-0.5
+                parent_meter_id="P", child_meter_id="V", relation_type="feeds", flow_coefficient=-0.5
             ),
         ],
     )
-    assert "feeds_coefficient_positive" in _rules(validate(ds))
+    assert "feeds_flow_coefficient_positive" in _rules(validate(ds))
 
 
 def test_referential_integrity_missing_meter() -> None:

@@ -177,16 +177,65 @@ def main() -> int:
     ap.add_argument("workstream_dir", type=Path)
     args = ap.parse_args()
 
-    parsed_path = args.workstream_dir / "01_extracted" / "flow_schema_relations.csv"
+    ex = args.workstream_dir / "01_extracted"
     overrides_path = args.workstream_dir / "03_reconciliation" / "topology_overrides.csv"
     facit_path = args.workstream_dir / "03_reconciliation" / "facit_relations.csv"
     audit_path = args.workstream_dir / "03_reconciliation" / "overrides_audit.md"
 
-    if not parsed_path.exists():
-        print(f"error: {parsed_path} not found", file=sys.stderr)
+    # Merge all extractor sources in priority order (§11.7):
+    # 1. PDF topology (primary); 2. Excel formulas; 3. Naming relations;
+    # 4. Timeseries relations (added after layers 1–3 merge, but included
+    #    here too since regenerate_workstream.py may call us twice).
+    sources = [
+        ("flow_schema", ex / "flow_schema_relations.csv"),
+        ("excel", ex / "excel_relations.csv"),
+        ("naming", ex / "naming_relations.csv"),
+        ("timeseries", ex / "timeseries_relations.csv"),
+    ]
+
+    parsed: list[dict] = []
+    seen: set[tuple[str, str]] = set()
+    children_seen: dict[str, str] = {}
+    dropped: list[dict] = []
+    source_counts: dict[str, int] = {}
+    for label, path in sources:
+        if not path.exists():
+            continue
+        added = 0
+        for row in load_relations(path):
+            frm, to = row["from_meter"], row["to_meter"]
+            key = (frm, to)
+            reverse = (to, frm)
+            src = row.get("derived_from", label)
+            if key in seen:
+                continue
+            if reverse in seen:
+                dropped.append({"edge": key, "reason": "reverse-direction",
+                                "dropped": src, "kept": children_seen.get(frm, "?")})
+                continue
+            if to in children_seen:
+                dropped.append({"edge": key, "reason": "child already has parent",
+                                "dropped": src, "kept": children_seen[to]})
+                continue
+            seen.add(key)
+            children_seen[to] = src
+            parsed.append(row)
+            added += 1
+        source_counts[label] = added
+
+    if dropped:
+        print(f"  dropped {len(dropped)} conflict(s):", file=sys.stderr)
+        for d in dropped:
+            print(f"    {d['edge'][0]} → {d['edge'][1]} "
+                  f"[{d['dropped']}] — {d['reason']} (kept: {d['kept']})",
+                  file=sys.stderr)
+
+    if not parsed:
+        print("error: no relation sources found in 01_extracted/", file=sys.stderr)
         return 2
 
-    parsed = load_relations(parsed_path)
+    note = ", ".join(f"{label}={n}" for label, n in source_counts.items() if n > 0)
+    print(f"  merged {len(parsed)} edges from {note}")
     overrides = load_overrides(overrides_path)
     final, audit = apply_overrides(parsed, overrides)
     write_relations(facit_path, final)

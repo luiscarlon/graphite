@@ -48,21 +48,21 @@ def check_cycles(ds: Dataset) -> list[Violation]:
 
 
 def check_feeds_coefficients(ds: Dataset) -> list[Violation]:
-    """feeds edges require a positive coefficient; hasSubMeter edges forbid one.
-    Outgoing feeds coefficients from any parent must sum to 1.0 (± EPS).
+    """feeds edges require a positive flow_coefficient; hasSubMeter forbids one.
+    Outgoing flow_coefficients from any parent must sum to 1.0 (± EPS).
     """
     violations: list[Violation] = []
     sums: dict[str, float] = defaultdict(float)
 
     for r in ds.relations:
         if r.relation_type == "feeds":
-            if r.coefficient is None:
+            if r.flow_coefficient is None:
                 violations.append(
                     Violation(
-                        rule="feeds_requires_coefficient",
+                        rule="feeds_requires_flow_coefficient",
                         message=(
                             f"feeds {r.parent_meter_id}->{r.child_meter_id} "
-                            f"missing coefficient"
+                            f"missing flow_coefficient"
                         ),
                         context={
                             "parent": r.parent_meter_id,
@@ -71,34 +71,34 @@ def check_feeds_coefficients(ds: Dataset) -> list[Violation]:
                     )
                 )
                 continue
-            if r.coefficient <= 0:
+            if r.flow_coefficient <= 0:
                 violations.append(
                     Violation(
-                        rule="feeds_coefficient_positive",
+                        rule="feeds_flow_coefficient_positive",
                         message=(
                             f"feeds {r.parent_meter_id}->{r.child_meter_id} "
-                            f"has non-positive coefficient {r.coefficient}"
+                            f"has non-positive flow_coefficient {r.flow_coefficient}"
                         ),
                         context={
                             "parent": r.parent_meter_id,
                             "child": r.child_meter_id,
-                            "coefficient": r.coefficient,
+                            "flow_coefficient": r.flow_coefficient,
                         },
                     )
                 )
-            sums[r.parent_meter_id] += r.coefficient
-        elif r.relation_type == "hasSubMeter" and r.coefficient is not None:
+            sums[r.parent_meter_id] += r.flow_coefficient
+        elif r.relation_type == "hasSubMeter" and r.flow_coefficient is not None:
             violations.append(
                 Violation(
-                    rule="hassubmeter_forbids_coefficient",
+                    rule="hassubmeter_forbids_flow_coefficient",
                     message=(
                         f"hasSubMeter {r.parent_meter_id}->{r.child_meter_id} "
-                        f"carries a coefficient ({r.coefficient})"
+                        f"carries a flow_coefficient ({r.flow_coefficient})"
                     ),
                     context={
                         "parent": r.parent_meter_id,
                         "child": r.child_meter_id,
-                        "coefficient": r.coefficient,
+                        "flow_coefficient": r.flow_coefficient,
                     },
                 )
             )
@@ -107,9 +107,9 @@ def check_feeds_coefficients(ds: Dataset) -> list[Violation]:
         if abs(total - 1.0) > EPS:
             violations.append(
                 Violation(
-                    rule="feeds_coefficients_sum_to_one",
+                    rule="feeds_flow_coefficients_sum_to_one",
                     message=(
-                        f"outgoing feeds coefficients from {parent} sum to "
+                        f"outgoing flow_coefficients from {parent} sum to "
                         f"{total:.6f}, expected 1.0"
                     ),
                     context={"parent": parent, "sum": total},
@@ -125,6 +125,7 @@ def check_referential_integrity(ds: Dataset) -> list[Violation]:
     zone_ids = {z.zone_id for z in ds.zones}
     campus_ids = {c.campus_id for c in ds.campuses}
     database_ids = {d.database_id for d in ds.databases}
+    device_ids = {d.device_id for d in ds.devices}
     sensor_ids = {s.sensor_id for s in ds.sensors}
     media_type_ids = {mt.media_type_id for mt in ds.media_types}
 
@@ -178,6 +179,15 @@ def check_referential_integrity(ds: Dataset) -> list[Violation]:
             miss("timeseries_refs", "sensor_id", tr.sensor_id)
         if tr.database_id is not None and tr.database_id not in database_ids:
             miss("timeseries_refs", "database_id", tr.database_id)
+        # Devices are only checked when the devices table is populated;
+        # v1 allows bare device_id strings while the hardware inventory
+        # is incomplete (per §7.4).
+        if (
+            tr.device_id is not None
+            and device_ids
+            and tr.device_id not in device_ids
+        ):
+            miss("timeseries_refs", "device_id", tr.device_id)
     return violations
 
 

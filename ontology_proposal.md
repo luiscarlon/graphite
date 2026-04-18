@@ -126,9 +126,11 @@ Most buildings have a single zone (e.g. B307 belongs entirely to API). Some buil
 | Timeseries kind (`raw` \| `derived`) | `ext:kind` | Extension |
 | Derived-ref source list | `ext:sources` | Extension |
 | Derived-ref aggregation (`sum` \| `rolling_sum`) | `ext:aggregation` | Extension |
+| Reading type (`counter` \| `delta`) | `ext:readingType` | Extension |
 | Reading correction trail timestamp | `ext:recordedAt` | Extension |
 | Preferred external reference (multi-source) | `ref:preferred` | Yes (standard `ref-schema`) |
 | Allocation factor for virtual meters (on the `feeds` edge) | `ext:flowCoefficient` | Extension |
+| Database kind (`internal` \| `external`) | `ext:databaseKind` | Extension |
 | Validity start | `ext:validFrom` | Extension |
 | Validity end | `ext:validTo` | Extension |
 | Device serial number | `ext:serial` | Extension |
@@ -490,7 +492,9 @@ If every extension recommended in 7 + 9 is adopted, the model carries the follow
 | `ext:kind` | Property (on timeseries ref) | `raw` (points at upstream data) or `derived` (declaration, materialized by the DW) |
 | `ext:sources` | Property (on derived ref) | List of source timeseries ids aggregated by the derived ref |
 | `ext:aggregation` | Property (on derived ref) | Aggregation rule: `sum` or `rolling_sum` (see §9) |
+| `ext:readingType` | Property (on timeseries ref) | Distinguishes a cumulative counter index (`counter`) from a per-period consumption value (`delta`). Brick has no equivalent — `brick:aggregate` covers the bucket width, not the reading shape |
 | `ext:recordedAt` | Property (on reading) | Timestamp a value was entered; distinct from the reading's period `timestamp`. Enables correction trails for Avläsning-style inputs |
+| `ext:databaseKind` | Property (on `ref:Database`) | Marks a database as `internal` (AZ-owned) or `external` (supplier, manual entry, …) |
 | `ext:System` | Class | Installation discipline and subsystem (Vatten / Kyla / Värme) — deferred |
 
 ## 9. Addressing and derived timeseries
@@ -542,3 +546,13 @@ Abbey Road demonstrates this on `M6`: `M6:h.A` (device A, Jan 1 – Feb 10), `M6
 Readings carry an optional `ext:recordedAt`. Two rows sharing `(timeseries_id, timestamp)` but differing in `recordedAt` form a correction trail; the latest `recordedAt` wins for reporting. Used for backdated Avläsning corrections (a January monthly reading re-entered in March).
 
 This is orthogonal to the §7.11 "nulling" discipline: `recordedAt` is for corrections that overwrite a previously accepted value; nulling via `ext:validTo` is for marking periods as invalid.
+
+## 10. Table-level encoding
+
+The flat-table implementation (Phase A, DuckDB over CSVs) commits to a small set of table-shape choices that make the Brick TTL round-trip mechanical. These are implementation choices about *how* the ontology is stored on disk, not additional ontology concepts.
+
+- **Meter Brick class and substance on `media_types`.** A meter's `rdf:type` (`brick:Electrical_Meter`, `brick:Chilled_Water_Meter`, `brick:Thermal_Power_Meter`, `brick:Water_Meter`, …) and its `brick:hasSubstance` (`brick:Chilled_Water`, `brick:Hot_Water`, `brick:Steam`, …) are derived from its `media_type_id`. `media_types` therefore carries two columns — `brick_meter_class` and `brick_substance` (the latter nullable — EL has no substance) — so the converter emits the right Brick class without a hard-coded mapping.
+- **`devices` table.** Devices are a sidecar entity (§7.4): the standard Brick chain `Meter → Sensor → TimeseriesReference` is untouched, and `ext:producedBy` on a timeseries ref points at a `Device` entity. The `devices` table keys on `device_id` and carries `serial`, `manufacturer`, and `identifier` — all nullable so v1 can ship with stub rows and enrich them later when the hardware inventory lands.
+- **QUDT codes on `Sensor.unit`.** The `unit` column stores the QUDT identifier fragment directly (`KiloW-HR`, `MegaW-HR`, `M3`, `DEG_C`, `HZ`), not the friendly string. TTL emission is `brick:hasUnit unit:<value>`. The UI renders a friendly label from a small display dict; the storage format keeps the ontology export mechanical.
+- **`flow_coefficient` spelled on the relation row.** The `meter_relations` table carries a `flow_coefficient` column. On `feeds` rows it's the `ext:flowCoefficient` weight for the edge; on `hasSubMeter` rows it is null. Named to match the Brick property after snake↔camel conversion, so no mapper layer is needed for export.
+- **Zone category is table-local.** `zones.zone_type` (production / office / warehouse / …) is company-internal metadata used by the app for grouping and coloring. It is not emitted to TTL and has no Brick or extension counterpart; every zone emits as `brick:Zone` with `rdfs:label` only. CSVs remain the source of truth for this column.

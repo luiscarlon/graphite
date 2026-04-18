@@ -97,10 +97,14 @@ def to_dot(ds: Dataset) -> str:
 
         lines.append("  }")
 
-    # Edges. Coefficient lives on the feeds relation.
+    # Edges. flow_coefficient lives on the feeds relation.
     for r in ds.relations:
         if r.relation_type == "feeds":
-            label = f', label="k={r.coefficient}"' if r.coefficient is not None else ""
+            label = (
+                f', label="k={r.flow_coefficient}"'
+                if r.flow_coefficient is not None
+                else ""
+            )
             attrs = f'style=dashed, color="{COLOR_FEEDS}"{label}'
         else:  # hasSubMeter
             attrs = f'color="{COLOR_SUB}"'

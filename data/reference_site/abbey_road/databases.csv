@@ -1,4 +1,0 @@
-database_id,name,kind,identifier
-PME_SQL,Internal PME,internal,
-supplier_ems,Supplier EMS,external,
-avlasning,Avläsning sheet,external,

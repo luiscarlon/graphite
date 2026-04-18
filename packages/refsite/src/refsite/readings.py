@@ -58,10 +58,21 @@ def _det_seed(base: int, key: str) -> int:
     """Deterministic per-key seed (hash() is randomized across runs)."""
     return base + zlib.crc32(key.encode()) % 10_000
 
-# Per-meter own-consumption baseline in kWh/h. Values picked so the
-# upstream sums roughly match a small industrial site (~450 kWh/h at
-# the intake) and so individual branches read plausibly.
+# Per-meter own-consumption baseline in kWh/h. Keys include BOTH real
+# meters and virtuals — each entity carries the physical own consumption
+# of whatever it stands in for. Pass-through sub-panels (M11, M12, M10)
+# have own=0 because their reading is entirely downstream flow. Virtuals
+# (V1..V6) hold the consumption of the unmetered buildings they
+# represent; at query time, coefficient shares on feeds edges resolve
+# those values back against the parent's residual.
+#
+# Values are chosen so coefficients partition parent flow EXACTLY:
+#   M11 → V1 (0.7 × 50 = 35), V2 (0.3 × 50 = 15), flow(M11) = 50
+#   M12 → V3 (0.4 × 70 = 28), V4 (0.6 × 70 = 42), flow(M12) = 70
+#   M10 → V5 (0.5 × 22 = 11), V6 (0.5 × 22 = 11), flow(M10) = 22
+# where flow(V4) = own(V4) + flow(M9) = 2 + 40 = 42.
 OWN_BASELINE_KWH_H: dict[str, float] = {
+    # Real meters
     "M0": 1.0,    # tiny residual on the intake itself
     "M1": 5.0,    # B1 office trunk
     "M2": 8.0,    # B1 office sub a
@@ -69,14 +80,22 @@ OWN_BASELINE_KWH_H: dict[str, float] = {
     "M4": 8.0,    # B1 prod trunk own
     "M5": 6.0,    # B1 prod leaf own
     "M6": 12.0,   # B2 office
-    "M7": 70.0,   # B2 prod trunk (heaviest single branch)
-    "M8": 25.0,   # B5 warehouse + everything that hangs off it
-    "M9": 18.0,   # B9 / shared warehouse
-    "M10": 22.0,  # shared leaf to B10/B11
-    # Declared in topology but not (yet) instrumented - produces true
-    # consumption that propagates upstream but emits no readings of its
-    # own. Exercises the "known but unmeasured" case.
-    "M11": 3.0,   # B2 prod sub-panel, pending PME wiring
+    "M7": 20.0,   # B2 prod trunk own (excludes M11 sub-panel chain)
+    "M8": 8.0,    # B5 warehouse own (excludes M12 sub-panel chain)
+    "M9": 18.0,   # B9 own
+    "M10": 0.0,   # shared leaf — pass-through to V5/V6
+    "M11": 0.0,   # B2 sub-panel — pass-through to V1/V2
+    "M12": 0.0,   # B5 sub-panel — pass-through to V3/V4 (and V4→M9 chain)
+    # Virtuals holding unmetered-building consumption
+    "V1": 35.0,   # B3
+    "V2": 15.0,   # B4
+    "V3": 28.0,   # B7
+    "V4": 2.0,    # B8 own, excluding M9 sub-branch (kept small so
+                  # flow(V4) = 42 sits just above flow(M9) = 40 and the
+                  # "V4 net goes slightly negative on noisy hours"
+                  # calibration-alert pattern is exercised)
+    "V5": 11.0,   # B10
+    "V6": 11.0,   # B11
 }
 
 # Per-meter multiplicative measurement noise, applied to the *recorded*
@@ -115,7 +134,18 @@ SHAPE: dict[str, dict[str, float]] = {
     "M8":  {"daily": 0.20, "weekly": 0.10, "monthly": 0.30, "noise": 0.08, "phase": 1.0},
     "M9":  {"daily": 0.20, "weekly": 0.10, "monthly": 0.30, "noise": 0.08, "phase": -1.0},
     "M10": {"daily": 0.25, "weekly": 0.15, "monthly": 0.25, "noise": 0.08, "phase": 0.5},
-    "M11": {"daily": 0.50, "weekly": 0.30, "monthly": 0.15, "noise": 0.06, "phase": 0.0},
+    # Pass-through sub-panels: profile doesn't matter (own baseline = 0)
+    # but the key must exist for the generator loop.
+    "M11": {"daily": 0.00, "weekly": 0.00, "monthly": 0.00, "noise": 0.00, "phase": 0.0},
+    "M12": {"daily": 0.00, "weekly": 0.00, "monthly": 0.00, "noise": 0.00, "phase": 0.0},
+    # Virtuals — synthesized as warehouse-like flat profiles so the
+    # downstream buildings have plausible consumption curves.
+    "V1":  {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.07, "phase": 0.5},
+    "V2":  {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.07, "phase": -0.5},
+    "V3":  {"daily": 0.25, "weekly": 0.15, "monthly": 0.25, "noise": 0.08, "phase": 1.0},
+    "V4":  {"daily": 0.25, "weekly": 0.15, "monthly": 0.25, "noise": 0.08, "phase": -1.0},
+    "V5":  {"daily": 0.25, "weekly": 0.15, "monthly": 0.25, "noise": 0.08, "phase": 0.5},
+    "V6":  {"daily": 0.25, "weekly": 0.15, "monthly": 0.25, "noise": 0.08, "phase": -0.5},
 }
 
 # How the supplier-side splits across the three intakes (must sum to 1).
@@ -217,7 +247,10 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
     ts = _hourly_index(abbey_road.PERIOD_START, abbey_road.PERIOD_END)
 
     # ------------------------------------------------------------------
-    # Step 1: own-consumption profiles for each real downstream meter.
+    # Step 1: own-consumption profiles for every entity with a baseline
+    # (both real meters and virtuals). Virtuals carry the unmetered-
+    # building consumption they stand in for; pass-through sub-panels
+    # have own=0 and contribute only via propagation.
     # ------------------------------------------------------------------
     own: dict[str, np.ndarray] = {}
     for mid, baseline in OWN_BASELINE_KWH_H.items():
@@ -234,22 +267,26 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
         own[mid] = profile
 
     # ------------------------------------------------------------------
-    # Step 2: propagate up `hasSubMeter` edges to get measured flow.
+    # Step 2: propagate flow bottom-up along ALL topology edges
+    # (hasSubMeter + feeds). Virtual intermediaries are transparent:
+    # their flow = own + Σ children's flow, and that aggregated value
+    # propagates to the nearest real ancestor via the feeds edge feeding
+    # it. A real parent's reading is therefore the sum of every own-
+    # consumption below it, regardless of how many virtuals sit in
+    # between (M8 → M12 → V4 → M9 correctly accumulates M9 into M8).
     # ------------------------------------------------------------------
-    real_ids = set(OWN_BASELINE_KWH_H.keys())
-    children_real: dict[str, list[str]] = {mid: [] for mid in real_ids}
+    all_ids = set(OWN_BASELINE_KWH_H.keys())
+    children_all: dict[str, list[str]] = {mid: [] for mid in all_ids}
     edge_validity: dict[tuple[str, str], tuple[date | None, date | None]] = {}
     for r in ds.relations:
-        if r.relation_type != "hasSubMeter":
+        if r.parent_meter_id not in all_ids or r.child_meter_id not in all_ids:
             continue
-        if r.parent_meter_id not in real_ids or r.child_meter_id not in real_ids:
-            continue
-        children_real[r.parent_meter_id].append(r.child_meter_id)
+        children_all[r.parent_meter_id].append(r.child_meter_id)
         edge_validity[(r.parent_meter_id, r.child_meter_id)] = (r.valid_from, r.valid_to)
 
     flow: dict[str, np.ndarray] = {mid: arr.copy() for mid, arr in own.items()}
-    for mid in _topo_order(list(real_ids), children_real):
-        for child in children_real[mid]:
+    for mid in _topo_order(list(all_ids), children_all):
+        for child in children_all[mid]:
             child_flow = flow[child]
             # Skip child contribution outside the *edge*'s validity even
             # if the child meter itself is valid (defensive; child_flow

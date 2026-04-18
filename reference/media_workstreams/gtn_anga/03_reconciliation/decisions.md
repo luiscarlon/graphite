@@ -80,6 +80,43 @@ No changes to `facit_relations.csv`; only adding this note for traceability.
 
 ---
 
+### 2026-04-18 — Conservation-based topology validation (daily readings)
+
+Ran conservation check against assembled daily readings (Jan 2025 – Feb 2026). For every hasSubMeter parent, compared `parent.flow` vs `Σ children.flow`. Two violations found and corrected via `topology_overrides.csv`:
+
+**1. B600N → B600S: removed (parallel intakes, not series)**
+
+- B600N avg flow: 63 kWh/day
+- B600S avg flow: 103 kWh/day
+- Residual: -108% (child exceeds parent — physically impossible for hasSubMeter)
+- Source of false edge: `naming_index_chain` inferred B600N→B600S from "N precedes S" naming
+- PDF flow_schema has no edge between B600N and B600S — they are independent intake points for north and south spine respectively
+- Fix: `topology_overrides.csv` `remove` action
+
+**2. B614.VMM71 → B642.VMM72: removed (not downstream)**
+
+- B614.VMM71 avg flow: 12 kWh/day
+- B642.VMM72 avg flow: 20 kWh/day
+- Residual: -71% (child exceeds parent)
+- Source: `flow_schema_V600-52.E.8-001` — parser placed B642.VMM72 as downstream of B614.VMM71, but the readings disprove this
+- Fix: `topology_overrides.csv` `remove` action
+
+**3. B614.VMM71 → B642.VMM72: kept despite conservation violation (PDF-confirmed)**
+
+- B614.VMM71 avg flow: 12 kWh/day; B642.VMM72 avg flow: 20 kWh/day
+- Monthly ratio B642/B614 swings from 0.1 to 7.5 — not noise, structurally anomalous
+- PDF flow diagram (V600-52.E.8) clearly shows B642.VMM72 downstream of B614.VMM71 on the 12 BAR branch, with B642.VMM71 on a 1.5 BAR sub-branch
+- Edge retained: PDF topology is authoritative per §3; data anomaly flagged for on-site investigation
+- Hypothesis: B642.VMM72 may have an additional feed not shown in the PDF, or one meter has a calibration issue
+
+**Healthy relations confirmed:**
+- B600S → 9 children: 6.9% residual (pipe losses, expected for steam)
+- B611.VMM73 → VMM72+B622: 35.5% residual (unmetered consumption within B611)
+- B612.VMM71 → B613+B641: 100% residual (both children are dead meters)
+- B642.VMM72 → B642.VMM71: 98% residual (child is near-dead)
+
+---
+
 ### 2026-04-16 — `B616.Å1_VMM71` has drifted IDs between STRUX and Snowflake
 
 **Question:** Snowflake knows this meter as `B616.Å1_VMM71_E`; STRUX (and Excel's lookup) knows it as `B616.Å1_VM71`. Both are valid and refer to the same physical meter, but any automated reconciliation will fail at the string-compare level.

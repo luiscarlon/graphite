@@ -11,7 +11,7 @@ from . import abbey_road
 from .readings import generate_readings
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
-DEFAULT_OUT = REPO_ROOT / "data" / "reference_site" / "abbey_road"
+DEFAULT_OUT = REPO_ROOT / "data" / "sites" / "abbey_road"
 
 
 def main() -> None:

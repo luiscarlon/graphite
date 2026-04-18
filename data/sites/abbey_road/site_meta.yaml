@@ -1,0 +1,5 @@
+name: Abbey Road
+campus_id: ABBEY
+summary: >
+  Reference test site exercising all ontology features: virtual meters,
+  device replacement, temporal validity, share splits, and aggregators.

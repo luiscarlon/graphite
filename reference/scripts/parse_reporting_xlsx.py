@@ -50,11 +50,16 @@ from openpyxl.worksheet.formula import ArrayFormula
 warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 
 
-# Match each XLOOKUP term with its sign in the formula. First term has no
-# leading sign (implicit +); subsequent terms carry + or −. Cell ref is a
-# column-letters-plus-row, e.g. ``S11`` or ``AA11``.
-FORMULA_TERM_RE = re.compile(
-    r"([+\-−])?\s*(?:_xlfn\.)?XLOOKUP\s*\(\s*([A-Z]+)(\d+)\s*,",
+# Match the XLOOKUP call AND its surrounding arithmetic. We split the formula
+# into top-level additive terms (``+`` / ``−``) and for each term locate the
+# XLOOKUP's cell reference and evaluate the rest of the term's arithmetic.
+# This captures:
+#   0.8*XLOOKUP(S14,...)          → faktor = 0.8     (pre-factor)
+#   XLOOKUP(S26,...)*24*31/1000   → faktor = 0.744   (post-factors/divisors)
+#   0.5*XLOOKUP(T,...)*2          → faktor = 1.0     (combined)
+# First term in the formula has no leading sign and defaults to +.
+XLOOKUP_REF_RE = re.compile(
+    r"(?:_xlfn\.)?XLOOKUP\s*\(\s*([A-Z]+)(\d+)\s*,",
 )
 
 
@@ -66,27 +71,117 @@ def _column_letter_to_index(letters: str) -> int:
     return n
 
 
-def parse_formula_signs(formula_text: str, row: int) -> dict[str, str]:
-    """Return {column_letter: '+' | '−'} for every XLOOKUP term referencing `row`.
-
-    The first term in the formula has no leading sign and is treated as '+'.
+def _find_xlookup_spans(text: str) -> list[tuple[str, int, int, int]]:
+    """Return [(col_letters, row_int, start_idx, end_idx_inclusive), ...] for
+    every ``XLOOKUP(col_row, ...)`` call in ``text`` (spans are
+    balanced-paren ranges).
     """
-    out: dict[str, str] = {}
-    first = True
-    for m in FORMULA_TERM_RE.finditer(formula_text):
-        raw_sign, col_letters, term_row = m.group(1), m.group(2), int(m.group(3))
-        if term_row != row:
+    spans: list[tuple[str, int, int, int]] = []
+    pos = 0
+    while True:
+        m = XLOOKUP_REF_RE.search(text, pos)
+        if not m:
+            break
+        open_paren = text.find("(", m.start())
+        depth = 0
+        end = open_paren
+        for i in range(open_paren, len(text)):
+            if text[i] == "(":
+                depth += 1
+            elif text[i] == ")":
+                depth -= 1
+                if depth == 0:
+                    end = i
+                    break
+        spans.append((m.group(1), int(m.group(2)), m.start(), end))
+        pos = end + 1
+    return spans
+
+
+def parse_formula_terms(
+    formula_text: str,
+    row: int,
+    cell_values: dict[str, float] | None = None,
+) -> dict[str, dict]:
+    """Return ``{column_letter: {'sign': '+'|'−', 'faktor': float}}`` for every
+    XLOOKUP term referencing ``row``.
+
+    Works even when multiple XLOOKUP calls share an outer wrapper like
+    ``=$F$5*(XLOOKUP(...) + XLOOKUP(...) − XLOOKUP(...))``: for each XLOOKUP
+    we evaluate the full formula with that call substituted by ``1`` and all
+    others by ``0``; the result is that term's signed effective coefficient.
+
+    ``cell_values`` maps absolute Excel refs like ``$F$5`` to numeric values
+    so the evaluator can resolve site-scalar factors (EL sheet uses F5=0.001
+    to convert kWh→MWh).
+    """
+    cell_values = cell_values or {}
+    text = formula_text.lstrip("=").strip()
+    spans = _find_xlookup_spans(text)
+
+    # Substitute absolute cell refs with their numeric values
+    resolved = text
+    for ref, val in cell_values.items():
+        resolved_ref = ref
+        # Accept both "$F$5" and "F5" for convenience
+        resolved = resolved.replace(resolved_ref, f"({val})")
+        resolved = resolved.replace(resolved_ref.replace("$", ""), f"({val})")
+
+    # Re-find spans in the resolved text (offsets shift)
+    resolved_spans = _find_xlookup_spans(resolved)
+    if len(resolved_spans) != len(spans):
+        # substitution accidentally wiped an XLOOKUP; bail with empty map
+        return {}
+
+    out: dict[str, dict] = {}
+    for i, (col, trow, _, _) in enumerate(resolved_spans):
+        if trow != row:
             continue
-        if first and not raw_sign:
-            sign = "+"
-        else:
-            sign = "−" if raw_sign in ("-", "−") else "+"
-        out[col_letters] = sign
-        first = False
+        # Build expr with span i → 1, others → 0
+        parts: list[str] = []
+        last = 0
+        for j, (_, _, s2, e2) in enumerate(resolved_spans):
+            parts.append(resolved[last:s2])
+            parts.append("1" if j == i else "0")
+            last = e2 + 1
+        parts.append(resolved[last:])
+        expr = "".join(parts).replace(",", ".")
+        # Strip any surviving non-arithmetic characters (cell refs not in
+        # cell_values, function names we can't evaluate). Conservative — if
+        # we see something we don't understand, coefficient defaults to 0.
+        safe = re.sub(r"[^0-9.+\-*/()\s]", "", expr)
+        try:
+            coef = float(eval(safe, {"__builtins__": {}}, {})) if safe.strip() else 1.0
+        except Exception:
+            coef = 1.0
+        sign = "+" if coef >= 0 else "−"
+        faktor = abs(coef) if coef != 0 else 1.0
+        out[col] = {"sign": sign, "faktor": faktor}
     return out
 
 
-def extract_building_formulas(ws) -> list[dict]:
+# kept for backward compatibility
+def parse_formula_signs(formula_text: str, row: int) -> dict[str, str]:
+    return {k: v["sign"] for k, v in parse_formula_terms(formula_text, row).items()}
+
+
+def _workbook_scalar_cells(ws) -> dict[str, float]:
+    """Collect numeric values from cells that often appear as absolute refs
+    in formulas (``$<COL>$<ROW>``). Scans the first 6 rows / first column
+    region used for site-wide scalars (e.g. EL sheet's ``F5 = 0.001`` for
+    kWh→MWh scaling).
+    """
+    out: dict[str, float] = {}
+    for r in range(1, 7):
+        for c in range(1, min(ws.max_column + 1, 12)):
+            v = ws.cell(r, c).value
+            if isinstance(v, (int, float)):
+                col_letter = chr(64 + c) if c <= 26 else "A" + chr(64 + c - 26)
+                out[f"${col_letter}${r}"] = float(v)
+    return out
+
+
+def extract_building_formulas(ws, ws_values=None) -> list[dict]:
     """Scan a media sheet and return one record per referenced meter cell.
 
     Unlike ånga, where every row uses the 5-term S+T−U−V−W accounting
@@ -95,6 +190,13 @@ def extract_building_formulas(ws) -> list[dict]:
     sign per column is taken from the formula text itself.
     """
     records: list[dict] = []
+    # Scalar cells must come from the data-only sheet to resolve to numbers.
+    sheet_scalars = _workbook_scalar_cells(ws_values if ws_values is not None else ws)
+    # Pre-read the per-row allocation column (col R = 18) and any other
+    # absolute-column refs that formulas use. Kyla uses ``$R<row>`` as a
+    # per-building allocation factor (e.g. R13 = 0.38 meaning B611 gets 38%
+    # of the virtual meter B600-KB2).
+    val_ws = ws_values if ws_values is not None else ws
     for row in range(8, ws.max_row + 1):
         building = ws.cell(row=row, column=2).value  # col B
         if building is None:
@@ -109,15 +211,38 @@ def extract_building_formulas(ws) -> list[dict]:
         elif isinstance(c_val, str) and c_val.startswith("="):
             formula_text = c_val
 
-        col_signs = parse_formula_signs(formula_text, row)
-        if not col_signs:
+        # Build per-row cell_values: start from sheet scalars, then add any
+        # absolute-column refs that reference this row (e.g. ``$R13`` = 0.38).
+        row_cells = dict(sheet_scalars)
+        for c in range(1, min(val_ws.max_column + 1, 30)):
+            v = val_ws.cell(row, c).value
+            if isinstance(v, (int, float)):
+                col_letter = chr(64 + c) if c <= 26 else "A" + chr(64 + c - 26)
+                row_cells[f"${col_letter}${row}"] = float(v)
+                row_cells[f"${col_letter}{row}"] = float(v)
+
+        col_terms = parse_formula_terms(formula_text, row, cell_values=row_cells)
+        if not col_terms:
             continue
 
-        for col_letter, sign in sorted(col_signs.items(), key=lambda kv: _column_letter_to_index(kv[0])):
+        for col_letter, info in sorted(col_terms.items(), key=lambda kv: _column_letter_to_index(kv[0])):
             v = ws[f"{col_letter}{row}"].value
             if v is None or v == "":
                 continue
+            sign = info["sign"]
             role = "add" if sign == "+" else "sub"
+            per_term_faktor = info["faktor"]
+            # Prefer per-term factor when non-unit; fall back to the per-row
+            # factor cell (col R) for sheets that still use that convention.
+            if abs(per_term_faktor - 1.0) > 1e-9:
+                emitted_faktor = per_term_faktor
+            elif factor_cell is not None and factor_cell != "":
+                try:
+                    emitted_faktor = float(factor_cell)
+                except (TypeError, ValueError):
+                    emitted_faktor = factor_cell
+            else:
+                emitted_faktor = ""
             records.append(
                 {
                     "row": row,
@@ -127,8 +252,8 @@ def extract_building_formulas(ws) -> list[dict]:
                     "column": col_letter,
                     "meter_id": str(v),
                     "kommentar": comment_cell if comment_cell else "",
-                    "faktor": factor_cell if factor_cell is not None else "",
-                    "n_terms": len(col_signs),
+                    "faktor": emitted_faktor,
+                    "n_terms": len(col_terms),
                 }
             )
     return records
@@ -326,12 +451,16 @@ def main() -> int:
         return 2
 
     wb = load_workbook(args.xlsx, data_only=False)
+    # Second copy with data_only=True so scalar cells referenced in formulas
+    # (e.g. $F$5 = 0.001 in the EL sheet for kWh→MWh scaling) resolve to numbers.
+    wb_values = load_workbook(args.xlsx, data_only=True)
     if args.media not in wb.sheetnames:
         print(f"error: sheet {args.media!r} not found. Available: {wb.sheetnames}", file=sys.stderr)
         return 3
     ws = wb[args.media]
+    ws_values = wb_values[args.media]
 
-    records = extract_building_formulas(ws)
+    records = extract_building_formulas(ws, ws_values=ws_values)
     cell_comments = extract_cell_comments(ws)
     strux_rows = extract_strux_media(wb, args.media)
     sheets = inventory_sheets(wb)

@@ -15,20 +15,34 @@ Topology (electrical only):
                         │  └─ M5                            (B1 prod leaf)
                         │     ├─ M6                         (B2 office)
                         │     └─ M7                         (B2 prod trunk)
-                        │        ╌feeds(0.7)╌> V1           (B3, no real meter)
-                        │        ╌feeds(0.3)╌> V2           (B4, no real meter)
+                        │        └─ M11                     (B2 sub-panel; split
+                        │                                    point for B3/B4
+                        │                                    with unknown
+                        │                                    internal allocation)
+                        │           ╌feeds(0.7)╌> V1        (B3, no real meter)
+                        │           ╌feeds(0.3)╌> V2        (B4, no real meter)
                         └─ M8                               (B5 warehouse)
-                           ╌feeds(0.4)╌> V3                 (B7, no real meter)
-                           ╌feeds(0.6)╌> V4                 (B8, no real meter)
-                                         └─ M9              (B9 warehouse; real
+                           └─ M12                           (B5 sub-panel; split
+                                                             point for B7/B8
+                                                             branch, M9 hangs
+                                                             under V4)
+                              ╌feeds(0.4)╌> V3              (B7, no real meter)
+                              ╌feeds(0.6)╌> V4              (B8, no real meter)
+                                            └─ M9           (B9 warehouse; real
                                                              submeter under the
                                                              virtual - GTN Kyla
                                                              B611 analog)
-                                            └─ M10          (shared leaf, no
+                                               └─ M10       (shared leaf, no
                                                              building; splits
                                                              to B10 + B11)
-                                               ╌feeds(0.5)╌> V5   (B10)
-                                               ╌feeds(0.5)╌> V6   (B11)
+                                                  ╌feeds(0.5)╌> V5   (B10)
+                                                  ╌feeds(0.5)╌> V6   (B11)
+
+Modelling rule: `feeds` coefficients only make sense when the parent is a
+dedicated metered split point (i.e. a real meter measuring the exact flow
+being divided). That is why V1/V2 feed from M11 (not M7) and V3/V4 feed
+from M12 (not M8). Putting coefficients on a trunk meter's residual
+silently hides the trunk's own consumption and any uninstrumented children.
 
 M10 is a shared leaf meter physically serving B10 and B11 with no known split;
 the 0.5/0.5 coefficients on V5/V6 are arbitrary defaults flagging an
@@ -54,9 +68,10 @@ virtuals whose coefficients sum to 1.0 (partitioning the parent's net).
 Coefficients live on the `feeds` relations, not on meter nodes. Virtuals
 carry no intrinsic coefficient - they're just `is_virtual_meter=True` meters.
 
-If M9 exceeds 0.6 * M8 in a period, V4's net goes negative - that is a
-calibration alert, not a model bug. Coefficient estimation is an antipattern
-we expect to retire as real sub-metering is installed.
+flow(V4) hovers near flow(M9): if M9 exceeds 0.6 * M12 in a period, V4's
+net goes negative — that is a calibration alert, not a model bug.
+Coefficient estimation is an antipattern we expect to retire as real
+sub-metering is installed.
 
 Timeseries refs:
 - I1, I2, I3 each have two refs: external hourly automated (preferred, from the
@@ -64,7 +79,7 @@ Timeseries refs:
   from the monthly invoice). Manual readings are Avläsning-style.
 - M0 has two refs: internal hourly automated (preferred, our panel) + external
   monthly manual (supplier's billed total for the whole site).
-- M1..M5, M7..M10 each have one internal hourly automated ref.
+- M1..M5, M7..M12 each have one internal hourly automated ref.
 - M6's field device was replaced on 2026-02-10, so its sensor carries three
   refs: M6:h.A (device A, valid to the swap), M6:h.B (device B, valid from
   the swap), and M6:h (preferred, derived, aggregation=stitch_counters over
@@ -86,6 +101,7 @@ from ontology import (
     Campus,
     Database,
     Dataset,
+    Device,
     MediaType,
     Meter,
     MeterMeasures,
@@ -125,8 +141,12 @@ FEATURES: list[tuple[str, str]] = [
         "Serial wiring chain; upstream meters accumulate everything downstream.",
     ),
     (
-        "Share-split to virtuals (M7 → V1/V2 at 0.7/0.3)",
-        "Single real parent partitions to unmetered buildings via coefficients summing to 1.",
+        "Share-split at dedicated sub-panels (M11 → V1/V2 at 0.7/0.3; "
+        "M12 → V3/V4 at 0.4/0.6)",
+        "Coefficients live on dedicated instrumented split points, "
+        "not on trunk remainders — M11 under M7, M12 under M8. Each "
+        "set of outgoing shares partitions the sub-panel's flow to "
+        "the unmetered downstream buildings.",
     ),
     (
         "Virtual with real submeter (V4 → M9)",
@@ -171,12 +191,6 @@ FEATURES: list[tuple[str, str]] = [
         "Manual reading entered 2026-02-05 was re-entered on 2026-03-15 "
         "after the operator found a misread digit; both rows are kept, "
         "distinguished by recorded_at.",
-    ),
-    (
-        "Declared but uninstrumented meter (M11 under M7)",
-        "Real sub-panel known to exist in the topology but not yet "
-        "wired to PME — no sensor, no ts ref, no readings. Upstream "
-        "reconciliation still accounts for its true draw.",
     ),
     (
         "Dual data sources (internal hourly counter + external monthly delta)",
@@ -284,16 +298,24 @@ def build() -> Dataset:
         Meter(meter_id="M5", name="Prod leaf", building_id="B1", media_type_id="EL"),
         Meter(meter_id="M6", name="Office", building_id="B2", media_type_id="EL"),
         Meter(meter_id="M7", name="Prod trunk", building_id="B2", media_type_id="EL"),
-        # Declared in topology (panel sub-meter under M7 in B2
-        # production) but not yet wired to PME. No sensor, no ts ref,
-        # no readings. Exercises the "known but unmeasured" case.
+        # M11 is the instrumented split point that partitions flow to
+        # B3 and B4 via V1/V2 (0.7/0.3). Sits under M7.
         Meter(
             meter_id="M11",
-            name="Prod sub-panel (pending PME)",
+            name="Prod sub-panel (B3/B4 split)",
             building_id="B2",
             media_type_id="EL",
         ),
         Meter(meter_id="M8", name="Warehouse", building_id="B5", media_type_id="EL"),
+        # M12 is the instrumented split point that partitions flow to
+        # B7 and B8 (and everything hanging off V4→M9) via V3/V4
+        # (0.4/0.6). Sits under M8.
+        Meter(
+            meter_id="M12",
+            name="Warehouse sub-panel (B7/B8 split)",
+            building_id="B5",
+            media_type_id="EL",
+        ),
         Meter(meter_id="M9", name="Warehouse", building_id="B9", media_type_id="EL"),
         # Shared leaf: no building, splits to B10 + B11 at arbitrary 0.5/0.5.
         Meter(meter_id="M10", name="Shared leaf", building_id=None, media_type_id="EL"),
@@ -345,13 +367,13 @@ def build() -> Dataset:
     relations = [
         # Aggregator: three intakes feed POOL with weight 1.0 each -> POOL = I1+I2+I3.
         MeterRelation(
-            parent_meter_id="I1", child_meter_id="POOL", relation_type="feeds", coefficient=1.0
+            parent_meter_id="I1", child_meter_id="POOL", relation_type="feeds", flow_coefficient=1.0
         ),
         MeterRelation(
-            parent_meter_id="I2", child_meter_id="POOL", relation_type="feeds", coefficient=1.0
+            parent_meter_id="I2", child_meter_id="POOL", relation_type="feeds", flow_coefficient=1.0
         ),
         MeterRelation(
-            parent_meter_id="I3", child_meter_id="POOL", relation_type="feeds", coefficient=1.0
+            parent_meter_id="I3", child_meter_id="POOL", relation_type="feeds", flow_coefficient=1.0
         ),
         # POOL has our real intake meter as a sub-meter. POOL.net = supplier - M0.
         MeterRelation(parent_meter_id="POOL", child_meter_id="M0", relation_type="hasSubMeter"),
@@ -382,33 +404,33 @@ def build() -> Dataset:
         # M5 crosses into B2.
         MeterRelation(parent_meter_id="M5", child_meter_id="M6", relation_type="hasSubMeter"),
         MeterRelation(parent_meter_id="M5", child_meter_id="M7", relation_type="hasSubMeter"),
-        # M7 share-splits to B3/B4 virtuals (coefs sum to 1.0 on outgoing feeds).
-        MeterRelation(
-            parent_meter_id="M7", child_meter_id="V1", relation_type="feeds", coefficient=0.7
-        ),
-        MeterRelation(
-            parent_meter_id="M7", child_meter_id="V2", relation_type="feeds", coefficient=0.3
-        ),
-        # M11 is a real sub-panel under M7 that consumes real power but
-        # isn't (yet) reporting any series. The relation puts it in the
-        # topology so upstream reconciliation accounts for its draw.
+        # M11 sits under M7 and is the dedicated metered split point
+        # for the B3/B4 allocation. Coefficients live here, not on M7.
         MeterRelation(parent_meter_id="M7", child_meter_id="M11", relation_type="hasSubMeter"),
-        # M8 share-splits to B7/B8 virtuals.
         MeterRelation(
-            parent_meter_id="M8", child_meter_id="V3", relation_type="feeds", coefficient=0.4
+            parent_meter_id="M11", child_meter_id="V1", relation_type="feeds", flow_coefficient=0.7
         ),
         MeterRelation(
-            parent_meter_id="M8", child_meter_id="V4", relation_type="feeds", coefficient=0.6
+            parent_meter_id="M11", child_meter_id="V2", relation_type="feeds", flow_coefficient=0.3
+        ),
+        # M12 sits under M8 and is the dedicated metered split point
+        # for the B7/B8 allocation. Coefficients live here, not on M8.
+        MeterRelation(parent_meter_id="M8", child_meter_id="M12", relation_type="hasSubMeter"),
+        MeterRelation(
+            parent_meter_id="M12", child_meter_id="V3", relation_type="feeds", flow_coefficient=0.4
+        ),
+        MeterRelation(
+            parent_meter_id="M12", child_meter_id="V4", relation_type="feeds", flow_coefficient=0.6
         ),
         # V4 has a real submeter M9 - non-matching coefficient pattern.
         MeterRelation(parent_meter_id="V4", child_meter_id="M9", relation_type="hasSubMeter"),
         # M9 has a shared leaf M10 downstream; M10 splits to B10+B11 arbitrarily.
         MeterRelation(parent_meter_id="M9", child_meter_id="M10", relation_type="hasSubMeter"),
         MeterRelation(
-            parent_meter_id="M10", child_meter_id="V5", relation_type="feeds", coefficient=0.5
+            parent_meter_id="M10", child_meter_id="V5", relation_type="feeds", flow_coefficient=0.5
         ),
         MeterRelation(
-            parent_meter_id="M10", child_meter_id="V6", relation_type="feeds", coefficient=0.5
+            parent_meter_id="M10", child_meter_id="V6", relation_type="feeds", flow_coefficient=0.5
         ),
     ]
 
@@ -439,6 +461,7 @@ def build() -> Dataset:
         MeterMeasures(meter_id="V1", target_kind="zone", target_id="B3.warehouse"),
         MeterMeasures(meter_id="V2", target_kind="zone", target_id="B4.warehouse"),
         MeterMeasures(meter_id="M8", target_kind="zone", target_id="B5.warehouse"),
+        MeterMeasures(meter_id="M12", target_kind="zone", target_id="B5.warehouse"),
         MeterMeasures(meter_id="V3", target_kind="zone", target_id="B7.warehouse"),
         MeterMeasures(meter_id="V4", target_kind="zone", target_id="B8.warehouse"),
         MeterMeasures(meter_id="M9", target_kind="zone", target_id="B9.warehouse"),
@@ -451,6 +474,9 @@ def build() -> Dataset:
             media_type_id="EL",
             name="Electrical",
             description="Electrical energy (kWh / MWh).",
+            brick_meter_class="Electrical_Meter",
+            # Electricity has no Brick substance.
+            brick_substance=None,
         ),
     ]
 
@@ -458,6 +484,16 @@ def build() -> Dataset:
         Database(database_id="PME_SQL", name="Internal PME", kind="internal"),
         Database(database_id="supplier_ems", name="Supplier EMS", kind="external"),
         Database(database_id="avlasning", name="Avläsning sheet", kind="external"),
+    ]
+
+    # Stub device rows for the two physical devices referenced by M6's
+    # replacement pattern. Serial / manufacturer are unknown at v1 and
+    # populated later when the hardware inventory lands (§7.4 + §10).
+    # Other timeseries refs in Abbey Road do not set device_id, so no
+    # further stubs are required to keep referential integrity green.
+    devices = [
+        Device(device_id="M6-DEV-A"),
+        Device(device_id="M6-DEV-B"),
     ]
 
     # One Energy_Sensor per metered meter. Virtuals (POOL, V*) carry no
@@ -477,13 +513,16 @@ def build() -> Dataset:
         "M8",
         "M9",
         "M10",
+        "M11",
+        "M12",
     ]
     sensors = [
         Sensor(
             sensor_id=f"{mid}.energy",
             meter_id=mid,
             point_type="Energy_Sensor",
-            unit="kWh",
+            # QUDT identifier fragment for kWh.
+            unit="KiloW-HR",
         )
         for mid in metered_ids
     ]
@@ -495,7 +534,9 @@ def build() -> Dataset:
     # device-scoped measured refs (old + new) and a derived canonical
     # ref that spans the full period via rolling_sum.
     external_intakes = ["I1", "I2", "I3"]
-    internal_downstream = ["M1", "M2", "M3", "M4", "M5", "M7", "M8", "M9", "M10"]
+    internal_downstream = [
+        "M1", "M2", "M3", "M4", "M5", "M7", "M8", "M9", "M10", "M11", "M12",
+    ]
     # Synthetic PME external ids for downstream meters. M0 uses the
     # proposal's example id to keep the mapping recognizable.
     pme_external = {
@@ -509,6 +550,8 @@ def build() -> Dataset:
         "M8": "631:230",
         "M9": "631:231",
         "M10": "631:232",
+        "M11": "631:240",
+        "M12": "631:250",
         "M6-DEV-A": "631:215",
         "M6-DEV-B": "631:216",
     }
@@ -635,6 +678,7 @@ def build() -> Dataset:
         relations=relations,
         meter_measures=meter_measures,
         databases=databases,
+        devices=devices,
         sensors=sensors,
         timeseries_refs=timeseries_refs,
     )

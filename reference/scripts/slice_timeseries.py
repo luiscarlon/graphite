@@ -22,11 +22,18 @@ Outputs (written to ``--out-dir``):
                                     coverage gaps, total year-flat meters
 
 Delta semantics:
-  - Within a day, use ``v_last − v_first`` (already pre-aggregated in the export).
-  - Across days, sum the per-day deltas.
-  - If the day's ``v_last < v_first`` → flag as ``reset_day`` and clamp the negative
-    contribution to zero (segmenting at the decrement).
-  - A meter with every day's delta == 0 for the full window is flagged ``flat_all_year``.
+  - Monthly delta = ``last_day_of_month.V_LAST − first_day_of_month.V_FIRST`` so
+    the register-difference captures the full month including the final hours
+    of the last day (which would be lost if we summed per-day ``v_last − v_first``
+    — we observed a systematic ~4.2% shortfall from the per-day-sum method in
+    värme/ånga spot-checks, closed by switching to this register-difference).
+  - If the register decreases between consecutive days (counter reset / swap),
+    the month is split into monotonic segments; monthly delta = Σ per-segment
+    ``(last.V_LAST − first.V_FIRST)``.
+  - Per-day ``v_last − v_first`` is still kept in ``timeseries_daily.csv`` as
+    a sanity signal and for intra-day anomaly detection.
+  - A meter with every day's delta == 0 for the full window is flagged
+    ``flat_all_window``.
 """
 
 from __future__ import annotations
@@ -72,9 +79,17 @@ def main() -> int:
             if row["QUANTITY"] != args.quantity:
                 continue
             day = row["DAY"][:10]
-            vf = float(row["V_FIRST"])
-            vl = float(row["V_LAST"])
-            n = int(row["N_READINGS"]) if row["N_READINGS"] else 0
+            try:
+                vf = float(row["V_FIRST"])
+                vl = float(row["V_LAST"])
+            except (TypeError, ValueError):
+                # Empty/NaN readings are common in EL exports where a given
+                # meter has partial days; skip these rows cleanly.
+                continue
+            try:
+                n = int(row["N_READINGS"]) if row["N_READINGS"] else 0
+            except (TypeError, ValueError):
+                n = 0
             daily[row["METER_ID"]].append((day, vf, vl, n))
 
     if not daily:
@@ -93,32 +108,51 @@ def main() -> int:
                 is_reset = delta < 0
                 w.writerow([m, day, vf, vl, delta, n, int(is_reset)])
 
-    # monthly aggregation
-    monthly: dict[tuple[str, str], dict] = defaultdict(lambda: {
-        "delta": 0.0,
-        "n_days": 0,
-        "zero_days": 0,
-        "reset_days": 0,
-        "first_day": None,
-        "last_day": None,
-    })
+    # monthly aggregation — register-difference, segmented at resets
+    monthly: dict[tuple[str, str], dict] = {}
     for m, rows in daily.items():
-        for day, vf, vl, _n in sorted(rows):
-            month = day[:7]
-            key = (m, month)
-            rec = monthly[key]
-            d = vl - vf
-            if d < 0:
-                rec["reset_days"] += 1
-                d = 0.0
-            rec["delta"] += d
-            rec["n_days"] += 1
-            if d == 0:
-                rec["zero_days"] += 1
-            if rec["first_day"] is None or day < rec["first_day"]:
-                rec["first_day"] = day
-            if rec["last_day"] is None or day > rec["last_day"]:
-                rec["last_day"] = day
+        # Bucket rows per month, sorted by day
+        per_month: dict[str, list] = defaultdict(list)
+        for day, vf, vl, n in sorted(rows):
+            per_month[day[:7]].append((day, vf, vl, n))
+
+        for month, mrows in per_month.items():
+            # Segment at any inter-day reset (curr.V_FIRST < prev.V_LAST with
+            # tolerance) or intra-day reset (V_LAST < V_FIRST).
+            segments: list[list] = [[mrows[0]]]
+            for prev, curr in zip(mrows, mrows[1:]):
+                _, _, prev_vl, _ = prev
+                _, curr_vf, curr_vl, _ = curr
+                intra = curr_vl < curr_vf - 1e-6
+                inter = curr_vf < prev_vl - 1e-6
+                if intra or inter:
+                    segments.append([curr])
+                else:
+                    segments[-1].append(curr)
+
+            # Sum per-segment register diff = last_V_LAST − first_V_FIRST.
+            delta = 0.0
+            for seg in segments:
+                first_vf = seg[0][1]
+                last_vl = seg[-1][2]
+                if last_vl >= first_vf:
+                    delta += last_vl - first_vf
+                # else: segment itself is non-monotonic, skip (intra-day reset)
+
+            reset_days = sum(1 for _, vf, vl, _ in mrows if vl < vf - 1e-6)
+            # Count inter-day resets too
+            for prev, curr in zip(mrows, mrows[1:]):
+                if curr[1] < prev[2] - 1e-6:
+                    reset_days += 1
+            zero_days = sum(1 for _, vf, vl, _ in mrows if abs(vl - vf) < 1e-9)
+            monthly[(m, month)] = {
+                "delta": delta,
+                "n_days": len(mrows),
+                "zero_days": zero_days,
+                "reset_days": reset_days,
+                "first_day": mrows[0][0],
+                "last_day": mrows[-1][0],
+            }
 
     monthly_path = args.out_dir / "timeseries_monthly.csv"
     with monthly_path.open("w", newline="") as f:

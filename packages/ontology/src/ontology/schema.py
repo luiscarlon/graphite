@@ -31,14 +31,27 @@ class Zone(BaseModel):
 class MediaType(BaseModel):
     """Operational media grouping (EL, KYLA, VÄRME, …).
 
-    A class with instances, per ontology_proposal.md §7.3 + §8. Meters
-    point at a MediaType via `media_type_id`; the TTL emission becomes
-    `ext:mediaType :media_<id>`.
+    A class with instances, per ontology_proposal.md §7.3 + §8 + §10.
+    Meters point at a MediaType via `media_type_id`; the TTL emission
+    becomes `ext:mediaType :media_<id>`.
+
+    Carries the Brick meter class (`brick_meter_class`) and optional
+    substance (`brick_substance`) so the TTL converter can derive each
+    meter's `rdf:type` and `brick:hasSubstance` from its media type
+    without a hard-coded lookup. See §10.
     """
 
     media_type_id: str
     name: str
     description: str | None = None
+    # Brick class name (no namespace prefix) for meters of this media,
+    # e.g. "Electrical_Meter", "Chilled_Water_Meter",
+    # "Thermal_Power_Meter", "Water_Meter".
+    brick_meter_class: str | None = None
+    # Brick substance name (no namespace prefix), e.g. "Chilled_Water",
+    # "Hot_Water", "Steam", "Water". Null when the medium has no
+    # substance (electricity).
+    brick_substance: str | None = None
 
 
 class Meter(BaseModel):
@@ -57,11 +70,14 @@ class MeterRelation(BaseModel):
     parent_meter_id: str
     child_meter_id: str
     relation_type: str  # hasSubMeter | feeds
-    # Required for `feeds` (share or aggregator weight). Null for `hasSubMeter`.
-    coefficient: float | None = None
+    # Required for `feeds` (share or aggregator weight). Null for
+    # `hasSubMeter`. Emitted to TTL as `ext:flowCoefficient` on the
+    # `feeds` edge (RDF-star annotation). See §7.5 + §10.
+    flow_coefficient: float | None = None
     # Validity interval (inclusive from, exclusive to). Null = unbounded.
     valid_from: date | None = None
     valid_to: date | None = None
+    derived_from: str | None = None
 
 
 class MeterMeasures(BaseModel):
@@ -81,7 +97,27 @@ class MeterMeasures(BaseModel):
 class Database(BaseModel):
     database_id: str
     name: str
-    kind: str  # internal | external
+    kind: str  # internal | external → ext:databaseKind
+    identifier: str | None = None
+
+
+class Device(BaseModel):
+    """Physical hardware identity, separate from the logical meter.
+
+    `ext:Device`, per ontology_proposal.md §7.4 + §10. A timeseries ref
+    points at a Device via `ext:producedBy`. Multiple timeseries refs
+    on the same sensor may point at the same or different devices
+    (device replacement, redundancy).
+
+    v1 ships with stub rows: one row per distinct `device_id` currently
+    referenced by `timeseries_refs`, with `serial` / `manufacturer` null
+    until the hardware inventory lands. Placeholder device IDs default
+    to the logical meter name.
+    """
+
+    device_id: str
+    serial: str | None = None
+    manufacturer: str | None = None
     identifier: str | None = None
 
 
@@ -96,7 +132,10 @@ class Sensor(BaseModel):
     sensor_id: str
     meter_id: str
     point_type: str = "Energy_Sensor"  # brick class
-    unit: str = "kWh"
+    # QUDT identifier fragment (no namespace prefix). E.g. "KiloW-HR",
+    # "MegaW-HR", "M3", "DEG_C", "HZ". TTL emission wraps as `unit:<value>`.
+    # See §10.
+    unit: str = "KiloW-HR"
     identifier: str | None = None
 
 
@@ -157,6 +196,24 @@ class Reading(BaseModel):
     recorded_at: datetime | None = None
 
 
+class Annotation(BaseModel):
+    annotation_id: str
+    target_kind: str  # meter | building | campus | timeseries
+    target_id: str
+    category: str  # outage | swap | calibration | data_quality | patch | unknown
+    valid_from: date | None = None
+    valid_to: date | None = None
+    description: str = ""
+    related_refs: list[str] = Field(default_factory=list)
+
+    @field_validator("related_refs", mode="before")
+    @classmethod
+    def _split_refs(cls, v: object) -> object:
+        if isinstance(v, str):
+            return [x for x in v.split("|") if x]
+        return v
+
+
 class Dataset(BaseModel):
     campuses: list[Campus] = Field(default_factory=list)
     buildings: list[Building] = Field(default_factory=list)
@@ -166,6 +223,36 @@ class Dataset(BaseModel):
     relations: list[MeterRelation] = Field(default_factory=list)
     meter_measures: list[MeterMeasures] = Field(default_factory=list)
     databases: list[Database] = Field(default_factory=list)
+    devices: list[Device] = Field(default_factory=list)
     sensors: list[Sensor] = Field(default_factory=list)
     timeseries_refs: list[TimeseriesRef] = Field(default_factory=list)
     readings: list[Reading] = Field(default_factory=list)
+    annotations: list[Annotation] = Field(default_factory=list)
+
+    def filter_by_media(self, media_type_id: str) -> "Dataset":
+        """Return a new Dataset scoped to a single media type."""
+        meter_ids = {m.meter_id for m in self.meters if m.media_type_id == media_type_id}
+        sensor_ids = {s.sensor_id for s in self.sensors if s.meter_id in meter_ids}
+        ts_ids = {tr.timeseries_id for tr in self.timeseries_refs if tr.sensor_id in sensor_ids}
+        building_ids = {m.building_id for m in self.meters
+                        if m.media_type_id == media_type_id and m.building_id}
+        return Dataset(
+            campuses=self.campuses,
+            buildings=[b for b in self.buildings if b.building_id in building_ids],
+            zones=[z for z in self.zones if z.building_id in building_ids],
+            media_types=[mt for mt in self.media_types if mt.media_type_id == media_type_id],
+            meters=[m for m in self.meters if m.meter_id in meter_ids],
+            relations=[r for r in self.relations
+                       if r.parent_meter_id in meter_ids or r.child_meter_id in meter_ids],
+            meter_measures=[mm for mm in self.meter_measures if mm.meter_id in meter_ids],
+            databases=self.databases,
+            devices=[d for d in self.devices
+                     if any(tr.device_id == d.device_id for tr in self.timeseries_refs
+                            if tr.sensor_id in sensor_ids and tr.device_id)],
+            sensors=[s for s in self.sensors if s.sensor_id in sensor_ids],
+            timeseries_refs=[tr for tr in self.timeseries_refs if tr.sensor_id in sensor_ids],
+            readings=[r for r in self.readings if r.timeseries_id in ts_ids],
+            annotations=[a for a in self.annotations
+                         if a.target_id in meter_ids | ts_ids | building_ids
+                         or a.target_kind == "campus"],
+        )

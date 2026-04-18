@@ -32,26 +32,30 @@ def test_abbey_road_builds() -> None:
         assert r.parent_meter_id in ids
         assert r.child_meter_id in ids
 
-    # Every `feeds` relation carries a coefficient; `hasSubMeter` never does.
+    # Every `feeds` relation carries a flow_coefficient; `hasSubMeter` never does.
     for r in ds.relations:
         if r.relation_type == "feeds":
-            assert r.coefficient is not None, f"feeds edge {r} missing coefficient"
+            assert r.flow_coefficient is not None, (
+                f"feeds edge {r} missing flow_coefficient"
+            )
         else:
-            assert r.coefficient is None
+            assert r.flow_coefficient is None
 
-    # Share invariant: outgoing feeds coefficients from each real parent sum to 1.0.
+    # Share invariant: outgoing flow_coefficients from each real parent sum to 1.0.
     virt_ids = {m.meter_id for m in ds.meters if m.is_virtual_meter}
     outgoing: dict[str, float] = defaultdict(float)
     for r in ds.relations:
         # Skip edges that FEED a virtual that is itself an aggregator (multi-parent).
         # Here we check share semantics per parent.
         if r.relation_type == "feeds" and r.child_meter_id in virt_ids:
-            assert r.coefficient is not None
-            outgoing[r.parent_meter_id] += r.coefficient
-    # M7 and M8 distribute their nets fully; POOL's parents sum to N (weights,
-    # not shares), so we only assert the share case for real parents feeding
-    # leaf-share virtuals.
-    for parent in ("M7", "M8", "M10"):
+            assert r.flow_coefficient is not None
+            outgoing[r.parent_meter_id] += r.flow_coefficient
+    # M11 (under M7) and M12 (under M8) are the dedicated metered split
+    # points; M10 is the shared leaf. Their outgoing feeds to virtuals
+    # must partition their flow exactly (coefs sum to 1.0). POOL's
+    # parents sum to N (weights, not shares), so we only assert the
+    # share case for dedicated split parents.
+    for parent in ("M11", "M12", "M10"):
         assert abs(outgoing[parent] - 1.0) < 1e-9, f"{parent} outgoing feeds = {outgoing[parent]}"
 
 
@@ -62,7 +66,7 @@ def test_pool_is_aggregator() -> None:
     assert len(incoming) == 3
     assert {r.parent_meter_id for r in incoming} == {"I1", "I2", "I3"}
     assert all(r.relation_type == "feeds" for r in incoming)
-    assert all(r.coefficient == 1.0 for r in incoming)
+    assert all(r.flow_coefficient == 1.0 for r in incoming)
 
 
 def test_pool_reconciles_to_m0() -> None:
@@ -82,7 +86,7 @@ def test_virtual_with_real_submeter() -> None:
     ds = abbey_road.build()
     edge = next(r for r in ds.relations if r.parent_meter_id == "V4" and r.child_meter_id == "M9")
     assert edge.relation_type == "hasSubMeter"
-    assert edge.coefficient is None
+    assert edge.flow_coefficient is None
 
 
 def test_b1_office_onboarding_validity() -> None:
@@ -118,7 +122,7 @@ def test_shared_leaf_m10() -> None:
     assert not m10.is_virtual_meter
     children = [r for r in ds.relations if r.parent_meter_id == "M10"]
     assert {r.child_meter_id for r in children} == {"V5", "V6"}
-    assert all(r.relation_type == "feeds" and r.coefficient == 0.5 for r in children)
+    assert all(r.relation_type == "feeds" and r.flow_coefficient == 0.5 for r in children)
 
 
 def test_timeseries_refs() -> None:
@@ -337,24 +341,6 @@ def test_m0_backdated_correction() -> None:
     latest = max(m0_jan, key=lambda r: r.recorded_at)  # type: ignore[arg-type,return-value]
     earliest = min(m0_jan, key=lambda r: r.recorded_at)  # type: ignore[arg-type,return-value]
     assert latest.value > earliest.value
-
-
-def test_m11_declared_uninstrumented() -> None:
-    """M11 is in the topology but has no sensor, no ts ref, no readings."""
-    ds = abbey_road.build()
-    assert any(m.meter_id == "M11" for m in ds.meters)
-    assert "M11" in {r.parent_meter_id for r in ds.relations} | {
-        r.child_meter_id for r in ds.relations
-    }
-    assert not [s for s in ds.sensors if s.meter_id == "M11"]
-    sensor_meter = {s.sensor_id: s.meter_id for s in ds.sensors}
-    assert not [tr for tr in ds.timeseries_refs if sensor_meter.get(tr.sensor_id) == "M11"]
-    rs = generate_readings(ds, seed=42)
-    # No reading can resolve back to M11 because M11 has no ts ref.
-    m11_series = {
-        tr.timeseries_id for tr in ds.timeseries_refs if sensor_meter.get(tr.sensor_id) == "M11"
-    }
-    assert not [r for r in rs if r.timeseries_id in m11_series]
 
 
 def test_readings_deterministic() -> None:

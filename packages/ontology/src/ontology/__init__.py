@@ -2,10 +2,12 @@
 
 from .io import load_dataset, write_dataset
 from .schema import (
+    Annotation,
     Building,
     Campus,
     Database,
     Dataset,
+    Device,
     MediaType,
     Meter,
     MeterMeasures,
@@ -17,10 +19,12 @@ from .schema import (
 )
 
 __all__ = [
+    "Annotation",
     "Building",
     "Campus",
     "Database",
     "Dataset",
+    "Device",
     "MediaType",
     "Meter",
     "MeterMeasures",
