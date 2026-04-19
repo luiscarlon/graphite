@@ -2,13 +2,8 @@
 
 from __future__ import annotations
 
-import ast
-import inspect
-import json
-import subprocess
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Any
 
 import altair as alt
 import pandas as pd
@@ -377,7 +372,8 @@ def main() -> None:
         st.error("No sites found.")
         return
 
-    selected_site = st.sidebar.selectbox("Site", sites)
+    default_site_idx = sites.index("gartuna") if "gartuna" in sites else 0
+    selected_site = st.sidebar.selectbox("Site", sites, index=default_site_idx)
     site_dir = SITES_ROOT / selected_site
     site_meta = _load_site_meta(site_dir)
 
@@ -388,7 +384,8 @@ def main() -> None:
         st.warning("No meters found for this site.")
         return
 
-    selected_media = st.sidebar.selectbox("Media", available_media)
+    default_media_idx = available_media.index("ANGA") if "ANGA" in available_media else 0
+    selected_media = st.sidebar.selectbox("Media", available_media, index=default_media_idx)
     ds = ds_full.filter_by_media(selected_media)
 
     st.caption(site_meta.get("summary", ""))
@@ -428,9 +425,6 @@ def main() -> None:
 
     st.subheader("Excel comparison")
     _excel_comparison_section(ds, site_dir)
-
-    st.subheader("Tests")
-    _tests_section()
 
 
 def _consumption_section(
@@ -707,198 +701,73 @@ def _inject_ann_bands(chart: alt.Chart, ann_bands: pd.DataFrame | None) -> alt.C
 
 
 def _excel_comparison_section(ds: Dataset, site_dir: Path) -> None:
-    alloc_path = site_dir / "meter_allocations.csv"
-    if not alloc_path.exists():
-        st.info("No meter_allocations.csv — Excel comparison not available.")
+    totals_path = site_dir / "excel_building_totals.csv"
+    if not totals_path.exists():
+        st.info("No excel_building_totals.csv — Excel comparison not available.")
         return
 
-    import csv as _csv
-    with alloc_path.open() as f:
-        alloc_rows = list(_csv.DictReader(f))
+    media_ids = {m.media_type_id for m in ds.meters}
+    if len(media_ids) != 1:
+        st.info("Excel comparison requires a single media filter.")
+        return
+    media = next(iter(media_ids))
 
-    formulas: dict[str, dict[str, list[str]]] = {}
-    for row in alloc_rows:
-        bid = row["building_id"]
-        formulas.setdefault(bid, {"add": [], "sub": []})
-        if row["sign"] == "+":
-            formulas[bid]["add"].append(row["meter_id"])
-        else:
-            formulas[bid]["sub"].append(row["meter_id"])
+    excel_df = pd.read_csv(totals_path)
+    excel_df = excel_df[excel_df["media"] == media].copy()
+    excel_df["excel"] = pd.to_numeric(excel_df["excel_mwh"], errors="coerce").fillna(0.0)
+    excel_df["month"] = pd.PeriodIndex(excel_df["month"], freq="M")
+    excel_df = excel_df.rename(columns={"building_id": "building"})[
+        ["building", "month", "excel"]
+    ]
 
     conn = calc.connect(ds)
-    mf = conn.execute("SELECT meter_id, timestamp, delta_kwh FROM measured_flow").fetchdf()
-    mf["timestamp"] = pd.to_datetime(mf["timestamp"])
-    mf["month"] = mf["timestamp"].dt.to_period("M")
-    monthly = mf.groupby(["meter_id", "month"])["delta_kwh"].sum().reset_index()
+    mn = conn.execute(
+        "SELECT mn.meter_id, mn.timestamp, mn.net_kwh, m.building_id "
+        "FROM meter_net mn "
+        "JOIN meters m ON m.meter_id = mn.meter_id "
+        "WHERE m.building_id IS NOT NULL AND m.building_id != ''"
+    ).fetchdf()
+    mn["timestamp"] = pd.to_datetime(mn["timestamp"])
+    mn["month"] = mn["timestamp"].dt.to_period("M")
+    onto_df = (
+        mn.groupby(["building_id", "month"])["net_kwh"]
+        .sum()
+        .reset_index()
+        .rename(columns={"building_id": "building", "net_kwh": "onto"})
+    )
 
-    consumption = conn.execute(calc.sql("consumption")).fetchdf()
-    consumption["timestamp"] = pd.to_datetime(consumption["timestamp"])
-    consumption["month"] = consumption["timestamp"].dt.to_period("M")
-    onto = consumption[consumption["level"] == "building"].groupby(
-        ["target_id", "month"]
-    )["net_kwh"].sum().reset_index()
-
-    months = sorted(monthly["month"].unique())
-    if len(months) < 2:
-        st.info("Need at least 2 months of data for comparison.")
+    common = sorted(set(onto_df["month"]) & set(excel_df["month"]))
+    if not common:
+        st.info("No overlapping months between Excel and ontology readings.")
         return
-    compare_months = months[:2]
+    compare_months = common[:2]
 
-    rows = []
-    for bid in sorted(formulas):
+    ex = excel_df[excel_df["month"].isin(compare_months)]
+    on = onto_df[onto_df["month"].isin(compare_months)]
+    merged = ex.merge(on, on=["building", "month"], how="outer").fillna(0.0)
+
+    rows: list[dict[str, object]] = []
+    for bid, grp in merged.groupby("building"):
         row: dict[str, object] = {"building": bid}
         for m in compare_months:
-            excel_val = 0.0
-            for mid in formulas[bid]["add"]:
-                v = monthly[(monthly.meter_id == mid) & (monthly.month == m)]["delta_kwh"].sum()
-                excel_val += v
-            for mid in formulas[bid]["sub"]:
-                v = monthly[(monthly.meter_id == mid) & (monthly.month == m)]["delta_kwh"].sum()
-                excel_val -= v
-            onto_val = onto[(onto.target_id == bid) & (onto.month == m)]["net_kwh"].sum()
-            row[f"excel_{m}"] = round(excel_val, 1)
-            row[f"onto_{m}"] = round(onto_val, 1)
-            row[f"diff_{m}"] = round(onto_val - excel_val, 1)
+            sel = grp[grp["month"] == m]
+            ex_val = float(sel["excel"].sum())
+            on_val = float(sel["onto"].sum())
+            row[f"excel_{m}"] = round(ex_val, 2)
+            row[f"onto_{m}"] = round(on_val, 2)
+            row[f"diff_{m}"] = round(on_val - ex_val, 2)
+            row[f"diff%_{m}"] = (
+                round((on_val - ex_val) / ex_val * 100, 1) if ex_val != 0 else None
+            )
         rows.append(row)
-
-    cdf = pd.DataFrame(rows)
-    for m in compare_months:
-        cdf[f"diff%_{m}"] = cdf.apply(
-            lambda r: round(r[f"diff_{m}"] / r[f"excel_{m}"] * 100, 1)
-            if r[f"excel_{m}"] != 0 else None, axis=1,
-        )
+    cdf = pd.DataFrame(sorted(rows, key=lambda r: r["building"]))
 
     unit = _unit_label(ds)
-    st.caption(f"Monthly building consumption ({unit}): ontology vs Excel ({compare_months[0]} / {compare_months[1]})")
+    st.caption(
+        f"Monthly building consumption ({unit}) — {media}: ontology vs cached Excel "
+        f"({compare_months[0]} / {compare_months[1]})"
+    )
     st.dataframe(cdf, hide_index=True, width="stretch")
-
-
-def _tests_section() -> None:
-    if st.button("Re-run tests", help="Clear cache and re-run pytest"):
-        _run_pytest.clear()
-
-    with st.spinner("Running pytest..."):
-        results = _run_pytest()
-
-    if results.get("error"):
-        st.error(results["error"])
-        if results.get("stdout"):
-            st.code(results["stdout"], language="text")
-        return
-
-    summary = results["summary"]
-    cols = st.columns(4)
-    cols[0].metric("Total", summary["total"])
-    cols[1].metric("Passed", summary["passed"])
-    cols[2].metric("Failed", summary["failed"])
-    cols[3].metric("Duration (s)", f"{summary['duration']:.2f}")
-
-    rows = results["tests"]
-    if not rows:
-        st.info("No tests collected.")
-        return
-
-    docs = _collect_docstrings(REPO_ROOT)
-    df = pd.DataFrame(rows)
-    df["package"] = df["nodeid"].map(_package_of)
-    df["test"] = df["nodeid"].map(lambda n: n.split("::")[-1])
-    df["explains"] = df["nodeid"].map(lambda n: docs.get(n, ""))
-    df["status"] = df["outcome"].map({"passed": "pass", "failed": "FAIL", "skipped": "skip"})
-
-    table = df[["status", "package", "test", "explains", "duration"]].rename(
-        columns={"duration": "s"}
-    )
-    st.dataframe(
-        table,
-        width="stretch",
-        hide_index=True,
-        height=36 * (len(table) + 1) + 2,
-    )
-
-
-def _package_of(nodeid: str) -> str:
-    parts = nodeid.split("/")
-    if len(parts) >= 2 and parts[0] == "packages":
-        return parts[1]
-    return parts[0] if parts else "(root)"
-
-
-@st.cache_data(show_spinner=False)
-def _collect_docstrings(repo_root: Path) -> dict[str, str]:
-    out: dict[str, str] = {}
-    for path in repo_root.glob("packages/*/tests/test_*.py"):
-        try:
-            tree = ast.parse(path.read_text())
-        except SyntaxError:
-            continue
-        rel = path.relative_to(repo_root).as_posix()
-        for node in ast.walk(tree):
-            if isinstance(node, ast.FunctionDef) and node.name.startswith("test_"):
-                doc = ast.get_docstring(node) or ""
-                first_line = inspect.cleandoc(doc).splitlines()[0] if doc else ""
-                out[f"{rel}::{node.name}"] = first_line
-    return out
-
-
-@st.cache_data(show_spinner=False)
-def _run_pytest() -> dict[str, Any]:
-    repo_root = REPO_ROOT
-    report_path = repo_root / ".pytest-report.json"
-    if report_path.exists():
-        report_path.unlink()
-
-    try:
-        proc = subprocess.run(
-            [
-                "uv",
-                "run",
-                "pytest",
-                "--json-report",
-                f"--json-report-file={report_path}",
-                "--no-header",
-                "-q",
-            ],
-            cwd=repo_root,
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
-    except FileNotFoundError as e:
-        return {"error": f"Could not invoke pytest: {e}"}
-    except subprocess.TimeoutExpired:
-        return {"error": "pytest timed out after 120s"}
-
-    if not report_path.exists():
-        return {
-            "error": (
-                "pytest did not produce a JSON report. "
-                "Install `pytest-json-report` (added to dev deps)."
-            ),
-            "stdout": proc.stdout + proc.stderr,
-        }
-
-    report = json.loads(report_path.read_text())
-    summary = report.get("summary", {})
-    return {
-        "summary": {
-            "total": summary.get("total", 0),
-            "passed": summary.get("passed", 0),
-            "failed": summary.get("failed", 0),
-            "duration": report.get("duration", 0.0),
-        },
-        "tests": [
-            {
-                "nodeid": t["nodeid"],
-                "outcome": t["outcome"],
-                "duration": round(
-                    sum(t.get(phase, {}).get("duration", 0.0)
-                        for phase in ("setup", "call", "teardown")),
-                    3,
-                ),
-            }
-            for t in report.get("tests", [])
-        ],
-    }
 
 
 if __name__ == "__main__":

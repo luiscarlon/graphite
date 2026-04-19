@@ -1,0 +1,8 @@
+facit_id,snowflake_id,strux_id,excel_used,confidence,evidence
+B611.V2_VM21,B611.V2_VM21,B611.V2_VM21,yes,high,snowflake exact match
+B612.V4_INT_VERK2,B612.V4_INT_VERK2,B612.V4_INT_VERK2,yes,high,snowflake exact match
+B614-V2-GF4,B614.V2_GF4,B614-V2-GF4,yes,high,Excel dash-form; Snowflake dot/underscore form (normalized match)
+B621-52-V2-INT_VERK2,,B621-52-V2-INT_VERK2,yes,medium,"not in Snowflake, no STRUX value; Excel cache for B621 kyltornsvatten = 0 Jan-Feb — meter inactive"
+B625.V2_VM21_V,B625.V2_VM21_V,B625.V2_VM21_V,yes,high,snowflake exact match
+B654-55-V2,,B654-55-V2,yes,medium,"not in Snowflake, no STRUX value; Excel cache for B654 kyltornsvatten = 0 Jan-Feb — meter inactive"
+B661-52-V2-MQ43,,B661-52-V2-MQ43,yes,medium,"not in Snowflake, no STRUX value; Excel cache for B661 kyltornsvatten = 0 Jan-Feb — meter inactive"

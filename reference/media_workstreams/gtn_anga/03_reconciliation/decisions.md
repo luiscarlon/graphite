@@ -128,3 +128,16 @@ Ran conservation check against assembled daily readings (Jan 2025 – Feb 2026).
 **Decision:** record the dual mapping in the crosswalk; take no action to unify the upstream systems. Our consumers join via the crosswalk, not raw string match.
 
 **Consequence:** any future script that slices BMS data using Excel IDs (or vice-versa) must go through `meter_id_map.csv`. A direct string match would lose this meter.
+
+---
+
+### 2026-04-19 — B642.Å1_VMM72: use post-reset raw data instead of VMM71-derived patch
+
+**Question:** B642 topology Jan 2026 = 54 MWh, Excel cache = 89 MWh. Diff -35 MWh matched B614's +35 MWh exactly (B614 subtracts B642 in Excel).
+
+**Root cause:** The ontology had `B642.Å1_VMM72:d.patch` = sum-derived from VMM71 starting 2025-07-31, replacing the raw Snowflake readings post-reset. The raw `B642.Å1_VM72` Snowflake data continues normally after the 2025-07-31 counter reset (Δ=-31533, device swap pattern): Jan 1 2026 V_FIRST=60.19, Jan 31 V_LAST=149.06 → delta 88.87 MWh, matching STRUX/Excel 89.04 within 0.2%.
+
+**Decision:** Replace the VMM71-derived patch with a proper post-swap raw segment. Added `B642.Å1_VMM72:d.C` (raw, valid_from=2025-08-01). Updated `:d` rolling_sum to stitch A|B|C (three raw segments) without any patch. This prefers actual Snowflake data over a synthesized proxy.
+
+**Consequence:** B614 and B642 both match Excel within 0.5 MWh for 2026-01 and 2026-02. Ontology now uses real counter data rather than overwriting with a VMM71-derived approximation.
+

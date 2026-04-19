@@ -1,0 +1,12 @@
+parent_meter_id,child_meter_id,relation_type,flow_coefficient,valid_from,valid_to,derived_from
+B611.KV1_VM21,B622.KV1_VM22_V,hasSubMeter,,,,excel_Kallvatten_r12_building_611
+B611.KV1_VM21,B613.KV1_VM21_V,hasSubMeter,,,,excel_Kallvatten_r12_building_611
+B612.KV1_VM21,B613.KV1_VM23_V,hasSubMeter,,,,excel_Kallvatten_r13_building_612
+B612.KV1_VM21,B637.KV1_VM21,hasSubMeter,,,,excel_Kallvatten_r13_building_612
+B612.KV1_VM21,B638.KV1_VM21,hasSubMeter,,,,excel_Kallvatten_r13_building_612
+B614.KV1_VM21,B615.KV1_VM21_V,hasSubMeter,,,,excel_Kallvatten_r15_building_614
+B621.KV1_VM21,B622.KV1_VM21_V,hasSubMeter,,,,excel_Kallvatten_r19_building_621 (T)
+B621.KV1_VM21,B623.KV1_VM21_V,hasSubMeter,,,,excel_Kallvatten_r19_building_621 (T)
+B821.KV1_VM21,B626.KV1_VM20,hasSubMeter,,,,excel_Kallvatten_r50_building_821
+B821.KV1_VM21,B626.KV1_VM21,hasSubMeter,,,,excel_Kallvatten_r50_building_821
+B833.KV1_VM21,B834.KV1_VM21,hasSubMeter,,,,excel_Kallvatten_r51_building_833

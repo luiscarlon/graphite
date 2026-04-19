@@ -1,0 +1,5 @@
+sensor_id,meter_id,point_type,unit,identifier
+B611.V2_VM21.volume,B611.V2_VM21,Water_Usage_Sensor,M3,
+B612.V4_INT_VERK2.volume,B612.V4_INT_VERK2,Water_Usage_Sensor,M3,
+B614-V2-GF4.volume,B614-V2-GF4,Water_Usage_Sensor,M3,
+B625.V2_VM21_V.volume,B625.V2_VM21_V,Water_Usage_Sensor,M3,

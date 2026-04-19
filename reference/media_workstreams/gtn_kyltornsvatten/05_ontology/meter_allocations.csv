@@ -1,0 +1,8 @@
+building_id,formula_row,column_ref,sign,role,meter_id,excel_meter_id,faktor,n_terms,derived_from
+B611,,,+,add,B611.V2_VM21,B611.V2_VM21,1,,excel_Kyltornsvatten_r11
+B612,,,+,add,B612.V4_INT_VERK2,B612.V4_INT_VERK2,1,,excel_Kyltornsvatten_r12
+B614,,,+,add,B614-V2-GF4,B614-V2-GF4,1,,excel_Kyltornsvatten_r14
+B621,,,+,add,B621-52-V2-INT_VERK2,B621-52-V2-INT_VERK2,1,,excel_Kyltornsvatten_r19
+B625,,,+,add,B625.V2_VM21_V,B625.V2_VM21_V,1,,excel_Kyltornsvatten_r22
+B654,,,+,add,B654-55-V2,B654-55-V2,1,,excel_Kyltornsvatten_r35
+B661,,,+,add,B661-52-V2-MQ43,B661-52-V2-MQ43,1,,excel_Kyltornsvatten_r41

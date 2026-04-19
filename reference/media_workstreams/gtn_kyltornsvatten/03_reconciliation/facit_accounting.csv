@@ -1,0 +1,8 @@
+building_id,meter_id,sign,coefficient,derived_from
+611,B611.V2_VM21,+,1,excel_Kyltornsvatten_r11
+612,B612.V4_INT_VERK2,+,1,excel_Kyltornsvatten_r12
+614,B614-V2-GF4,+,1,excel_Kyltornsvatten_r14
+621 (I&L),B621-52-V2-INT_VERK2,+,1,excel_Kyltornsvatten_r19
+625,B625.V2_VM21_V,+,1,excel_Kyltornsvatten_r22
+654,B654-55-V2,+,1,excel_Kyltornsvatten_r35
+661,B661-52-V2-MQ43,+,1,excel_Kyltornsvatten_r41

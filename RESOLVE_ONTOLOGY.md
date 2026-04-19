@@ -8,22 +8,28 @@ Instructions for building a Brick-style metering ontology from heterogeneous doc
 
 **You are an analyst, not a pipeline operator.** The scripts in `reference/scripts/` are helpers that produce INPUTS for your reasoning. You read their outputs, understand the physical system, make decisions, and build the ontology by hand. Every edge, annotation, and decision is yours — curated with evidence.
 
+**Excel is facit; flow schema is a helper.** When sources conflict — naming heuristics, flow-schema PDF arrows, timeseries residual fits — **Excel accounting structure wins**. The ontology target is that, for each (building, media) month, `SUM(meter_net)` for meters attributed to that building = the cached Excel cell value. Every + term is an independent supply meter attributed to the building; every − term must be hasSubMeter-reachable from exactly one + term in that building's subtree. The PDF helps only when Excel is silent (e.g. which + term physically feeds which − term). When the PDF disagrees with Excel on direction or membership, the PDF loses.
+
 **Excel comparison = cached values only.** When comparing building totals against the Excel file, use the **actual cached cell values** from the media tab (`excel_building_totals.csv`), NEVER a reconstruction from Snowflake data using the formula structure. The Excel file only has fiscal-year 2026 data (Jan–Dec). Snowflake ends at 2026-02-28. **The only valid comparison months are 2026-01 and 2026-02.** Comparing for 2025 months is impossible — the Excel has no data for those months.
 
-**Reference standard: `gtn_anga`.** This workstream was done right. Study it:
-- `reference/media_workstreams/gtn_anga/03_reconciliation/` — decisions, overrides, facit
-- `reference/media_workstreams/gtn_anga/05_ontology/` — 21 meters, 19 edges, device swaps (B616 A/B + rolling_sum), outage patches (B600S from 9 children), glitch exclusion (B642.VMM72 Mar 15-18)
-- `data/sites/gartuna/annotations.csv` — 16 curated annotations with specific evidence (not generic "swap detected")
+**The real topology-match test:** `SUM(meter_net)` per (building_id, media, month) joined on `meters` — compared to `excel_building_totals.csv`. This is what the app's `_excel_comparison_section` does. **`validate_building_totals.py`'s spot-check is NOT the topology test.** It only proves the Excel formula, evaluated by summing Snowflake deltas per meter_id, produces the cached cell value — i.e., meter-ID mapping is correct. A spot-check at 0.1% can coexist with a topology that's 1500% off (happened with värme). Always run the `meter_net` aggregation test before declaring a workstream done.
+
+**Fuzzy-match before declaring a meter Snowflake-absent.** Before accepting a crosswalk note like "STRUX-only meter (not in Snowflake BMS)", verify against the full Snowflake ID set (~1169 IDs for GTN): exact match, normalized match (strip all non-alphanumerics, lowercase), tail-segment substring (e.g. `T4-A3` in any Snowflake ID with matching building prefix), known transformations (`-S` suffix on EL main transformers, `VM`↔`VMM`, dot↔underscore, `_E` energy-variant suffix). Only after all of these fail is the meter genuinely absent. **Never synthesize Snowflake-format readings from STRUX monthly values** — that hardcodes a secondary source into the primary stream. If a meter is genuinely STRUX-only, accept the gap visibly or model it with a separate `database_id` (e.g. `gtn_strux`) that distinguishes provenance downstream.
+
+**Reference workstreams (use with caution):**
+- `gtn_anga` — 21 meters, closest to "done". Study its decisions.md, annotations, and assembled state. Known residuals: B600 intake (expected) and B616 (~900 MWh/month genuinely unallocated in Excel). Note: pre-2026-04-19 it carried a B642.Å1_VMM72 patch derived from VMM71 that was masking valid post-swap Snowflake data — fixed by adding a proper `:d.C` raw segment. Check that any similar patches in new workstreams aren't hiding good data.
+- `gtn_varme` — 59 meters, 29 hasSubMeter edges after Excel-priority realignment. 16 PDF/naming edges removed, 5 Excel-derived edges added, 4 VÅ9 meters reattributed to campus. 48/48 match Jan, 47/48 Feb. Demonstrates the pattern for bringing a PDF/naming-led topology into Excel alignment — replicate that diff pattern when you find similar mismatches in SNV.
+- `data/sites/gartuna/annotations.csv` — site-level annotations with specific evidence (not generic "swap detected").
 
 **Checklist — do ALL of these for every media:**
 
 1. **Understand the physical system.** What pipes connect what? Where do the meters sit? What does each Excel formula mean physically (not just mathematically)?
 
-2. **Excel reconciliation is the ground truth.** Compute building totals from your topology AND from the Excel formula. Compare them for the first available months. Investigate EVERY diff > 1%. The Excel is validated monthly by humans — if your topology disagrees, your topology is probably wrong.
+2. **Excel reconciliation is the ground truth — and the test is `meter_net` aggregation, not the spot-check.** Compute `SUM(meter_net)` per (building, media, month) and compare to the cached Excel values. Investigate EVERY diff > 1%. The Excel is validated monthly by humans — if your topology disagrees, your topology is probably wrong. Do not mistake `validate_building_totals.py`'s 0.x% spot-check for a topology match; see §0 for what the spot-check actually tests.
 
 3. **Fix all ontology violations.** Run `validate(ds)` after building. Zero violations is the target. Each violation means something is wrong.
 
-4. **Patch what can be patched.** When a meter goes offline but children are alive → children-sum patch + rolling_sum stitching (like B600S in ånga). Device swap → A/B segments + rolling_sum (like B616 in ånga). Glitch → exclude bad period via validity split (like B642.VMM72 in ånga). These are proven patterns — use `generate_outage_patches.py`.
+4. **Patch only when the raw data is actually bad.** Device swap (counter resets and then resumes recording normally) → A/B/C raw segments + rolling_sum stitching, NOT a children-sum patch. Genuine offline (counter freezes permanently) → children-sum patch + rolling_sum. Glitch (short bad window, then reverts) → validity split around the glitch. Before applying any patch, check the raw post-reset Snowflake readings: if they're monotonic and reasonable, use a segment split. A patch derived from children or siblings can silently mask valid data — B642.Å1_VMM72 carried a VMM71-derived patch that hid the real post-swap counter and caused a 35 MWh B642 / −35 MWh B614 mirror error in the app until 2026-04-19.
 
 5. **Write curated annotations.** Each annotation has: what happened, when, which meter, what the data shows, what was done about it. No generic "swap detected" — explain the swap. No bulk generation.
 
@@ -68,24 +74,31 @@ Flow-chart PDFs available under `reference/flow_charts/`:
 - `V390-56.{1,8}-001.pdf` — SNV värme
 - `HF Rörsystem.pdf` — the master index of the six flödesscheman above (distributionsnät Stadsvatten / Ånga / Värme × GTN / SNV). Confirms definitively that **no PDF exists for kyla, sjövatten, kyltornsvatten, or el** — those must use Excel + BMS only.
 
-**Current workstream status (2026-04-18):**
+**Current workstream status (2026-04-19):**
 
 | workstream | pipeline stage reached | notes |
 |---|---|---|
-| `gtn_anga` | through `05_ontology` + app validation | 19 edges (after override removal of B600N→B600S). Assembled into `data/sites/gartuna/`. App-validated: all buildings match Excel except B600 (intake, expected). 16 annotations documenting swaps, outages, glitches, and conservation anomalies. Device swap (B616), outage patches (B600S, B642), glitch exclusion (B642 Mar). |
-| `gtn_varme` | through `04_validation` | 65 hasSubMeter + 63 feeds edges. Regenerated with correct relation types. Not yet assembled or app-validated. |
-| `gtn_kyla` | through `04_validation` | 16 hasSubMeter + 52 feeds edges (includes genuine fractional allocations 0.38/0.9). Not yet assembled. |
-| `gtn_el` | through `04_validation` | 34 hasSubMeter + 101 feeds edges. 0.001 coefficients (unit conversion) treated as hasSubMeter. Not yet assembled. |
+| `gtn_anga` | through `06_assembly` + app-validated (meter_net vs cached Excel) | 21 meters, 5 hasSubMeter edges. 46/48 buildings match within ±0.5 MWh for 2026-01 and 2026-02. Residuals: B600 (intake, expected) and B616 (~900 MWh/month genuinely unallocated in Excel — known "Excel=0 but meter live"). 2026-04-19 fix: replaced B642.Å1_VMM72 VMM71-derived patch with proper `:d.C` raw segment; B642 Jan now 88.87 MWh (Excel 89.04). |
+| `gtn_varme` | through `06_assembly` + app-validated | 59 meters, 29 hasSubMeter edges after Excel-priority realignment (16 PDF/naming edges removed, 5 Excel-derived edges added, 4 VÅ9 meters reattributed to campus). 48/48 match Jan, 47/48 Feb (B833 +23 MWh from outage patch — ontology captures consumption Excel's frozen VP1 counter misses). |
+| `gtn_el` | through `06_assembly` + app-validated | 76 meters, 10 hasSubMeter edges. 17/50 buildings within ±0.5 MWh, but of 33 remaining offenders: 3 cascading from genuinely BMS-absent STRUX-only sub-feeders (B611.T4-A3/C1/C4 → affect B611/B631/B613), 1 known Excel-stale pattern (B664/B665 for T42-2-1), 2 small % drifts (B660, B652), and 26 residuals <1%. Fix applied: direct edge `B612.T8 → B652.T8-A3-A14-112` to mirror Excel's double-subtraction of deep sub-feeder from both B612 and B641; B659.T28-3-5 moved from phantom BUNATTR building to campus. |
+| `gtn_kyla` | through `06_assembly` + app-validated (full rebuild 2026-04-19) | 32 meters (22 physical + 10 virtual), 20 edges (6 hasSubMeter + 14 feeds). **0 Brick validation violations.** Excel-facit rebuild from scratch: 11 curated annotations documenting every known gap. **45/49 match within ±0.5 MWh** both months (90/98 Jan+Feb combined). Remaining 4 offender patterns × 2 months = 8 cells, all documented: **B658** known "Excel=0 but meter live"; **B623** double-counted by Excel in both B623 building and B600-KB2 pool (conservation violation in the source — topology can only match one); **B612/B641** fractional subtractions (Excel subtracts B637 at k=0.9 for B612 and k=0.1 for B641; `views.sql` has no fractional-subtract primitive). **Negative building values** (B611 −20.88 MWh / B833 −0.84 MWh / B641 −1.75 MWh) are **data-quality artifacts** caused by dead pool meters (B653 died 2025-10-09, B654.KB2 died 2025-02-10) combined with active downstream sub-meters — the pool collapses to just B623 (3.67 MWh) while B631 sub-meters draw 22 MWh, producing physically-nonsensical negatives. Topology faithfully mirrors this. Also: **B612.KB1_PKYL and B833.KB1_GF4 are bi-daily BMS sensors** (31 readings over 59-day window), so any hasSubMeter with them as parent only subtracts on half the days. See `03_reconciliation/decisions.md` — `$R`-style per-row factors and mixed inline coefficients are mis-recorded in `01_extracted/excel_formulas.csv` for kyla rows 13/14/15/20/22/26/29/33/38/50; always re-parse formula text directly via `openpyxl.ArrayFormula.text` for kyla. |
+| `gtn_kallvatten` | through `06_assembly` + app-validated (built 2026-04-19) | 63 meters (62 with Snowflake + 1 STRUX-only inactive B869). 11 hasSubMeter edges, 0 feeds (no fractional shares). 39 buildings. **98/98 match within ±0.5 m³ for Jan+Feb** (100%). 0 Brick validation violations. Simplest pattern of the energy-intensive media: all coefficients 1.0, no cross-building virtuals. PDF exists (`V600-52.B.8-001.pdf`) but not needed — Excel accounting structure is sufficient. Building label `850/662` (dual-building Excel label) normalized to `B850`. |
+| `gtn_kyltornsvatten` | through `06_assembly` + app-validated (built 2026-04-19) | 7 meters (4 with Snowflake + 3 Excel-only inactive system-code meters `B621-52-V2-INT_VERK2`, `B654-55-V2`, `B661-52-V2-MQ43`). 0 edges, 0 virtuals. 7 buildings. **90/90 match for Jan+Feb** (100%). 0 Brick validation violations. Each building has a single +term meter, no subtractions. |
 
 ## 3. Sources and authority scopes
 
 | source | authoritative for | weak on | path |
 |---|---|---|---|
-| flow-schema PDF (`V###-##.#.8-***`) | physical topology, pressure levels, meter presence, drawing date | BMS naming drift, accounting coefficients, electricity (missing) | `reference/flow_charts/` |
-| Excel monthly reporting | formulas, intake meters, provider manual readings, allocation coefficients, tenant splits, human comments | pipe topology (none), silent year-over-year changes | `reference/monthly_reporting_documents/inputs/{gtn,snv,formula_document}.xlsx` |
+| Excel monthly reporting | accounting structure (which meters belong to which building, + vs − term roles), cached monthly values per building (`excel_building_totals.csv`), coefficients, tenant splits, human comments | pipe topology (none), silent year-over-year changes | `reference/monthly_reporting_documents/inputs/{gtn,snv,formula_document}.xlsx` |
 | Snowflake BMS export | which meter IDs actually exist, which emit, actual consumption, commissioning/swap/decommission events | topology, intent, meaning of coefficients | `reference/snowflake_meter_readings/Untitled 1_2026-04-16-1842.csv` |
+| flow-schema PDF (`V###-##.#.8-***`) | helper for physical pipe layout when Excel is silent (e.g. which + term feeds which − term) | Excel-contradicting arrows, BMS naming drift, coefficients, electricity (missing) | `reference/flow_charts/` |
 
-**Rule of thumb:** when sources conflict, prefer the one with authority for the aspect in question and log the decision. When uncertain, leave the conflict open in `open_questions.md` rather than guess.
+**Rule of thumb:** Excel wins on accounting structure and building attribution. Snowflake wins on which meters exist and their actual readings. Flow-schema PDF is a helper for ambiguous cases — when it contradicts Excel on direction or membership, drop the PDF edge. Log every decision in `decisions.md`. Leave unresolved conflicts in `open_questions.md` rather than guess.
+
+**Concrete consequences:**
+- A PDF arrow `A → B` does NOT override Excel treating both A and B as independent **+** terms for the same building (e.g. `B615 → B642` arrow was removed in favour of Excel's independent subtraction of B615 and B642 from B614).
+- Naming heuristics (VP1→VS1, VP1→VÅ9, index chain VMM61→VMM62) are **suggestions, not facts**. Check every one against Excel before keeping. They produced the bulk of värme's violations before the 2026-04-19 realignment.
+- Meters not referenced in any Excel `+` term should be reattributed to campus level (blank `building_id`), not left in a building where they add uncounted consumption.
 
 ## 4. Pipeline architecture (per-workstream folder)
 
@@ -206,9 +219,11 @@ This is the most load-bearing artifact across the whole project — get it right
 - `01_extracted/excel_formulas.csv`: row 14, formula `=B611.VM71 - B622.VM72`
 - `01_extracted/flow_schema_preview.html`: the ⊗ glyph sits at x=1524 on the east tap, not on the main vertical
 
-**Decision:** adopt the flow-schema topology (flödesschema is facit). The Excel formula is an accounting shortcut that can still be correct *mathematically* without reflecting the physical layout.
+**Decision:** adopt the flow-schema topology **only because Excel is silent about B611.VMM72's role** (it's an intra-building meter whose flow is already captured in B611.VMM73's inlet reading). When the PDF places a meter that Excel doesn't reference as a + or − term in any building, the PDF is the only source; use it. This is NOT a case of the PDF overriding Excel — they don't conflict.
 
-**Consequence:** `facit_relations.csv` lists B611.VMM73 → B611.VMM72 and B611.VMM73 → B622.VMM72 as separate edges. The Excel formula is preserved in `05_ontology/` as an allocation rule, not a topology edge.
+**Contrast:** if Excel had B611.VMM72 as a + term for some building and the PDF showed it elsewhere, **Excel would win**. See the 2026-04-19 värme realignment: 16 PDF/naming edges that contradicted Excel accounting were removed in favour of Excel-derived edges (decisions.md "Excel-priority realignment").
+
+**Consequence:** `facit_relations.csv` lists B611.VMM73 → B611.VMM72 and B611.VMM73 → B622.VMM72 as separate edges. The Excel formula is preserved in `05_ontology/meter_allocations.csv` as the accounting rule that governs building attribution.
 ```
 
 **`open_questions.md` format** — one entry per unresolved issue, same evidence style, but explicitly **no decision yet**. Kept open until resolved; resolution moves it to `decisions.md` with a closing date.
@@ -230,7 +245,9 @@ Thresholds for flagging (defaults — overridable in `methodology.md`):
 
 **Parser regression fixture:** `parse_audit.py` → `parse_audit.md`. Diffs parser output against hand-curated `expected_relations.csv` fixture in `03_reconciliation/`. Reports `parser_missed`, `parser_extra`, `direction_flip`.
 
-**Excel-totals spot check:** `validate_building_totals.py` → `building_totals_spot_check.csv`. Compares the **actual cached building totals from the Excel file** (`excel_building_totals.csv`, extracted by `parse_reporting_xlsx.py` with `data_only=True`) against Snowflake-derived formula values. **Only months 2026-01 and 2026-02 are valid for comparison** — the Excel file contains fiscal-year 2026 data only, and Snowflake ends at 2026-02-28. Do NOT compare for 2025 months — the Excel has no cached values for those. The app's Excel comparison view (`_excel_comparison_section`) reads the same `excel_building_totals.csv` and shows the cached values directly in the `ex_` column.
+**Excel-totals spot check — WHAT IT ACTUALLY TESTS:** `validate_building_totals.py` → `building_totals_spot_check.csv`. For each building-month, evaluates the Excel formula (ΣΣ over + and − terms) by summing Snowflake deltas per meter_id and compares to the Excel cached cell. **This validates meter-ID mapping only.** It does NOT test the ontology topology. A spot-check reporting 0.0–0.5% deltas can coexist with topology-vs-Excel diffs of 1500% (see gtn_varme pre-2026-04-19). **Only months 2026-01 and 2026-02 are valid for comparison** — the Excel file contains fiscal-year 2026 data only, and Snowflake ends at 2026-02-28. Do NOT compare for 2025 months — the Excel has no cached values for those.
+
+**The real topology test** lives in the app's `_excel_comparison_section` (`packages/app/src/app/main.py`): it aggregates `meter_net` per (building, media, month) and compares to `excel_building_totals.csv` directly. Run the app against the assembled site before declaring a workstream done — the spot-check is necessary but not sufficient.
 
 **Audit PNG overlay:** `render_audit_png.py` → `flow_schema_audit.png`. Renders the PDF at 150dpi with parser-inferred edges colour-coded by provenance; orphan meters ringed red.
 
@@ -348,7 +365,7 @@ All scripts live under `reference/scripts/`. Every one is a standalone CLI with 
 
 **Corrected 2026-04-17.** The earlier per-day-sum approach (`Σ (day.v_last − day.v_first)`) systematically under-counted by ~4.2% because each day's `v_first` is the first intra-day reading (not the prior day's closing reading), leaving a small gap between days.
 
-**Current method:** `last_day_of_month.V_LAST − first_day_of_month.V_FIRST`, capturing the full register increment. Segments at any inter-day decrement (counter reset / meter swap); sums per-segment register diffs. Validated against all four GTN media — per-building deviation vs Excel is now **0.0–0.5%** (previously 4.0–4.5%).
+**Current method:** `last_day_of_month.V_LAST − first_day_of_month.V_FIRST`, capturing the full register increment. Segments at any inter-day decrement (counter reset / meter swap); sums per-segment register diffs. **Note on the 0.0–0.5% figure often quoted:** that comes from `validate_building_totals.py`'s spot-check (meter-ID mapping test), not from the real topology-match test. The spot-check validates that Excel's formula, evaluated by summing Snowflake deltas, matches Excel's cached values. It does not prove the ontology aggregates correctly. Use the `meter_net`-per-building comparison in the app for topology validation.
 
 ## 9. Execution order
 
@@ -673,7 +690,7 @@ Each Excel building row is an implicit virtual meter (e.g. `B611_VARME = VP1 + V
 
 **Naming-relation rules** (`naming_relations.py`):
 
-For each building with ≥2 meters on the same media, apply role-hierarchy rules:
+For each building with ≥2 meters on the same media, the script proposes role-hierarchy edges:
 
 | rule | condition | edge | provenance tag |
 |---|---|---|---|
@@ -681,7 +698,13 @@ For each building with ≥2 meters on the same media, apply role-hierarchy rules
 | Supply feeds recovery | VP1 + VÅ9 in same building | VP1 → VÅ9 | `naming_role_hierarchy` |
 | Index chain | VMM61 + VMM62 same building + role | VMM61 → VMM62 | `naming_index_chain` |
 
-These are deterministic (no data needed) and have zero false positives on the verified cases.
+**These rules produce frequent false positives** and must be verified against Excel before accepting. Observed failure modes:
+
+- Excel often treats VS1 and VÅ9 meters as **independent + terms** for the same building, not as downstream of VP1. Examples (gtn_varme 2026-04-19): B614, B616, B625, B643 all had VP1→VÅ9 naming edges that contradicted Excel's "VÅ9 is a + term" treatment. Added naming edges produced net-cancellation in the best case and wrong attribution in the worst.
+- Index chains break when the mid-meter has no BMS readings. Example: `B631.VP1_VMM61 → B631.VP1_VMM62` naming chain meant B611's intended subtraction of B631.VMM62 didn't happen because VMM61 had no data to propagate the subtraction through. Fix: direct edge from the real parent (B611.VP1_VMM61 → B631.VP1_VMM62).
+- Meters outside any Excel formula (pure PDF artifacts attributed to a building by naming) add uncounted consumption to that building. Reattribute to campus.
+
+Rule of thumb: propose naming edges, then **diff against Excel formulas before keeping any of them**. Drop every edge that contradicts Excel's + / − structure.
 
 **Timeseries-relation rules** (`timeseries_relations.py`):
 
@@ -696,7 +719,7 @@ for each parent P in facit with children {C1, C2, ...}:
         → candidate edge P → orphan, provenance = timeseries_residual_fit
 ```
 
-Same-building filter eliminates seasonal-correlation noise. The 20% threshold avoids weak fits. Verified in spot trial: 5/5 same-building fits were physically plausible (child < parent, 5–91% ratio).
+Same-building filter eliminates seasonal-correlation noise. The 20% threshold avoids weak fits. **These are candidate edges, not facts** — verify each against Excel before keeping. Example failure: `B613.VP1_VMM61 → B613.VP2_VMM61` (fit improvement 71%) contradicted Excel which treats both as independent + terms for B613. The residual-fit metric captures any correlation — including two independent + terms of the same building — and will happily propose edges that break building attribution.
 
 ### 11.8 Device swap, offline, and glitch handling
 
@@ -720,7 +743,11 @@ When a meter goes offline but its children keep reporting, the gap can be filled
 1. `{id}.patch` — `kind=derived`, `aggregation=sum`, `sources=child1|child2|...`, `valid_from=outage_date`
 2. Updates the preferred derived ref's sources to include the patch segment
 
-The patch is honest: it says "we estimated this meter's readings from what we can see downstream." It's a lower bound (doesn't capture distribution losses). The original raw readings and the outage gap are preserved — source data is never modified.
+**Before patching, verify the raw Snowflake data is actually bad.** A counter reset followed by resumption of normal readings is almost always a **device swap** — the correct encoding is a rolling_sum of multiple raw segments (A, B, C, …) with validity windows, not a children-sum patch. Patching in that case silently masks valid data. Example: B642.Å1_VMM72 had a reset 2025-07-31 (Δ=-31533) but continued monotonic readings afterward; an earlier VMM71-derived patch was replacing the good post-swap data with a proxy, producing a −35 MWh B642 / +35 MWh B614 mirror error in the app. Resolved 2026-04-19 by replacing the patch with a `:d.C` raw segment + rolling_sum A|B|C.
+
+**Patch sources must match Excel's accounting structure.** If the offline parent is attributed to building X, the patch sources should be children that Excel treats as subordinated to that parent. Including siblings or cross-accounted meters in the patch will leak their consumption into X's total. Example: B833.VP1_VMM61 outage patch originally included VÅ9_VMM41 as a source. VÅ9 isn't in Excel's B833 formula, so post-outage VP1 patched up with VÅ9's consumption and inflated B833 by ~61 MWh/month. Fixed by dropping VÅ9 from the patch sources.
+
+The patch is honest when applied correctly: it says "we estimated this meter's readings from what we can see downstream." It's a lower bound (doesn't capture distribution losses). The original raw readings and the outage gap are preserved — source data is never modified.
 
 For leaf meters (no children), no patch is possible. The outage is left as a gap with an annotation.
 
@@ -771,13 +798,15 @@ Every non-trivial call goes into `decisions.md` with evidence citations (file + 
 
 - All scripts: `reference/scripts/` (see §8 for inventory)
 - Pipeline runner: `reference/scripts/regenerate_workstream.py` — per-(site, media) config; `python regenerate_workstream.py reference/media_workstreams/gtn_varme`
+- Site assembly: `reference/scripts/assemble_site.py` — merges all media workstreams into `data/sites/gartuna/`
+- STRUX-only reading injection (handle with care, not a default): `reference/scripts/inject_strux_readings.py` — see §0's "Fuzzy-match" rule before using
 - Flow-schema parsing notes: `reference/monthly_reporting_documents/logs/topology/flow_schema_parsing_notes.md`
-- GTN ånga facit: `reference/media_workstreams/gtn_anga/03_reconciliation/facit_relations.csv` (19 edges)
-- GTN värme facit: `reference/media_workstreams/gtn_varme/03_reconciliation/facit_relations.csv` (26 edges)
-- GTN kyla facit: `reference/media_workstreams/gtn_kyla/03_reconciliation/facit_relations.csv` (6 physical edges, no virtuals)
-- GTN el facit: `reference/media_workstreams/gtn_el/03_reconciliation/facit_relations.csv` (26 edges, Excel-seeded)
-- Golden ånga output (pre-workstream era): `reference/monthly_reporting_documents/outputs/from_pdf/gtn_anga_*.csv` — still used as a regression target
+- GTN ånga ontology: `reference/media_workstreams/gtn_anga/05_ontology/meter_relations.csv` (19 hasSubMeter edges)
+- GTN värme ontology: `reference/media_workstreams/gtn_varme/05_ontology/meter_relations.csv` (29 hasSubMeter edges, post Excel-realignment)
+- GTN kyla ontology: `reference/media_workstreams/gtn_kyla/05_ontology/meter_relations.csv` (11 edges, not yet app-validated)
+- GTN el ontology: `reference/media_workstreams/gtn_el/05_ontology/meter_relations.csv` (26 edges)
+- Assembled site: `data/sites/gartuna/` — loaded by `ontology.load_dataset()`. The app's `_excel_comparison_section` (`packages/app/src/app/main.py`) shows the canonical topology-vs-Excel comparison per media (cached values, not formula reconstruction).
 - Abbey Road template (ontology shape): `data/reference_site/abbey_road/*.csv`
 - Snowflake export: `reference/snowflake_meter_readings/Untitled 1_2026-04-16-1842.csv` — daily-aggregated all meters, date range 2025-01-01 → 2026-02-28 (updated 2026-04-17). Query documented in `gtn_anga/00_inputs/README.md`.
-- Building-totals spot-check results: `{workstream}/04_validation/building_totals_spot_check.csv`
+- Building-totals spot-check results (**meter-ID mapping test only, not topology**): `{workstream}/04_validation/building_totals_spot_check.csv`
 - Source-conflicts advisory: `{workstream}/04_validation/source_conflicts.md`

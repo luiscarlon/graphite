@@ -1,0 +1,5 @@
+timeseries_id,sensor_id,aggregate,reading_type,kind,preferred,valid_from,valid_to,database_id,path,external_id,device_id,sources,aggregation
+B611.V2_VM21:d,B611.V2_VM21.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B611.V2_VM21,,,
+B612.V4_INT_VERK2:d,B612.V4_INT_VERK2.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B612.V4_INT_VERK2,,,
+B614-V2-GF4:d,B614-V2-GF4.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B614.V2_GF4,,,
+B625.V2_VM21_V:d,B625.V2_VM21_V.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B625.V2_VM21_V,,,

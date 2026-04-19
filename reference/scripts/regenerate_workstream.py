@@ -88,6 +88,27 @@ CONFIGS: dict[str, Config] = {
         unit="KiloW-HR",
         has_pdf=False,
     ),
+    "gtn_kallvatten": Config(
+        name="gtn_kallvatten",
+        site="GTN",
+        media="Kallvatten",
+        media_slug="KALLVATTEN",
+        pdf_sources=[],
+        primary_role="KV1",
+        quantity="Water Volume (m^3)",
+        unit="M3",
+    ),
+    "gtn_kyltornsvatten": Config(
+        name="gtn_kyltornsvatten",
+        site="GTN",
+        media="Kyltornsvatten",
+        media_slug="KYLTORNSVATTEN",
+        pdf_sources=[],
+        primary_role="V2",
+        quantity="Water Volume (m^3)",
+        unit="M3",
+        has_pdf=False,
+    ),
 }
 
 

@@ -1,29 +1,27 @@
-# crosswalk_notes — gtn_kyla
+# crosswalk notes — gtn_kyla
 
-Seed crosswalk generated automatically by canonicalising meter IDs across the
-two sources (no flow schema for kyla):
-- Excel `Kyla` sheet formula terms (`01_extracted/excel_meters_used.csv`)
-- Snowflake `Active Energy Delivered(Mega)` meters matching kyla-role naming
+Rebuilt 2026-04-19 after nuke, following RESOLVE_ONTOLOGY.md §0 (fuzzy-match before declaring a meter Snowflake-absent).
 
-Canonicalisation rule: strip trailing ``_E``, then ``VM##`` → ``VMM##`` on the
-trailing index. Buildings without a naming-compliant canonical form (e.g.
-``B654.KB1_KylEffekt_Ack``, ``B612-KB1-PKYL``) are kept as-is — the kyla
-sheet uses a looser tagging convention than värme/ånga.
+## Naming conventions observed
 
-**confidence:** `high` = seen in both sources; `medium` = only one source.
-Review `medium` rows manually; they are typically the "accounting-only"
-meters (no Snowflake feed) or "field-only" (meter exists in BMS but isn't
-rolled up in the Kyla formula).
+| pattern | Excel form | Snowflake form | example |
+|---|---|---|---|
+| Dash vs dot | `B612-KB1-PKYL` | `B612.KB1_PKYL` | normalize with `non-alphanum stripped` match |
+| System code | `B821-55-KB2-VMM1`, `B833-55-KB1-GF4` | no system code | strip `-55-` token |
+| VM vs VMM | `B658.KB2_VM51` | `B658.KB2_VMM51_E` | `VM` → `VMM` + `_E` suffix |
+| UTF-8 | `B653.KB2_WVÄRME_ACK` | identical | no change needed |
 
-## 2026-04-17 — crosswalk rebuilt with B8 buildings + dash/dot normalisation
+All 23 Excel-referenced physical meters map to Snowflake IDs. Two virtual aggregators (`B600-KB2`, `Prod-600`) have no physical BMS meter — they're pure accounting constructs.
 
-- Previous seed filtered Snowflake IDs to B2/B3/B6 prefixes, silently
-  dropping B8 buildings (B821/B833/B834/B841). Fixed.
-- Canonicalisation now handles:
-  - dash separator (`B600-KB2` → `B600.KB2`)
-  - trailing `_E` energy-variant suffix
-  - `VM##` → `VMM##`
-- Current coverage: 21 Excel meters matched to Snowflake (`confidence=high`);
-  4 Excel-only (decommissioned or naming drift — see `open_questions.md`);
-  95 Snowflake-only meters exist on campus in kyla roles but aren't
-  referenced in Kyla formulas (probably historical or sub-meters).
+## Ambiguous: B821 cooling meter
+
+Excel has three labels that all refer to one cooling meter in building 821:
+- `B821.KB2_VMM1` (auto, STRUX)
+- `B821-55-KB2-VMM1` (manual, STRUX) — same meter
+- `B821.KB2_VMM51` (auto, STRUX) — appears separately in the STRUX tab
+
+Snowflake has two candidates: `B821.KB2_VMM50_E` and `B821.KB2_VMM51`. Both report 0 delta for the Jan–Feb 2026 comparison window. Chose `B821.KB2_VMM51` as the canonical map (matches one of the STRUX auto IDs exactly). Confidence: medium. Should be revisited when the meter becomes active or when on-site staff confirm which physical device corresponds to Excel's `VMM1` vs `VMM51`.
+
+## B658: Excel=0 but meter live (known pattern)
+
+`B658.KB2_VMM51_E` has real Snowflake consumption (Jan 12.10 MWh, Feb 10.47 MWh) while Excel's B658 kyla cell is 0 for both months. Same pattern as B616 steam and B665.T42-2-1 EL — Excel's STRUX_data value is stale/zero while BMS reads real flow. Topology will report the real consumption; Excel comparison will show this as a known misallocation.
