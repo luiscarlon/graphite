@@ -1,17 +1,66 @@
-annotation_id,target_kind,target_id,category,valid_from,valid_to,description,related_refs
-B600NS_parallel,meter,B600N.Å1_VMM71,data_quality,,,B600N and B600S are parallel intakes (north/south spine) not series. naming_index_chain wrongly inferred parent-child. Removed via topology_overrides.,
-B600S_offline,meter,B600S.Å1_VMM71,outage,2026-01-17,,Patched from 9 children's readings (sum aggregation). Counter froze Jan 17 then reset to 0 on Feb 2.,B600S.Å1_VMM71:d.patch
-B600S_intermittent,meter,B600S.Å1_VMM71,data_quality,2026-01-08,2026-01-17,Counter degrading: intermittent reads then 3-day flat then backlog flush (234 MWh in one day). Transition period before full offline.,
-B600N_shutdown_jul,meter,B600N.Å1_VMM71,outage,2025-07-14,2025-07-21,Counter flat for 6 days — summer shutdown. Self-recovering.,
-B600N_flat_jan,meter,B600N.Å1_VMM71,data_quality,2026-01-22,2026-01-23,Single-day flat reading (delta=0). Next day shows 200 MWh (two days accumulated).,
-B616_swap,meter,B616.Å1_VMM71,swap,2025-11-05,,Device replacement. Old counter ended at 19693. New device started at 1934. Stitched via rolling_sum derived ref.,B616.Å1_VMM71:d.A|B616.Å1_VMM71:d.B|B616.Å1_VMM71:d
-B642_72_offline,meter,B642.Å1_VMM72,outage,2025-07-31,,Counter reset to 0.001 and stayed dead. Patched from child B642.VMM71.,B642.Å1_VMM72:d.patch
-B642_72_glitch,meter,B642.Å1_VMM72,data_quality,2025-03-15,2025-03-18,Counter dropped from 25231 to 10890 for 3 days then reverted. Temporary register glitch. Readings excluded via validity split.,B642.Å1_VMM72:d.A|B642.Å1_VMM72:d.B
-B642_72_anomaly,meter,B642.Å1_VMM72,unknown,2025-01-01,2025-06-30,B642.VMM72 flow exceeds parent B614.VMM71 by 2-7x during Jan and Apr-Jun. PDF confirms downstream. Suspected undocumented additional steam feed. Needs on-site investigation.,
-B613_dead,meter,B613.Å1_VMM71,outage,2025-03-12,,Counter frozen since Mar 12. Leaf meter — cannot patch.,
-B641_dead,meter,B641.Å1_VMM71,outage,2025-01-01,,Counter at 0 for entire observation window. Leaf meter — cannot patch.,
-B841_dead,meter,B841.Å1_VMM71,outage,2025-01-01,,Counter at 0 for entire observation window. Leaf meter — cannot patch.,
-B643_intermittent,meter,B643.Å1_VMM71,data_quality,2025-06-20,2025-07-20,Multiple frozen periods (Jun 20 / Jun 30 / Jul 12). Intermittent meter — reads some weeks then goes flat.,
-B833_offline,meter,B833.Å1_VMM71,outage,2026-02-19,,Counter frozen from Feb 19 onwards. Leaf meter — cannot patch.,
-B600_north_unmetered,building,B600,unknown,,,B600N north spine has 60% unmetered flow. Only 40% of intake captured by downstream meters (B616/B643/B833/B921). Missing meters or undocumented consumers.,
-B600_loss_pct,campus,GTN,data_quality,,,31% of total site steam intake not accounted for by downstream meters. South spine 14% (acceptable). North spine 60% (missing meters).,
+annotation_id,target_kind,target_id,category,valid_from,valid_to,description,related_refs,media
+B600NS_parallel,meter,B600N.Å1_VMM71,data_quality,,,B600N and B600S are parallel intakes (north/south spine) not series. naming_index_chain wrongly inferred parent-child. Removed via topology_overrides.,,ANGA
+B600S_offline,meter,B600S.Å1_VMM71,outage,2026-01-17,,Patched from 9 children's readings (sum aggregation). Counter froze Jan 17 then reset to 0 on Feb 2.,B600S.Å1_VMM71:d.patch,ANGA
+B600S_intermittent,meter,B600S.Å1_VMM71,data_quality,2026-01-08,2026-01-17,Counter degrading: intermittent reads then 3-day flat then backlog flush (234 MWh in one day). Transition period before full offline.,,ANGA
+B600N_shutdown_jul,meter,B600N.Å1_VMM71,outage,2025-07-14,2025-07-21,Counter flat for 6 days — summer shutdown. Self-recovering.,,ANGA
+B600N_flat_jan,meter,B600N.Å1_VMM71,data_quality,2026-01-22,2026-01-23,Single-day flat reading (delta=0). Next day shows 200 MWh (two days accumulated).,,ANGA
+B616_swap,meter,B616.Å1_VMM71,swap,2025-11-05,,Device replacement. Old counter ended at 19693. New device started at 1934. Stitched via rolling_sum derived ref.,B616.Å1_VMM71:d.A|B616.Å1_VMM71:d.B|B616.Å1_VMM71:d,ANGA
+B642_72_offline,meter,B642.Å1_VMM72,outage,2025-07-31,,Counter reset to 0.001 and stayed dead. Patched from child B642.VMM71.,B642.Å1_VMM72:d.patch,ANGA
+B642_72_glitch,meter,B642.Å1_VMM72,data_quality,2025-03-15,2025-03-18,Counter dropped from 25231 to 10890 for 3 days then reverted. Temporary register glitch. Readings excluded via validity split.,B642.Å1_VMM72:d.A|B642.Å1_VMM72:d.B,ANGA
+B642_72_anomaly,meter,B642.Å1_VMM72,unknown,2025-01-01,2025-06-30,B642.VMM72 flow exceeds parent B614.VMM71 by 2-7x during Jan and Apr-Jun. PDF confirms downstream. Suspected undocumented additional steam feed. Needs on-site investigation.,,ANGA
+B613_dead,meter,B613.Å1_VMM71,outage,2025-03-12,,Counter frozen since Mar 12. Leaf meter — cannot patch.,,ANGA
+B641_dead,meter,B641.Å1_VMM71,outage,2025-01-01,,Counter at 0 for entire observation window. Leaf meter — cannot patch.,,ANGA
+B841_dead,meter,B841.Å1_VMM71,outage,2025-01-01,,Counter at 0 for entire observation window. Leaf meter — cannot patch.,,ANGA
+B643_intermittent,meter,B643.Å1_VMM71,data_quality,2025-06-20,2025-07-20,Multiple frozen periods (Jun 20 / Jun 30 / Jul 12). Intermittent meter — reads some weeks then goes flat.,,ANGA
+B833_offline,meter,B833.Å1_VMM71,outage,2026-02-19,,Counter frozen from Feb 19 onwards. Leaf meter — cannot patch.,,ANGA
+B600_north_unmetered,building,B600,unknown,,,B600N north spine has 60% unmetered flow. Only 40% of intake captured by downstream meters (B616/B643/B833/B921). Missing meters or undocumented consumers.,,ANGA
+B600_loss_pct,campus,GTN,data_quality,,,31% of total site steam intake not accounted for by downstream meters. South spine 14% (acceptable). North spine 60% (missing meters).,,ANGA
+B611_T1_swap,meter,B611.T1,swap,2026-01-14,,Device swap. Counter reset from 9993343. Stitched via rolling_sum.,B611.T1:d.A|B611.T1:d.B|B611.T1:d,EL
+B611_T3_swap,meter,B611.T3,swap,2026-02-23,,Device swap. Counter reset from 9998247. Stitched via rolling_sum.,B611.T3:d.A|B611.T3:d.B|B611.T3:d,EL
+B612_T9_swap,meter,B612.T9,swap,2025-07-09,,Device swap. Counter reset from 9995611. Stitched via rolling_sum.,B612.T9:d.A|B612.T9:d.B|B612.T9:d,EL
+B614_T18_swap,meter,B614.T18,swap,2025-01-01,,Device swap at start of observation window. Stitched via rolling_sum.,B614.T18:d.A|B614.T18:d.B|B614.T18:d,EL
+B614_T20_swap,meter,B614.T20,swap,2025-11-10,,Device swap. Counter reset from 9996529. Stitched via rolling_sum.,B614.T20:d.A|B614.T20:d.B|B614.T20:d,EL
+B616_T33_swap,meter,B616.T33,swap,2025-04-06,,Device swap. Counter reset from 9994919. Stitched via rolling_sum.,B616.T33:d.A|B616.T33:d.B|B616.T33:d,EL
+B621_T30_swap,meter,B621.T30,swap,2025-12-08,,Device swap. Counter reset from 9996928. Stitched via rolling_sum.,B621.T30:d.A|B621.T30:d.B|B621.T30:d,EL
+B621_T5_swap,meter,B621.T5,swap,2025-03-26,,Device swap. Snowflake ID = B621.B621-T5-S (doubled building prefix). Stitched via rolling_sum.,B621.T5:d.A|B621.T5:d.B|B621.T5:d,EL
+B621_T6_swap,meter,B621.T6,swap,2025-02-09,,Device swap. Snowflake ID = B621.B621-T6-S (doubled building prefix). Stitched via rolling_sum.,B621.T6:d.A|B621.T6:d.B|B621.T6:d,EL
+B650_T23_swap,meter,B650.T23,swap,2025-12-30,,Device swap. Counter reset from 9999278. Stitched via rolling_sum.,B650.T23:d.A|B650.T23:d.B|B650.T23:d,EL
+B653_T17_swap,meter,B653.T17,swap,2025-06-18,,Device swap. Counter reset from 9999965. Stitched via rolling_sum.,B653.T17:d.A|B653.T17:d.B|B653.T17:d,EL
+B653_T55_swap,meter,B653.T55,swap,2025-06-29,,Device swap. Counter reset from 9996346. Stitched via rolling_sum.,B653.T55:d.A|B653.T55:d.B|B653.T55:d,EL
+B661_T47_swap,meter,B661.T47,swap,2025-05-22,,Device swap. Counter reset from 9995369. Stitched via rolling_sum.,B661.T47:d.A|B661.T47:d.B|B661.T47:d,EL
+B660_H23_resets,meter,B660.H23-1,data_quality,,,Provider/utility meter with 7 counter resets (~bimonthly read cycle). All segments stitched via rolling_sum. Boundary artifacts visible in daily chart on reset days — consumption on those days is partially lost.,,EL
+B660_H3_resets,meter,B660.H3-1,data_quality,,,Provider/utility meter with 3 counter resets (~quarterly). All segments stitched via rolling_sum.,,EL
+B616_T31-6-2_offline,meter,B616.T31-6-2,outage,2026-02-12,,Counter drops and stays dead from Feb 12. Leaf meter — cannot patch.,B616.T31-6-2:d,EL
+B616_T33-6-1_dead,meter,B616.T33-6-1,outage,2025-01-01,,Counter at zero for entire observation window. Sub-feeder of B616.T33 serving B835.,,EL
+B665_T42-2-1_misattr,meter,B665.T42-2-1,data_quality,,,B665.T42-2-1 reads ~5 MWh/month in Snowflake but Excel STRUX_data shows 0. B664 shows excel=0 vs topology=4.9 MWh. B665 overcredited by ~5 MWh/month. Stale STRUX_data.,,EL
+B612_double_sub,building,B612,data_quality,,,B612 formula double-subtracts T8-A3-A14-112 (~19 MWh/month). B612 understated by ~3% vs physical reality.,,EL
+B659_T28-3-5_unattr,meter,B659.T28-3-5,data_quality,,,Sub-feeder subtracted from B659 but not attributed to any building. ~8 MWh/month unaccounted.,,EL
+B616_swap,meter,B616.KB1_PKYL,swap,2025-06-13,2025-07-15,Enhetsbyte: B616.KB1_PKYL slutade rapportera 2025-06-13 (143 MWh för delvis jun). Ny mätare B616.KB1_VMM50_E startade 2025-07-15 (441 MWh delvis jul). Cirka 1 månads dataglapp. Stitchade via rolling_sum.,B616.KB1_PKYL:d,KYLA
+B638_dead,meter,B638.KB1_INT_VERK1,outage,2025-01-01,,Mätare B638.KB1_INT_VERK1 rapporterar 0 under hela observationsperioden (jan 2025 – feb 2026). Fysisk submätare till B612.KB1_PKYL. Troligen avställd eller trasig sedan minst dec 2024. Inga barn att patcha från.,,KYLA
+B642_dead,meter,B642.KB1_INT_VERK_1,outage,2025-01-01,,Mätare B642.KB1_INT_VERK_1 rapporterar 0 under hela observationsperioden. Fysisk submätare till B614.KB1_INT_VERK (som läser 20–302 MWh/mån). Meter_swaps klassade offline 2025-09-12 men mätaren var redan död. Inga barn att patcha från.,,KYLA
+B643_dead,meter,B643.KB1_INT_VERK,outage,2025-01-01,,"Mätare B643.KB1_INT_VERK rapporterar 0 under hela observationsperioden. Ensam byggnadsmätare för B643 kyla. Byggnaden har separat FV1_INT_VERK (fjärrvärme) som är aktiv, men kylan är tom.",,KYLA
+B653_offline,meter,B653.KB2_WVÄRME_ACK,outage,2025-10-09,,"Produktionsmätare B653.KB2_WVÄRME_ACK slutade rapportera 2025-10-09. Sista hela månaden var sept 2025 (718 MWh). Mätaren ingår i B600-KB2 och Prod-600 formler. Offline gör att byggnader som beror på B600-KB2 (B611, B613, B621, B622) inte kan beräknas fr.o.m. okt 2025.",B653.KB2_WVÄRME_ACK:d,KYLA
+B654_KB2_dead,meter,B654.KB2_Pkyl_Ack,outage,2025-01-01,,B654.KB2_Pkyl_Ack rapporterar 0 i jan 2025 och upphör helt efter 10 feb. Ingår i B600-KB2 och Prod-600 men bidrar med 0 MWh. Troligen avkommissionerad eller aldrig kopplad.,,KYLA
+B661_noisy_startup,meter,B661.KB1_Pkyl_Ack,data_quality,2025-01-01,2025-02-01,B661.KB1_Pkyl_Ack hade 59 counterresets under jan 2025 med 0 MWh nettodelta. Troligen igångkörning/kalibrering. Data exkluderat (valid_from=2025-02-01). Från feb 2025 normala ackumulerade värden (2720–4589 MWh/mån).,B661.KB1_Pkyl_Ack:d,KYLA
+B661_suspect_magnitude,meter,B661.KB1_Pkyl_Ack,unknown,,,"B661.KB1_Pkyl_Ack läser ~4500 MWh/mån (6.2 MW snitt). Jämförelse: B653.KB2_WVÄRME_ACK (huvudproduktionsmätare KB2) max 1210 MWh/mån. Summas utan koefficient i Prod-600. Enhet möjligen kWh i stället för MWh, eller mätaren mäter total kyleffekt (kompressor + kyla). Kräver driftsbekräftelse.",,KYLA
+B658_excel_zero,meter,B658.KB2_VMM51,data_quality,,,"Excel rapporterar B658 kyla = 0 MWh men Snowflake läser 10–42 MWh/mån (säsongsvariation, peak sommar). Känt mönster 'Excel=0 but meter live' dokumenterat i RESOLVE_ONTOLOGY §10. STRUX_data-tabellen har inaktuella/nollvärden.",,KYLA
+B612_sporadic,meter,B612.KB1_PKYL,data_quality,,,"B612.KB1_PKYL rapporterar sporadiskt: jan=197, apr=201, jun=473, sep=2049 MWh; övriga månader = 0. Registrerad som både Automatisk och Manuell i STRUX. Beteende tyder på kvartalsvis manuell avläsning — per-dag deltan alltid 0 men månadsregisterskillnad nonzero. Sep-spiket (2049 MWh) kan vara ackumulerad missad avläsning.",,KYLA
+B833_sporadic,meter,B833.KB1_GF4,data_quality,,,"B833.KB1_GF4 rapporterar identiskt sporadiskt mönster som B612.KB1_PKYL: jan=141, apr=292, jun=143, sep=986 MWh; övriga = 0. Kvartalsvis avläsning. Sep-spiket (986 MWh) troligen ackumulerad. Konservering mot B834 (0.8–10 MWh/mån) kan bara kontrolleras 4 månader.",,KYLA
+B631_VMM51_swap,meter,B631.KB1_VMM51,swap,2025-01-08,2025-01-08,"Counterreset 2025-01-08 detekterad av meter_swaps. Två segment stitchade via rolling_sum (A: →2025-01-08, B: 2025-01-08→). Mätaren rapporterar intermittent: 0–62 MWh/mån.",B631.KB1_VMM51:d,KYLA
+B674_swap,meter,B674.KB1_PKYL2_Ack,swap,2025-03-04,2025-03-04,Counterreset 2025-03-04. Två segment stitchade via rolling_sum. Mars 2025 låg delta (2.5 MWh vs normalt 25–98 MWh) troligen pga reset mitt i månaden.,B674.KB1_PKYL2_Ack:d,KYLA
+B600NS_parallel,meter,B600N.Å1_VMM71,data_quality,,,B600N and B600S are parallel intakes (north/south spine) not series. naming_index_chain wrongly inferred parent-child. Removed via topology_overrides.,,
+B600S_offline,meter,B600S.Å1_VMM71,outage,2026-01-17,,Patched from 9 children's readings (sum aggregation). Counter froze Jan 17 then reset to 0 on Feb 2.,B600S.Å1_VMM71:d.patch,
+B600S_intermittent,meter,B600S.Å1_VMM71,data_quality,2026-01-08,2026-01-17,Counter degrading: intermittent reads then 3-day flat then backlog flush (234 MWh in one day). Transition period before full offline.,,
+B600N_shutdown_jul,meter,B600N.Å1_VMM71,outage,2025-07-14,2025-07-21,Counter flat for 6 days — summer shutdown. Self-recovering.,,
+B600N_flat_jan,meter,B600N.Å1_VMM71,data_quality,2026-01-22,2026-01-23,Single-day flat reading (delta=0). Next day shows 200 MWh (two days accumulated).,,
+B616_swap,meter,B616.Å1_VMM71,swap,2025-11-05,,Device replacement. Old counter ended at 19693. New device started at 1934. Stitched via rolling_sum derived ref.,B616.Å1_VMM71:d.A|B616.Å1_VMM71:d.B|B616.Å1_VMM71:d,
+B642_72_offline,meter,B642.Å1_VMM72,outage,2025-07-31,,Counter reset to 0.001 and stayed dead. Patched from child B642.VMM71.,B642.Å1_VMM72:d.patch,
+B642_72_glitch,meter,B642.Å1_VMM72,data_quality,2025-03-15,2025-03-18,Counter dropped from 25231 to 10890 for 3 days then reverted. Temporary register glitch. Readings excluded via validity split.,B642.Å1_VMM72:d.A|B642.Å1_VMM72:d.B,
+B642_72_anomaly,meter,B642.Å1_VMM72,unknown,2025-01-01,2025-06-30,B642.VMM72 flow exceeds parent B614.VMM71 by 2-7x during Jan and Apr-Jun. PDF confirms downstream. Suspected undocumented additional steam feed. Needs on-site investigation.,,
+B613_dead,meter,B613.Å1_VMM71,outage,2025-03-12,,Counter frozen since Mar 12. Leaf meter — cannot patch.,,
+B641_dead,meter,B641.Å1_VMM71,outage,2025-01-01,,Counter at 0 for entire observation window. Leaf meter — cannot patch.,,
+B841_dead,meter,B841.Å1_VMM71,outage,2025-01-01,,Counter at 0 for entire observation window. Leaf meter — cannot patch.,,
+B643_intermittent,meter,B643.Å1_VMM71,data_quality,2025-06-20,2025-07-20,Multiple frozen periods (Jun 20 / Jun 30 / Jul 12). Intermittent meter — reads some weeks then goes flat.,,
+B833_offline,meter,B833.Å1_VMM71,outage,2026-02-19,,Counter frozen from Feb 19 onwards. Leaf meter — cannot patch.,,
+B600_north_unmetered,building,B600,unknown,,,B600N north spine has 60% unmetered flow. Only 40% of intake captured by downstream meters (B616/B643/B833/B921). Missing meters or undocumented consumers.,,
+B600_loss_pct,campus,GTN,data_quality,,,31% of total site steam intake not accounted for by downstream meters. South spine 14% (acceptable). North spine 60% (missing meters).,,

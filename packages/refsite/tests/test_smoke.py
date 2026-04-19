@@ -10,7 +10,7 @@ def test_abbey_road_builds() -> None:
     """End-to-end build of the reference site emits a coherent meter graph."""
     ds = abbey_road.build()
     assert len(ds.campuses) == 1
-    assert len(ds.buildings) == 10
+    assert len(ds.buildings) == 13
     assert {m.meter_id for m in ds.meters} >= {
         "I1",
         "I2",
@@ -78,7 +78,7 @@ def test_pool_reconciles_to_m0() -> None:
     assert [s.child_meter_id for s in subs] == ["M0"]
     # M0 fans out to the site branches.
     m0_children = {r.child_meter_id for r in ds.relations if r.parent_meter_id == "M0"}
-    assert m0_children == {"M1", "M4", "M8"}
+    assert m0_children == {"M1", "M4", "M8", "M13"}
 
 
 def test_virtual_with_real_submeter() -> None:
@@ -351,3 +351,123 @@ def test_readings_deterministic() -> None:
     assert [(r.timeseries_id, r.timestamp, r.value) for r in a] == [
         (r.timeseries_id, r.timestamp, r.value) for r in b
     ]
+
+
+def test_outage_patch() -> None:
+    """M14 goes offline Feb 15; M14:h.patch reconstructs from child M15."""
+    ds = abbey_road.build()
+    m14_refs = {tr.timeseries_id: tr for tr in ds.timeseries_refs if tr.sensor_id == "M14.energy"}
+    assert "M14:h.patch" in m14_refs
+    patch = m14_refs["M14:h.patch"]
+    assert patch.kind == "derived"
+    assert patch.aggregation == "sum"
+    assert patch.sources == ["M15:h"]
+    assert patch.valid_from == abbey_road.M14_OFFLINE
+    assert not patch.preferred
+
+    stitched = m14_refs["M14:h"]
+    assert stitched.kind == "derived"
+    assert stitched.aggregation == "rolling_sum"
+    assert "M14:h.patch" in stitched.sources
+    assert stitched.preferred
+
+    rs = generate_readings(ds, seed=42)
+    patch_readings = [r for r in rs if r.timeseries_id == "M14:h.patch"]
+    assert len(patch_readings) > 0
+    assert min(r.timestamp for r in patch_readings).date() == abbey_road.M14_OFFLINE
+    values = [r.value for r in sorted(patch_readings, key=lambda r: r.timestamp)]
+    assert all(b >= a for a, b in pairwise(values))
+
+
+def test_glitch_exclusion() -> None:
+    """M14:h.A ends before glitch, M14:h.B starts after. No spike in stitched."""
+    ds = abbey_road.build()
+    m14_refs = {tr.timeseries_id: tr for tr in ds.timeseries_refs if tr.sensor_id == "M14.energy"}
+    assert m14_refs["M14:h.A"].valid_to == abbey_road.M14_GLITCH_START
+    assert m14_refs["M14:h.B"].valid_from == abbey_road.M14_GLITCH_END
+
+    rs = generate_readings(ds, seed=42)
+    stitched = sorted(
+        [r for r in rs if r.timeseries_id == "M14:h"],
+        key=lambda r: r.timestamp,
+    )
+    diffs = [b.value - a.value for a, b in pairwise(stitched)]
+    max_hourly = max(diffs)
+    median_hourly = sorted(diffs)[len(diffs) // 2]
+    assert max_hourly < median_hourly * 10, "spike in stitched M14:h during glitch"
+
+
+def test_annotation_filter() -> None:
+    """Dataset.filter_by_media() correctly filters annotations."""
+    ds = abbey_road.build()
+    assert len(ds.annotations) == 8
+    filtered = ds.filter_by_media("EL")
+    assert len(filtered.annotations) == 8
+    categories = {a.category for a in filtered.annotations}
+    assert categories >= {"outage", "swap", "data_quality", "patch", "calibration", "unknown"}
+
+
+def test_rolling_sum_stitching() -> None:
+    """M14:h stitched counter is monotonic across all segment boundaries."""
+    ds = abbey_road.build()
+    rs = generate_readings(ds, seed=42)
+    stitched = sorted(
+        [r for r in rs if r.timeseries_id == "M14:h"],
+        key=lambda r: r.timestamp,
+    )
+    total_hours = (abbey_road.PERIOD_END - abbey_road.PERIOD_START).days * 24
+    assert len(stitched) == total_hours
+    diffs = [b.value - a.value for a, b in pairwise(stitched)]
+    assert all(d >= 0 for d in diffs), "M14:h stitched counter not monotonic"
+
+
+def test_conservation_violation() -> None:
+    """M14's recorded monthly consumption exceeds its share of M13 in January."""
+    ds = abbey_road.build()
+    rs = generate_readings(ds, seed=42)
+    by_ts: dict[str, list] = defaultdict(list)
+    for r in rs:
+        if r.timeseries_id in ("M13:h", "M14:h"):
+            by_ts[r.timeseries_id].append(r)
+    m13 = sorted(by_ts["M13:h"], key=lambda r: r.timestamp)
+    m14 = sorted(by_ts["M14:h"], key=lambda r: r.timestamp)
+    jan_end = datetime(2026, 2, 1)
+    m13_jan = [r for r in m13 if r.timestamp < jan_end]
+    m14_jan = [r for r in m14 if r.timestamp < jan_end]
+    m13_consumption = m13_jan[-1].value - m13_jan[0].value
+    m14_consumption = m14_jan[-1].value - m14_jan[0].value
+    assert m14_consumption > m13_consumption * 0.6, (
+        "M14 should exceed its natural share (~60%) of M13 due to extra feed"
+    )
+
+
+def test_parallel_roots() -> None:
+    """R1 and R2 are independent roots with no relation between them."""
+    ds = abbey_road.build()
+    r1_parents = [r for r in ds.relations if r.child_meter_id == "R1"]
+    r2_parents = [r for r in ds.relations if r.child_meter_id == "R2"]
+    r1_children = [r for r in ds.relations if r.parent_meter_id == "R1"]
+    r2_children = [r for r in ds.relations if r.parent_meter_id == "R2"]
+    assert r1_parents == [] and r2_parents == []
+    assert r1_children == [] and r2_children == []
+    rs = generate_readings(ds, seed=42)
+    r1_readings = [r for r in rs if r.timeseries_id == "R1:h"]
+    r2_readings = [r for r in rs if r.timeseries_id == "R2:h"]
+    total_hours = (abbey_road.PERIOD_END - abbey_road.PERIOD_START).days * 24
+    assert len(r1_readings) == total_hours
+    assert len(r2_readings) == total_hours
+
+
+def test_frozen_counter() -> None:
+    """M16's counter stops incrementing after the freeze date."""
+    ds = abbey_road.build()
+    rs = generate_readings(ds, seed=42)
+    m16 = sorted(
+        [r for r in rs if r.timeseries_id == "M16:h"],
+        key=lambda r: r.timestamp,
+    )
+    freeze_dt = datetime(2026, 2, 20)
+    after_freeze = [r for r in m16 if r.timestamp >= freeze_dt]
+    assert len(after_freeze) > 24
+    frozen_value = after_freeze[0].value
+    assert all(r.value == frozen_value for r in after_freeze)

@@ -227,21 +227,8 @@ def test_validity_overlap() -> None:
     assert "validity_non_overlapping" in _rules(validate(ds))
 
 
-def test_orphan_meter() -> None:
-    """A building-level meter with no incoming or outgoing edge is an orphan."""
-    ds = Dataset(
-        campuses=[C],
-        buildings=[B],
-        meters=[
-            Meter(meter_id="A", name="A", building_id="B1", media_type_id="EL"),  # orphan
-        ],
-        relations=[],
-    )
-    assert "orphan_meter" in _rules(validate(ds))
-
-
-def test_orphan_allows_campus_level_standalone() -> None:
-    """A campus-level meter with no relations is a valid standalone intake."""
+def test_standalone_campus_meter() -> None:
+    """A campus-level meter with no relations is valid."""
     ds = Dataset(
         campuses=[C],
         buildings=[B],

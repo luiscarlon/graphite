@@ -97,6 +97,7 @@ from __future__ import annotations
 from datetime import date
 
 from ontology import (
+    Annotation,
     Building,
     Campus,
     Database,
@@ -120,6 +121,12 @@ PERIOD_END = date(2026, 3, 1)  # exclusive
 B1_OFFICE_ONLINE = date(2026, 2, 1)
 # M6's original device was retired and replaced mid-February.
 M6_DEVICE_SWAP = date(2026, 2, 10)
+# M14 multi-event meter: counter glitch in January, then offline in February.
+M14_GLITCH_START = date(2026, 1, 20)
+M14_GLITCH_END = date(2026, 1, 22)
+M14_OFFLINE = date(2026, 2, 15)
+# M16 frozen counter: stops incrementing late February.
+M16_FREEZE_START = date(2026, 2, 20)
 
 
 SUMMARY = (
@@ -213,6 +220,41 @@ FEATURES: list[tuple[str, str]] = [
         "Supplier reconciliation drift (~0.1%)",
         "I1+I2+I3 ≠ M0 by design; demonstrates the line-loss / measurement-drift signal.",
     ),
+    (
+        "Outage + children-sum patch (M14 offline → M15 patch)",
+        "Meter goes offline mid-period; derived patch ref reconstructs "
+        "counter from children's readings via sum aggregation.",
+    ),
+    (
+        "Multi-event meter (M14: glitch Jan 20 + offline Feb 15)",
+        "One meter with both a counter glitch and a later permanent "
+        "offline. Three segments (A, B, patch) stitched via rolling_sum.",
+    ),
+    (
+        "Glitch exclusion (M14, 2-day counter drop Jan 20–22)",
+        "Raw counter drops and reverts; validity split excludes the "
+        "bad days so consumption has no spike.",
+    ),
+    (
+        "Frozen counter (M16, delta=0 after Feb 20)",
+        "Counter stops incrementing but device keeps reporting the same "
+        "value. Upstream M13 still reflects the true flow.",
+    ),
+    (
+        "Parallel intakes (R1, R2 — independent roots)",
+        "Two campus-level root meters with no parent-child relationship; "
+        "demonstrates sibling intakes like B600N/B600S.",
+    ),
+    (
+        "Conservation violation (M14 exceeds M13 allocation)",
+        "Child meter with undocumented extra feed; recorded consumption "
+        "exceeds topology-allocated share. Annotated as unknown.",
+    ),
+    (
+        "Annotations (outage, swap, data_quality, patch, calibration, unknown)",
+        "Reference annotations covering every category, attached to "
+        "meters and timeseries refs.",
+    ),
 ]
 
 TOPOLOGY_CAPTION = (
@@ -237,7 +279,7 @@ READINGS_CAPTION = (
 def build() -> Dataset:
     campuses = [Campus(campus_id=CAMPUS_ID, name="Abbey Road")]
 
-    building_ids = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11]
+    building_ids = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14]
     buildings = [
         Building(building_id=f"B{i}", name=f"Building {i}", campus_id=CAMPUS_ID)
         for i in building_ids
@@ -256,6 +298,9 @@ def build() -> Dataset:
         Zone(zone_id="B9.warehouse", name="Warehouse", building_id="B9", zone_type="warehouse"),
         Zone(zone_id="B10.warehouse", name="Warehouse", building_id="B10", zone_type="warehouse"),
         Zone(zone_id="B11.warehouse", name="Warehouse", building_id="B11", zone_type="warehouse"),
+        Zone(zone_id="B12.warehouse", name="Warehouse", building_id="B12", zone_type="warehouse"),
+        Zone(zone_id="B13.office", name="Office", building_id="B13", zone_type="office"),
+        Zone(zone_id="B14.warehouse", name="Warehouse", building_id="B14", zone_type="warehouse"),
     ]
 
     meters = [
@@ -362,6 +407,13 @@ def build() -> Dataset:
             media_type_id="EL",
             is_virtual_meter=True,
         ),
+        # New pattern meters: outage+patch, glitch, frozen, parallel.
+        Meter(meter_id="M13", name="Factory", building_id="B12", media_type_id="EL"),
+        Meter(meter_id="M14", name="Multi-event sub", building_id="B12", media_type_id="EL"),
+        Meter(meter_id="M15", name="Office sub", building_id="B13", media_type_id="EL"),
+        Meter(meter_id="M16", name="Frozen counter", building_id="B14", media_type_id="EL"),
+        Meter(meter_id="R1", name="Parallel root A", building_id=None, media_type_id="EL"),
+        Meter(meter_id="R2", name="Parallel root B", building_id=None, media_type_id="EL"),
     ]
 
     relations = [
@@ -432,6 +484,11 @@ def build() -> Dataset:
         MeterRelation(
             parent_meter_id="M10", child_meter_id="V6", relation_type="feeds", flow_coefficient=0.5
         ),
+        # M13 branch under M0: outage+patch, multi-event, frozen counter.
+        MeterRelation(parent_meter_id="M0", child_meter_id="M13", relation_type="hasSubMeter"),
+        MeterRelation(parent_meter_id="M13", child_meter_id="M14", relation_type="hasSubMeter"),
+        MeterRelation(parent_meter_id="M14", child_meter_id="M15", relation_type="hasSubMeter"),
+        MeterRelation(parent_meter_id="M13", child_meter_id="M16", relation_type="hasSubMeter"),
     ]
 
     # `brick:meters` - what each meter measures. Campus-level meters
@@ -467,6 +524,12 @@ def build() -> Dataset:
         MeterMeasures(meter_id="M9", target_kind="zone", target_id="B9.warehouse"),
         MeterMeasures(meter_id="V5", target_kind="zone", target_id="B10.warehouse"),
         MeterMeasures(meter_id="V6", target_kind="zone", target_id="B11.warehouse"),
+        MeterMeasures(meter_id="M13", target_kind="zone", target_id="B12.warehouse"),
+        MeterMeasures(meter_id="M14", target_kind="zone", target_id="B12.warehouse"),
+        MeterMeasures(meter_id="M15", target_kind="zone", target_id="B13.office"),
+        MeterMeasures(meter_id="M16", target_kind="zone", target_id="B14.warehouse"),
+        MeterMeasures(meter_id="R1", target_kind="campus", target_id=CAMPUS_ID),
+        MeterMeasures(meter_id="R2", target_kind="campus", target_id=CAMPUS_ID),
     ]
 
     media_types = [
@@ -515,6 +578,12 @@ def build() -> Dataset:
         "M10",
         "M11",
         "M12",
+        "M13",
+        "M14",
+        "M15",
+        "M16",
+        "R1",
+        "R2",
     ]
     sensors = [
         Sensor(
@@ -536,6 +605,7 @@ def build() -> Dataset:
     external_intakes = ["I1", "I2", "I3"]
     internal_downstream = [
         "M1", "M2", "M3", "M4", "M5", "M7", "M8", "M9", "M10", "M11", "M12",
+        "M13", "M15", "M16", "R1", "R2",
     ]
     # Synthetic PME external ids for downstream meters. M0 uses the
     # proposal's example id to keep the mapping recognizable.
@@ -554,6 +624,12 @@ def build() -> Dataset:
         "M12": "631:250",
         "M6-DEV-A": "631:215",
         "M6-DEV-B": "631:216",
+        "M13": "631:260",
+        "M14": "631:261",
+        "M15": "631:262",
+        "M16": "631:263",
+        "R1": "631:300",
+        "R2": "631:301",
     }
 
     timeseries_refs = (
@@ -667,7 +743,129 @@ def build() -> Dataset:
                 aggregation="rolling_sum",
             ),
         ]
+        # M14 multi-event: glitch (A→B) + offline (B→patch).
+        + [
+            TimeseriesRef(
+                timeseries_id="M14:h.A",
+                sensor_id="M14.energy",
+                aggregate="hourly",
+                reading_type="counter",
+                kind="raw",
+                preferred=False,
+                database_id="PME_SQL",
+                path="ingest.hourly",
+                external_id=pme_external["M14"],
+                valid_from=PERIOD_START,
+                valid_to=M14_GLITCH_START,
+            ),
+            TimeseriesRef(
+                timeseries_id="M14:h.B",
+                sensor_id="M14.energy",
+                aggregate="hourly",
+                reading_type="counter",
+                kind="raw",
+                preferred=False,
+                database_id="PME_SQL",
+                path="ingest.hourly",
+                external_id=pme_external["M14"],
+                valid_from=M14_GLITCH_END,
+                valid_to=M14_OFFLINE,
+            ),
+            TimeseriesRef(
+                timeseries_id="M14:h.patch",
+                sensor_id="M14.energy",
+                aggregate="hourly",
+                reading_type="counter",
+                kind="derived",
+                preferred=False,
+                sources=["M15:h"],
+                aggregation="sum",
+                valid_from=M14_OFFLINE,
+            ),
+            TimeseriesRef(
+                timeseries_id="M14:h",
+                sensor_id="M14.energy",
+                aggregate="hourly",
+                reading_type="counter",
+                kind="derived",
+                preferred=True,
+                sources=["M14:h.A", "M14:h.B", "M14:h.patch"],
+                aggregation="rolling_sum",
+            ),
+        ]
     )
+
+    annotations = [
+        Annotation(
+            annotation_id="ann-m6-swap",
+            target_kind="meter",
+            target_id="M6",
+            category="swap",
+            valid_from=M6_DEVICE_SWAP,
+            valid_to=M6_DEVICE_SWAP,
+            description="Device A replaced by device B.",
+            related_refs=["M6:h.A", "M6:h.B", "M6:h"],
+        ),
+        Annotation(
+            annotation_id="ann-m5-outage",
+            target_kind="meter",
+            target_id="M5",
+            category="outage",
+            valid_from=date(2026, 1, 13),
+            valid_to=date(2026, 1, 14),
+            description="8-hour communication gap; physical consumption continues.",
+        ),
+        Annotation(
+            annotation_id="ann-m14-glitch",
+            target_kind="meter",
+            target_id="M14",
+            category="data_quality",
+            valid_from=M14_GLITCH_START,
+            valid_to=M14_GLITCH_END,
+            description="Counter drop and revert; 2-day window excluded from raw segments.",
+            related_refs=["M14:h.A", "M14:h.B"],
+        ),
+        Annotation(
+            annotation_id="ann-m14-outage",
+            target_kind="meter",
+            target_id="M14",
+            category="outage",
+            valid_from=M14_OFFLINE,
+            description="Permanent offline; patched from child M15.",
+            related_refs=["M14:h.patch"],
+        ),
+        Annotation(
+            annotation_id="ann-m14-patch",
+            target_kind="timeseries",
+            target_id="M14:h.patch",
+            category="patch",
+            valid_from=M14_OFFLINE,
+            description="Children-sum patch for M14 from M15.",
+            related_refs=["M15:h"],
+        ),
+        Annotation(
+            annotation_id="ann-m14-conservation",
+            target_kind="meter",
+            target_id="M14",
+            category="unknown",
+            description="M14 recorded consumption exceeds M13 allocation; undocumented extra feed suspected.",
+        ),
+        Annotation(
+            annotation_id="ann-m16-freeze",
+            target_kind="meter",
+            target_id="M16",
+            category="data_quality",
+            valid_from=M16_FREEZE_START,
+            description="Counter frozen (delta=0); device reports same value.",
+        ),
+        Annotation(
+            annotation_id="ann-v4-calibration",
+            target_kind="meter",
+            target_id="V4",
+            category="calibration",
+            description="V4.net occasionally negative when M9 exceeds 0.6×M12; coefficient may need recalibration.",
+        ),
+    ]
 
     return Dataset(
         campuses=campuses,
@@ -681,4 +879,5 @@ def build() -> Dataset:
         devices=devices,
         sensors=sensors,
         timeseries_refs=timeseries_refs,
+        annotations=annotations,
     )

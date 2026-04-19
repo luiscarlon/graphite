@@ -67,6 +67,14 @@ def main() -> int:
     crosswalk = ws / "02_crosswalk"
     extracted = ws / "01_extracted"
 
+    # Safety: warn if overwriting existing ontology files that may have manual edits
+    manual_edit_files = ["timeseries_refs.csv", "meter_relations.csv"]
+    for fname in manual_edit_files:
+        fpath = out / fname
+        if fpath.exists():
+            print(f"  WARNING: overwriting {fpath} — re-apply manual edits (device swaps, relation fixes) after this run!",
+                  file=sys.stderr)
+
     # 1) Facit meters
     meters_src = read_csv_rows(recon / "facit_meters.csv")
 
@@ -87,7 +95,8 @@ def main() -> int:
     meters_out: list[dict] = []
     for rec in meters_src:
         fid = rec["meter_id"]
-        if rec.get("meter_type") == "virtual":
+        is_virtual = rec.get("meter_type") == "virtual"
+        if is_virtual:
             continue
         xw = xwalk.get(fid, {})
         sf_id = xw.get("snowflake_id", "")
@@ -113,7 +122,7 @@ def main() -> int:
                 "name": f"{rec['building']} {args.media} meter {fid.split('.', 1)[1]}" if "." in fid else fid,
                 "building_id": f"B{rec['building']}" if rec["building"] else "",
                 "media_type_id": args.media,
-                "is_virtual_meter": "False",
+                "is_virtual_meter": str(is_virtual),
                 "identifier": identifier,
                 "valid_from": valid_from,
                 "valid_to": valid_to,
@@ -134,7 +143,12 @@ def main() -> int:
         if derived_from.startswith("building_virtual"):
             continue
         coeff = float(r.get("coefficient", "1.0") or "1.0")
-        if coeff not in (1.0, 0.001):
+        # Use explicit relation_type if present in facit; otherwise infer from coefficient
+        explicit_type = r.get("relation_type", "")
+        if explicit_type in ("feeds", "hasSubMeter"):
+            relation_type = explicit_type
+            flow_coefficient = str(coeff) if relation_type == "feeds" else ""
+        elif coeff not in (1.0, 0.001):
             relation_type = "feeds"
             flow_coefficient = str(coeff)
         else:
@@ -165,20 +179,21 @@ def main() -> int:
         for a in acct:
             alloc_out.append(
                 {
-                    "building_id": f"B{str(a['building']).split()[0]}",
+                    "building_id": (lambda b: b if not b[0].isdigit() else f"B{b}")(str(a['building']).split()[0]),
                     "formula_row": a["row"],
                     "column_ref": a["formula_column"],
                     "sign": a["sign"],
                     "role": a["role"],
                     "meter_id": a["facit_meter_id"],
                     "excel_meter_id": a["excel_meter_id"],
+                    "faktor": a.get("faktor", ""),
                     "n_terms": a["n_terms"],
                     "derived_from": "excel_Värme" if args.media == "VARME" else f"excel_{args.media}",
                 }
             )
         write_csv(
             out / "meter_allocations.csv",
-            ["building_id", "formula_row", "column_ref", "sign", "role", "meter_id", "excel_meter_id", "n_terms", "derived_from"],
+            ["building_id", "formula_row", "column_ref", "sign", "role", "meter_id", "excel_meter_id", "faktor", "n_terms", "derived_from"],
             alloc_out,
         )
 
@@ -291,16 +306,36 @@ def main() -> int:
             ["building_id", "name", "campus_id", "identifier"],
             [{"building_id": b, "name": f"Building {b[1:]}", "campus_id": args.campus, "identifier": ""} for b in buildings],
         )
+        media_names = {
+            "ANGA": "Steam",
+            "VARME": "Heating (district)",
+            "KYLA": "Cooling (district)",
+            "EL": "Electrical",
+        }
+        media_descs = {
+            "ANGA": "Steam energy (MWh) distributed via the site steam main.",
+            "VARME": "District heating energy (MWh) delivered to per-building substations.",
+            "KYLA": "Cooling energy (MWh) delivered to per-building substations.",
+            "EL": "Electrical energy (kWh / MWh).",
+        }
+        meter_classes = {
+            "ANGA": "Steam_Meter",
+            "VARME": "Heating_Meter",
+            "KYLA": "Chilled_Water_Meter",
+            "EL": "Electrical_Meter",
+        }
+        substances = {
+            "KYLA": "Chilled_Water",
+            "VARME": "Hot_Water",
+            "ANGA": "Steam",
+        }
         media_types = [
             {
                 "media_type_id": args.media,
-                "name": {"ANGA": "Steam", "VARME": "Heating (district)"}.get(args.media, args.media),
-                "description": {
-                    "ANGA": "Steam energy (MWh) distributed via the site steam main.",
-                    "VARME": "District heating energy (MWh) delivered to per-building substations.",
-                }.get(args.media, ""),
-                "brick_meter_class": {"ANGA": "Steam_Meter", "VARME": "Heating_Meter"}.get(args.media, ""),
-                "brick_substance": "",
+                "name": media_names.get(args.media, args.media),
+                "description": media_descs.get(args.media, ""),
+                "brick_meter_class": meter_classes.get(args.media, ""),
+                "brick_substance": substances.get(args.media, ""),
             }
         ]
         write_csv(out / "media_types.csv",

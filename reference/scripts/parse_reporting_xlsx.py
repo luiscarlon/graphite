@@ -439,6 +439,74 @@ def write_tabs_inventory_md(path: Path, media: str, sheets: list[dict]) -> None:
     path.write_text("\n".join(lines) + "\n")
 
 
+def _normalize_building_id(raw) -> str | None:
+    """Normalize an Excel building cell value to a canonical ``B###`` ID.
+
+    Returns ``None`` for rows that should be skipped (sub-sections like
+    ``621 (I&L)``, summary rows like ``Summa Ställverk``).
+    """
+    s = str(raw).strip()
+    if s.lower().startswith(("summa", "trädgård")):
+        return None
+    if s.lower().startswith("intagsmätare"):
+        parts = s.split()
+        for p in reversed(parts):
+            if p.startswith("B") and any(c.isdigit() for c in p):
+                return p
+        return f"B{s}"
+    if "(" in s:
+        paren = s[s.index("(") + 1 : s.index(")")].strip() if ")" in s else ""
+        base = s[: s.index("(")].strip()
+        if paren == "T":
+            return f"B{base}" if not base.startswith("B") else base
+        return None
+    if s.lower() == "parkering":
+        return "BPARKING"
+    if s.startswith("B") and len(s) > 1 and s[1:2].isdigit():
+        return s
+    return f"B{s}"
+
+
+def extract_building_totals(ws_values, *, sheet_factor: float = 1.0) -> list[dict]:
+    """Read cached monthly building totals from the data-only sheet.
+
+    Cols C..N are Jan..Dec; col B is the building number.  The cached cell
+    values include any sheet-level scaling factor (e.g. ``$F$5 = 0.001`` on
+    the EL sheet for kWh→MWh).  ``sheet_factor`` undoes the conversion so
+    output is in the native STRUX unit (matching Snowflake readings).
+    """
+    month_cols = list(range(3, 15))  # C=3 .. N=14
+    month_names = [
+        "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06",
+        "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12",
+    ]
+    inv = 1.0 / sheet_factor if sheet_factor != 0 else 1.0
+    rows_out: list[dict] = []
+    for row in range(8, ws_values.max_row + 1):
+        building = ws_values.cell(row=row, column=2).value
+        if building is None:
+            continue
+        bid = _normalize_building_id(building)
+        if bid is None:
+            continue
+        for ci, month in zip(month_cols, month_names):
+            val = ws_values.cell(row=row, column=ci).value
+            if val is None or not isinstance(val, (int, float)):
+                continue
+            rows_out.append({
+                "building_id": bid,
+                "month": month,
+                "excel_kwh": val * inv,
+            })
+    # Deduplicate: when two rows normalize to the same building_id, keep the larger.
+    best: dict[tuple[str, str], dict] = {}
+    for r in rows_out:
+        key = (r["building_id"], r["month"])
+        if key not in best or abs(r["excel_kwh"]) > abs(best[key]["excel_kwh"]):
+            best[key] = r
+    return list(best.values())
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("xlsx", type=Path)
@@ -471,6 +539,26 @@ def main() -> int:
     write_intake_meters_csv(out / "excel_intake_meters.csv", strux_rows)
     write_comments_md(out / "excel_comments.md", args.media, cell_comments, records)
     write_tabs_inventory_md(out / "excel_tabs_inventory.md", args.media, sheets)
+
+    # Extract cached building totals (with sheet-factor correction)
+    numeric_factors = set()
+    for r in records:
+        f = r.get("faktor", "")
+        if f != "" and f is not None:
+            try:
+                numeric_factors.add(float(f))
+            except (TypeError, ValueError):
+                pass
+    sheet_factor = numeric_factors.pop() if len(numeric_factors) == 1 else 1.0
+    building_totals = extract_building_totals(ws_values, sheet_factor=sheet_factor)
+    if building_totals:
+        bt_path = out / "excel_building_totals.csv"
+        bt_path.parent.mkdir(parents=True, exist_ok=True)
+        with bt_path.open("w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=["building_id", "month", "excel_kwh"])
+            w.writeheader()
+            w.writerows(building_totals)
+        print(f"wrote {bt_path} ({len(building_totals)} building-month rows)")
 
     n_terms_distribution: dict[int, int] = {}
     for r in records:

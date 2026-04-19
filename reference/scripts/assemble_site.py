@@ -137,6 +137,44 @@ def main() -> int:
     write_csv(out / "devices.csv",
               ["device_id", "serial", "manufacturer", "identifier"], [])
 
+    # --- annotations: concatenate from workstreams + manual ---
+    all_annotations: list[dict] = []
+    for ws_dir in args.workstreams:
+        ann_path = ws_dir / "05_ontology" / "annotations.csv"
+        if ann_path.exists():
+            media_slug = ws_dir.name.split("_", 1)[1].upper()
+            for row in read_csv_rows(ann_path):
+                row.setdefault("media", media_slug)
+                all_annotations.append(row)
+    manual_ann = out / "annotations_manual.csv"
+    if manual_ann.exists():
+        all_annotations.extend(read_csv_rows(manual_ann))
+    write_csv(
+        out / "annotations.csv",
+        ["annotation_id", "target_kind", "target_id", "category",
+         "valid_from", "valid_to", "description", "related_refs", "media"],
+        all_annotations,
+    )
+
+    # Merge Excel cached building totals from all workstreams
+    all_excel_totals: list[dict] = []
+    for ws_dir in args.workstreams:
+        totals_path = ws_dir / "01_extracted" / "excel_building_totals.csv"
+        if not totals_path.exists():
+            continue
+        media_slug = ws_dir.name.split("_", 1)[1].upper()
+        for row in read_csv_rows(totals_path):
+            all_excel_totals.append({
+                "building_id": row["building_id"],
+                "month": row["month"],
+                "excel_mwh": row["excel_kwh"],
+                "media": media_slug,
+            })
+    if all_excel_totals:
+        write_csv(out / "excel_building_totals.csv",
+                  ["building_id", "month", "excel_mwh", "media"],
+                  all_excel_totals)
+
     # Copy meter_allocations (Excel accounting formulas) for comparison views
     all_allocations: list[dict] = []
     for ws_dir in args.workstreams:

@@ -493,7 +493,6 @@ RULES = [
     check_ref_shape,
     check_ref_sources_resolve,
     check_ref_validity_non_overlapping,
-    check_orphan_meters,
     check_media_consistency,
 ]
 

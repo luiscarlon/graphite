@@ -205,6 +205,7 @@ class Annotation(BaseModel):
     valid_to: date | None = None
     description: str = ""
     related_refs: list[str] = Field(default_factory=list)
+    media: str | None = None
 
     @field_validator("related_refs", mode="before")
     @classmethod
@@ -253,6 +254,7 @@ class Dataset(BaseModel):
             timeseries_refs=[tr for tr in self.timeseries_refs if tr.sensor_id in sensor_ids],
             readings=[r for r in self.readings if r.timeseries_id in ts_ids],
             annotations=[a for a in self.annotations
-                         if a.target_id in meter_ids | ts_ids | building_ids
-                         or a.target_kind == "campus"],
+                         if (a.target_id in meter_ids | ts_ids | building_ids
+                             or a.target_kind == "campus")
+                         and (a.media is None or a.media.upper() == media_type_id.upper())],
         )

@@ -86,6 +86,12 @@ OWN_BASELINE_KWH_H: dict[str, float] = {
     "M10": 0.0,   # shared leaf — pass-through to V5/V6
     "M11": 0.0,   # B2 sub-panel — pass-through to V1/V2
     "M12": 0.0,   # B5 sub-panel — pass-through to V3/V4 (and V4→M9 chain)
+    "M13": 5.0,   # B12 factory own
+    "M14": 15.0,  # B12 multi-event sub own
+    "M15": 8.0,   # B13 office sub
+    "M16": 10.0,  # B14 frozen counter
+    "R1": 25.0,   # B15 parallel root A
+    "R2": 20.0,   # B16 parallel root B
     # Virtuals holding unmetered-building consumption
     "V1": 35.0,   # B3
     "V2": 15.0,   # B4
@@ -138,6 +144,12 @@ SHAPE: dict[str, dict[str, float]] = {
     # but the key must exist for the generator loop.
     "M11": {"daily": 0.00, "weekly": 0.00, "monthly": 0.00, "noise": 0.00, "phase": 0.0},
     "M12": {"daily": 0.00, "weekly": 0.00, "monthly": 0.00, "noise": 0.00, "phase": 0.0},
+    "M13": {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.06, "phase": 0.5},
+    "M14": {"daily": 0.40, "weekly": 0.25, "monthly": 0.15, "noise": 0.06, "phase": -0.5},
+    "M15": {"daily": 0.45, "weekly": 0.40, "monthly": 0.10, "noise": 0.07, "phase": 0.0},
+    "M16": {"daily": 0.20, "weekly": 0.10, "monthly": 0.30, "noise": 0.08, "phase": 1.0},
+    "R1":  {"daily": 0.35, "weekly": 0.20, "monthly": 0.15, "noise": 0.06, "phase": 0.0},
+    "R2":  {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.07, "phase": 0.5},
     # Virtuals — synthesized as warehouse-like flat profiles so the
     # downstream buildings have plausible consumption curves.
     "V1":  {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.07, "phase": 0.5},
@@ -309,6 +321,22 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
         recorded_flow[mid] = np.maximum(true * (1.0 + noise), 0.0)
 
     # ------------------------------------------------------------------
+    # Step 2.6: post-processing on specific meters' recorded readings.
+    # ------------------------------------------------------------------
+
+    # M14 conservation violation: undocumented extra feed adds ~6 kWh/h
+    # to the recorded readings but NOT to M13's accumulated flow.
+    extra_rng = np.random.default_rng(_det_seed(seed, "M14:extra_feed"))
+    extra = 6.0 * _seasonal_profile(ts, SHAPE["M14"], extra_rng)
+    extra = np.maximum(extra, 0.0)
+    extra *= _validity_mask(ts, None, abbey_road.M14_OFFLINE)
+    recorded_flow["M14"] = recorded_flow["M14"] + extra
+
+    # M16 frozen counter: stop incrementing after freeze date.
+    freeze_idx = int(np.searchsorted(ts, np.datetime64(abbey_road.M16_FREEZE_START, "h")))
+    recorded_flow["M16"][freeze_idx:] = 0.0
+
+    # ------------------------------------------------------------------
     # Step 3: supplier side. I1+I2+I3 ≈ M0 with seasonal drift (higher
     # in winter), split by fixed shares with a touch of per-meter wobble.
     # ------------------------------------------------------------------
@@ -420,21 +448,40 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
         else:
             raise ValueError(f"unknown reading_type: {ref.reading_type}")
 
-    # ---- Pass 2: derived refs ----
-    for ref in ds.timeseries_refs:
-        if ref.kind != "derived":
-            continue
+    # ---- Pass 2: derived refs (sum first, then rolling_sum) ----
+    derived_refs = [r for r in ds.timeseries_refs if r.kind == "derived"]
+    derived_refs.sort(key=lambda r: r.aggregation == "rolling_sum")
+
+    for ref in derived_refs:
         ref_mid = sensor_meter.get(ref.sensor_id)
         if ref_mid is None or ref_mid not in recorded_flow:
             continue
         meter_flow = recorded_flow[ref_mid]
 
-        if ref.aggregation == "rolling_sum":
-            # "As if never replaced" cumulative: anchor on the earliest
-            # source's offset, then cumsum the meter's flow across the
-            # union of all source windows. Because flow[mid] is the
-            # meter-point's hourly consumption (not per-device), the
-            # cumulative series is simply offset_first + cumsum(flow).
+        if ref.aggregation == "sum":
+            window = _validity_mask(ts, ref.valid_from, ref.valid_to)
+            total_delta = np.zeros(len(ts))
+            for src_id in ref.sources:
+                src_ref = refs_by_id[src_id]
+                src_mid = sensor_meter.get(src_ref.sensor_id)
+                if src_mid is None or src_mid not in recorded_flow:
+                    continue
+                total_delta += recorded_flow[src_mid]
+            offset = 0.0
+            offset_by_ref[ref.timeseries_id] = offset
+            cum = offset + np.cumsum(total_delta * window)
+            for i, t in enumerate(ts):
+                if not window[i]:
+                    continue
+                readings.append(
+                    Reading(
+                        timeseries_id=ref.timeseries_id,
+                        timestamp=cast(datetime, t.astype("datetime64[s]").astype(object)),
+                        value=round(float(cum[i]), 3),
+                    )
+                )
+
+        elif ref.aggregation == "rolling_sum":
             src_refs = sorted(
                 (refs_by_id[s] for s in ref.sources),
                 key=lambda r: r.valid_from or date.min,
@@ -442,15 +489,14 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
             first = src_refs[0]
             first_offset = offset_by_ref[first.timeseries_id]
 
-            # Span = earliest source valid_from → latest source valid_to.
-            span_from = min(
-                (r.valid_from for r in src_refs if r.valid_from is not None),
-                default=None,
-            )
-            span_to = max(
-                (r.valid_to for r in src_refs if r.valid_to is not None),
-                default=None,
-            )
+            if any(r.valid_from is None for r in src_refs):
+                span_from = None
+            else:
+                span_from = min(r.valid_from for r in src_refs)  # type: ignore[type-var]
+            if any(r.valid_to is None for r in src_refs):
+                span_to = None
+            else:
+                span_to = max(r.valid_to for r in src_refs)  # type: ignore[type-var]
             span = _validity_mask(ts, span_from, span_to)
 
             cum = first_offset + np.cumsum(meter_flow * span)
@@ -464,15 +510,6 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
                         value=round(float(cum[i]), 3),
                     )
                 )
-        elif ref.aggregation == "sum":
-            # Cross-series sum at each timestep. Assumes sources share
-            # the time grid; we union all their timestamps and sum values
-            # per timestamp. Not exercised yet in Abbey Road - vocab
-            # support only.
-            raise NotImplementedError(
-                "sum aggregation is declared in the schema but no test-site "
-                "derived ref uses it yet"
-            )
         else:
             raise ValueError(
                 f"unsupported derived aggregation: {ref.aggregation!r}"

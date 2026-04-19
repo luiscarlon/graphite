@@ -44,6 +44,8 @@ class Config:
     pdf_sources: list[str]  # --sources for parse_flow_schema.py
     primary_role: str    # principal inlet role for excel_relations.py
     quantity: str        # Snowflake QUANTITY filter
+    unit: str = "Megawatt-Hour"  # Brick/QUDT unit for sensors
+    has_pdf: bool = True         # whether a flow schema PDF exists
 
 
 CONFIGS: dict[str, Config] = {
@@ -70,18 +72,21 @@ CONFIGS: dict[str, Config] = {
         site="GTN",
         media="Kyla",
         media_slug="KYLA",
-        pdf_sources=[],  # no flödesschema PDF for kyla — confirmed via HF Rörsystem index
+        pdf_sources=[],
         primary_role="KB1",
         quantity="Active Energy Delivered(Mega)",
+        has_pdf=False,
     ),
     "gtn_el": Config(
         name="gtn_el",
         site="GTN",
         media="EL",
         media_slug="EL",
-        pdf_sources=[],  # no flödesschema PDF for electricity
-        primary_role="T1",  # nominal — EL "main inlet" concept is per transformer, not single meter
-        quantity="Active Energy Delivered",  # plain (kWh) not (Mega); EL sheet scales by $F$5=0.001
+        pdf_sources=[],
+        primary_role="T1",
+        quantity="Active Energy Delivered",
+        unit="KiloW-HR",
+        has_pdf=False,
     ),
 }
 
@@ -153,6 +158,11 @@ def pipeline(ws: Path, cfg: Config, *, skip_ontology: bool) -> None:
         ], optional=True)
     else:
         print("  (timeseries or crosswalk missing; skipping layer 3)")
+
+    # Detect meter swaps/glitches/offlines from daily timeseries
+    daily = ws / "01_extracted" / "timeseries_daily.csv"
+    if daily.exists():
+        run([py, str(SCRIPTS / "detect_meter_swaps.py"), str(ws)], optional=True)
 
     # Naming — meter roles + canonical IDs
     run([py, str(SCRIPTS / "parse_meter_names.py"), str(ws)], optional=True)
@@ -241,10 +251,21 @@ def pipeline(ws: Path, cfg: Config, *, skip_ontology: bool) -> None:
             str(ws),
             "--campus", cfg.site,
             "--media", cfg.media_slug,
-            "--database", "postgresql://localhost/astrazeneca",  # placeholder URL; only used as metadata
+            "--database", "ion_sweden_bms",
+            "--unit", cfg.unit,
+            "--emit-shared",
         ], optional=True)
 
+        # Phase 6: outage patches
+        swaps_file = ws / "01_extracted" / "meter_swaps.csv"
+        if swaps_file.exists():
+            print(f"\n=========== {cfg.name}: outage patches ===========")
+            run([py, str(SCRIPTS / "generate_outage_patches.py"), str(ws)], optional=True)
+
     print(f"\n=========== {cfg.name}: done ===========\n")
+    print("  NOTE: Annotations are curated by the analyst, not auto-generated.")
+    print("  Review meter_swaps.csv, conservation, and source_conflicts manually.")
+    print("  Write annotations with specific evidence in 05_ontology/annotations.csv.")
 
 
 def main() -> int:

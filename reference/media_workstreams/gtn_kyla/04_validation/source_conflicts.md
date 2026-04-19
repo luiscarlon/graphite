@@ -8,6 +8,8 @@ the human reconciliation in `03_reconciliation/decisions.md`.
 
 - `excel_formula`: **13** edges
 - `flow_schema`: **0** edges
+- `naming`: **0** edges
+- `timeseries`: **0** edges
 - `vlm_edge_check`: **0** edges
 
 ## Summary
