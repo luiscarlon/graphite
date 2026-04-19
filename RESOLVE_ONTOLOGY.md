@@ -67,11 +67,11 @@ Two sites × ~6 media each = **12 workstreams**. Not all sources are available f
 Flow-chart PDFs available under `reference/flow_charts/`:
 
 - `V600-52.E.{1,8}-001.pdf` — GTN ånga (done ✓)
-- `V600-52.B.{1,8}-001.pdf` — GTN kallvatten (stadsvatten)
-- `V600-56.{1,8}-001.pdf` — GTN värme (56 = värmesystem)
-- `V390-52.E.{1,8}-001.pdf` — SNV ånga (done ✓)
-- `V390-52.B.{1,8}-001.pdf` — SNV kallvatten
-- `V390-56.{1,8}-001.pdf` — SNV värme
+- `V600-52.B.{1,8}-001.pdf` — GTN kallvatten (done ✓)
+- `V600-56.{1,8}-001.pdf` — GTN värme (done ✓)
+- `V390-52.E.{1,8}-001.pdf` — SNV ånga (not started)
+- `V390-52.B.{1,8}-001.pdf` — SNV kallvatten (not started)
+- `V390-56.{1,8}-001.pdf` — SNV värme (not started)
 - `HF Rörsystem.pdf` — the master index of the six flödesscheman above (distributionsnät Stadsvatten / Ånga / Värme × GTN / SNV). Confirms definitively that **no PDF exists for kyla, sjövatten, kyltornsvatten, or el** — those must use Excel + BMS only.
 
 **Current workstream status (2026-04-19):**
@@ -84,6 +84,30 @@ Flow-chart PDFs available under `reference/flow_charts/`:
 | `gtn_kyla` | through `06_assembly` + app-validated (full rebuild 2026-04-19) | 32 meters (22 physical + 10 virtual), 20 edges (6 hasSubMeter + 14 feeds). **0 Brick validation violations.** Excel-facit rebuild from scratch: 11 curated annotations documenting every known gap. **45/49 match within ±0.5 MWh** both months (90/98 Jan+Feb combined). Remaining 4 offender patterns × 2 months = 8 cells, all documented: **B658** known "Excel=0 but meter live"; **B623** double-counted by Excel in both B623 building and B600-KB2 pool (conservation violation in the source — topology can only match one); **B612/B641** fractional subtractions (Excel subtracts B637 at k=0.9 for B612 and k=0.1 for B641; `views.sql` has no fractional-subtract primitive). **Negative building values** (B611 −20.88 MWh / B833 −0.84 MWh / B641 −1.75 MWh) are **data-quality artifacts** caused by dead pool meters (B653 died 2025-10-09, B654.KB2 died 2025-02-10) combined with active downstream sub-meters — the pool collapses to just B623 (3.67 MWh) while B631 sub-meters draw 22 MWh, producing physically-nonsensical negatives. Topology faithfully mirrors this. Also: **B612.KB1_PKYL and B833.KB1_GF4 are bi-daily BMS sensors** (31 readings over 59-day window), so any hasSubMeter with them as parent only subtracts on half the days. See `03_reconciliation/decisions.md` — `$R`-style per-row factors and mixed inline coefficients are mis-recorded in `01_extracted/excel_formulas.csv` for kyla rows 13/14/15/20/22/26/29/33/38/50; always re-parse formula text directly via `openpyxl.ArrayFormula.text` for kyla. |
 | `gtn_kallvatten` | through `06_assembly` + app-validated (built 2026-04-19) | 63 meters (62 with Snowflake + 1 STRUX-only inactive B869). 11 hasSubMeter edges, 0 feeds (no fractional shares). 39 buildings. **98/98 match within ±0.5 m³ for Jan+Feb** (100%). 0 Brick validation violations. Simplest pattern of the energy-intensive media: all coefficients 1.0, no cross-building virtuals. PDF exists (`V600-52.B.8-001.pdf`) but not needed — Excel accounting structure is sufficient. Building label `850/662` (dual-building Excel label) normalized to `B850`. |
 | `gtn_kyltornsvatten` | through `06_assembly` + app-validated (built 2026-04-19) | 7 meters (4 with Snowflake + 3 Excel-only inactive system-code meters `B621-52-V2-INT_VERK2`, `B654-55-V2`, `B661-52-V2-MQ43`). 0 edges, 0 virtuals. 7 buildings. **90/90 match for Jan+Feb** (100%). 0 Brick validation violations. Each building has a single +term meter, no subtractions. |
+
+**Expected difficulty per media** (based on GTN completion, use for SNV planning):
+
+| media | expected difficulty | watch out for |
+|---|---|---|
+| ånga | easy-medium | B600-style intake expected-residual; occasional "Excel=0 but meter live" misallocations (B616 on GTN); device-swap patches that might mask real post-swap data (GTN B642) |
+| värme | medium | Naming-heuristic edges (VP1→VS1, VP1→VÅ9, VMM61→VMM62 chain) frequently contradict Excel — **drop them unless Excel confirms**. PDF arrows can be wrong too (B615→B642 on GTN). Outage patches on offline primary meters (B658, B833 on GTN) |
+| kyla | hard | Excel formulas use `$R`-style factors and per-term coefficients — parser is buggy, **always re-parse via `ArrayFormula.text`**. Fractional subtractions (0.9×term, 0.1×term) have no views.sql primitive → expect 1–3 MWh residuals. Cross-building accounting virtuals (B600-KB2 pool, Prod-600). Dead source meters create negative building values. Bi-daily BMS sensors |
+| el | hard | STRUX-only meters without Snowflake data (B611.T4-A3/C1/C4 on GTN, H-prefix provider meters). `-S` suffix on main transformers. Deep sub-feeder chains where Excel double-subtracts from multiple parents. Excel-stale zeros (B664/B665 on GTN) |
+| kallvatten | easy | Cleanest media — uniform `B###.KV1_VM##` naming, all coefficients 1.0, typical 100% match. `_V` suffix variant on some meters. Dual-building Excel labels (`850/662`) need renaming post-extraction |
+| kyltornsvatten | trivial | 7 single-meter formulas, no subtractions. Some legacy system-code meters (`-52-`, `-55-`) that aren't in Snowflake — accept as dormant |
+
+**SNV starter checklist** (same playbook as GTN; 4 hours per media for a clean one, 1–2 days for a hard one):
+
+1. `mkdir -p reference/media_workstreams/snv_{media}/00_inputs`; symlink `excel_source.xlsx` → `snv.xlsx`, add `flow_schema.pdf` symlink if one exists (see §2 PDF list).
+2. Add a `Config` entry in `reference/scripts/regenerate_workstream.py` (pattern: copy the matching GTN entry, change `site="SNV"`, `pdf_sources=` to SNV roots).
+3. Run `parse_reporting_xlsx.py` to produce `01_extracted`.
+4. **For kyla specifically**: run a formula-text re-parse (see §7 "Excel formula re-parse caveat") and rebuild `facit_accounting.csv` with correct per-term coefficients before proceeding.
+5. Build `02_crosswalk` using the fuzzy-match procedure (§7). Document every naming convention discovered in `crosswalk_notes.md`.
+6. Build `03_reconciliation/facit_accounting.csv` and `facit_relations.csv` by mirroring the Excel formula structure: each `+` term is an independent supply meter attributed to its building; each `−` term at k=1 becomes a `hasSubMeter` child of one `+` term in the same building (typically the first one); fractional coefficients → `feeds` edges. Virtual meters only for cross-building accounting aggregators (e.g. SNV's equivalent of GTN's B600-KB2 if it has one).
+7. Build `05_ontology/` CSVs by hand (don't rely on `build_ontology.py` for anything non-trivial — use it only as a template). Ensure every `+` term meter's building_id is set; orphans go to campus (blank building_id).
+8. Run `assemble_site.py` with all SNV workstreams once the first two are ready (need at least 2 to test cross-workstream join logic).
+9. App-validate: `SUM(meter_net)` per (building, media, month) vs `excel_building_totals.csv` cached values. Target: >95% of populated buildings within ±0.5 (unit). Investigate every offender; annotate or fix.
+10. `validate(ds)` must return 0 violations. If a feeds-sum-to-1 violation appears for power-to-energy conversions (like GTN B634), add a residual-destination virtual at k=`1 − coefficient`.
 
 ## 3. Sources and authority scopes
 
@@ -309,7 +333,34 @@ Working rules for meter ID reconciliation, per media:
 - **`-S` suffix convention**: Excel references bare transformer IDs (`B611.T1`); Snowflake carries them with a `-S` suffix (`B611.T1-S`). The crosswalk builder must try `<id>-S` when exact match fails. Discovered on GTN; presumed campus-wide.
 - Some Excel transformer IDs have no Snowflake match at all (`B660.H23-1`, `B951.H3-B`) — these are likely provider/utility meters (H-prefix) with manual reads, not on BMS.
 
-Build the crosswalk seed by: (a) normalising per the media-specific rules above and matching; (b) trying `-S` suffix for EL; (c) disambiguating leftover cases manually with evidence from cell comments or timeseries behaviour. Record the normalisation used in `crosswalk_notes.md` so it's auditable.
+**Kallvatten (standard water naming):**
+- Meter IDs uniform: `B###.KV1_VM##` (with optional `_V` water-variant suffix). On GTN, 62/63 Excel meters match Snowflake exactly on first try — the cleanest media.
+- One `KV1` role per building; `VM21` / `VM22` / `VM23` etc for multiple supply meters (tenant splits).
+- `VV1_VM21` appears once on GTN (B611) as an extra tap; treat as regular KV1 meter.
+
+**Kyltornsvatten (V2 / V4 naming):**
+- Meter IDs `B###.V2_VM##` or `B###.V2_INT_VERK##`, occasionally `V4` variants.
+- Legacy Excel labels use system-code tokens: `B621-52-V2-INT_VERK2`, `B654-55-V2`, `B661-52-V2-MQ43`. These are manually-read meters; they often have no Snowflake data and no STRUX cache value (inactive). Leave them in the crosswalk with `snowflake_id=""` and annotate.
+
+**Fuzzy-matching procedure** (applies to every media; use before declaring a meter Snowflake-absent):
+
+1. **Exact match** `em in sf_ids`.
+2. **Normalized match** `re.sub(r'[^A-Za-z0-9]', '', em).lower()` against the same normalisation of every Snowflake ID — catches dash↔dot, separator drift, case differences.
+3. **Known suffix toggles**: try `em + '_E'`, `em + '_V'`, `em[:-2]` (strip trailing `_V` or `_E`).
+4. **Known transformations**: `VM`↔`VMM`, dash→dot on first separator, strip `-##-` system code.
+5. **Tail-segment search** within the same building prefix: strip `B###.`, compare normalised tails across all `B###.*` Snowflake IDs.
+6. **Last resort**: manually inspect STRUX catalog (`excel_intake_meters.csv`) to see if the meter is marked `Manuell` (manually read, legacy) — often explains why it's not in Snowflake.
+
+If all six fail, the meter is genuinely Snowflake-absent. Record with `snowflake_id=""` and evidence. **Never synthesize Snowflake rows from STRUX monthly values** (see memory "feedback_no_snowflake_overwrite").
+
+**Excel formula re-parse caveat:** `parse_reporting_xlsx.py`'s `excel_formulas.csv` records a single `faktor` per row, applied uniformly to all terms. This is wrong for rows where (a) a `$R{n}` cell-reference factor applies only to the first term, or (b) per-term inline coefficients differ (e.g. `0.8×S + 0.9×T − 0.9×U`). Known-buggy on kyla rows 13, 14, 15, 20, 22, 26, 29, 33, 38, 50. **For these rows, re-parse the formula text directly via `openpyxl.ArrayFormula.text` and rebuild per-term coefficients before writing `facit_accounting.csv`.** Simple formulas (`=S+T−U−V−W` all at k=1) parse correctly.
+
+**Building-ID normalisation edge cases:**
+- `621 (T)` → `B621` (handled by `_normalize_building_id`)
+- `621 (I&L)` → `B621` (same)
+- `850/662` → **not** handled by the parser — stays as `B850/662`. After extraction, manually rename in `01_extracted/excel_building_totals.csv` to the chosen canonical (GTN used `B850`).
+
+Build the crosswalk seed by: (a) running the fuzzy-match procedure above; (b) recording per-media normalisations in `crosswalk_notes.md` so they're auditable; (c) leaving truly-absent meters with blank `snowflake_id` and annotating their Excel cache values (often 0 during the comparison window, confirming they're dormant).
 
 ## 8. Tooling inventory
 
@@ -801,10 +852,12 @@ Every non-trivial call goes into `decisions.md` with evidence citations (file + 
 - Site assembly: `reference/scripts/assemble_site.py` — merges all media workstreams into `data/sites/gartuna/`
 - STRUX-only reading injection (handle with care, not a default): `reference/scripts/inject_strux_readings.py` — see §0's "Fuzzy-match" rule before using
 - Flow-schema parsing notes: `reference/monthly_reporting_documents/logs/topology/flow_schema_parsing_notes.md`
-- GTN ånga ontology: `reference/media_workstreams/gtn_anga/05_ontology/meter_relations.csv` (19 hasSubMeter edges)
-- GTN värme ontology: `reference/media_workstreams/gtn_varme/05_ontology/meter_relations.csv` (29 hasSubMeter edges, post Excel-realignment)
-- GTN kyla ontology: `reference/media_workstreams/gtn_kyla/05_ontology/meter_relations.csv` (11 edges, not yet app-validated)
-- GTN el ontology: `reference/media_workstreams/gtn_el/05_ontology/meter_relations.csv` (26 edges)
+- GTN ånga ontology: `reference/media_workstreams/gtn_anga/05_ontology/meter_relations.csv` (5 hasSubMeter edges, 46/48 match)
+- GTN värme ontology: `reference/media_workstreams/gtn_varme/05_ontology/meter_relations.csv` (29 hasSubMeter edges, 95/96 match)
+- GTN kyla ontology: `reference/media_workstreams/gtn_kyla/05_ontology/meter_relations.csv` (6 hasSubMeter + 14 feeds, 90/98 match, 10 virtual meters)
+- GTN el ontology: `reference/media_workstreams/gtn_el/05_ontology/meter_relations.csv` (10 edges, 33/100 match — STRUX-only cascade limits)
+- GTN kallvatten ontology: `reference/media_workstreams/gtn_kallvatten/05_ontology/meter_relations.csv` (11 hasSubMeter edges, 98/98 match)
+- GTN kyltornsvatten ontology: `reference/media_workstreams/gtn_kyltornsvatten/05_ontology/meter_relations.csv` (0 edges, 90/90 match)
 - Assembled site: `data/sites/gartuna/` — loaded by `ontology.load_dataset()`. The app's `_excel_comparison_section` (`packages/app/src/app/main.py`) shows the canonical topology-vs-Excel comparison per media (cached values, not formula reconstruction).
 - Abbey Road template (ontology shape): `data/reference_site/abbey_road/*.csv`
 - Snowflake export: `reference/snowflake_meter_readings/Untitled 1_2026-04-16-1842.csv` — daily-aggregated all meters, date range 2025-01-01 → 2026-02-28 (updated 2026-04-17). Query documented in `gtn_anga/00_inputs/README.md`.
