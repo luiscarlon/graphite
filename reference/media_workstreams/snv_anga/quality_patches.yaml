@@ -8,14 +8,15 @@
 #   reference/media_workstreams/snv_anga/05_ontology/annotations.csv
 #   reference/media_workstreams/snv_anga/05_ontology/timeseries_refs.csv
 #
-# This revision adds annotations only — it documents every existing
-# segment split, children-sum patch, leaf-dead meter, and known Excel
-# bug, so that the ontology self-describes the state of the data rather
-# than hiding it inside the auto-generated refs.
-#
-# Potential ref-level upgrades (bracket / interpolate) that would change
-# computed totals are documented separately in
-# reference/docs/snv_anga_followups.md and are NOT applied here.
+# This revision:
+#   1. Annotates every existing segment split, children-sum patch,
+#      leaf-dead meter, and known Excel bug.
+#   2. Restructures B217.Å1_VMM71 from the 4-segment (A|B|C|D) split
+#      (which flat-carries across the corruption gaps and loses
+#      ~484 MWh of real Jul–Oct 2025 consumption) into a single full-
+#      period raw ref + a `bracket` derived ref that filters the
+#      multi-register artifacts out. See the `delete` + `refs` blocks
+#      below and `reference/docs/snv_anga_followups.md` for rationale.
 
 annotations:
 
@@ -32,46 +33,32 @@ annotations:
       Upstream BMS (/SESOWABMSPD04) polled the wrong register for ~87
       days. Raw hourly samples alternate between the real counter
       (~7k MWh band), a near-zero artifact (< 100), and a stuck-high
-      value (~805k). Currently handled by 4-segment split
-      (:d.A | :d.B | :d.C | :d.D) that flat-carries across the gaps,
-      losing ~484 MWh of real consumption across the window. A
-      bracket + interpolate upgrade is proposed in
-      reference/docs/snv_anga_followups.md.
+      value (~805k). Handled by `bracket` on :d.raw: keep only samples
+      whose value lies between the source values at the bracket
+      validity boundaries (pre-gap clean and post-gap clean). Recovers
+      the real-register samples that survive V_LAST aggregation;
+      artifact days remain as gaps in the :d output, which LAG-based
+      delta views treat as cross-gap accumulation.
     related_refs:
-      - B217.Å1_VMM71:d.A
-      - B217.Å1_VMM71:d.B
-      - B217.Å1_VMM71:d.C
-      - B217.Å1_VMM71:d.D
+      - B217.Å1_VMM71:d.raw
+      - B217.Å1_VMM71:d.clip
       - B217.Å1_VMM71:d
 
-  - annotation_id: ann-snv-anga-b217-glitch-aug
-    target_kind: meter
-    target_id: B217.Å1_VMM71
-    category: data_quality
-    valid_from: 2025-08-01
-    valid_to: 2025-08-07
+  - annotation_id: ann-snv-anga-b217-patch-clip
+    target_kind: timeseries
+    target_id: B217.Å1_VMM71:d.clip
+    category: patch
+    valid_from: 2025-07-15
+    valid_to: 2025-10-10
     description: >-
-      Three-event cluster inside the corruption window: glitch 2025-08-01
-      to 2025-08-03, offline 2025-08-06, register swap 2025-08-07 at
-      value 803864.576. Segment split produced :d.A | :d.B | :d.C.
+      Bracket patch: parameter-free monotone value-range clip over
+      :d.raw's readings. Endpoints (v_lo, v_hi) derive from the
+      source's readings immediately outside the validity window — the
+      last clean pre-corruption value and the first clean post-corruption
+      value. Any reading whose value falls outside [v_lo, v_hi] is
+      physically impossible for a monotone counter and is dropped.
     related_refs:
-      - B217.Å1_VMM71:d.A
-      - B217.Å1_VMM71:d.B
-      - B217.Å1_VMM71:d.C
-
-  - annotation_id: ann-snv-anga-b217-glitch-sep
-    target_kind: meter
-    target_id: B217.Å1_VMM71
-    category: data_quality
-    valid_from: 2025-09-25
-    valid_to: 2025-09-28
-    description: >-
-      End-of-corruption glitch boundary where the :d.C → :d.D segment
-      split was applied (last stuck-high value observed: 805175.296).
-      Counter resumes cleanly on 2025-09-28.
-    related_refs:
-      - B217.Å1_VMM71:d.C
-      - B217.Å1_VMM71:d.D
+      - B217.Å1_VMM71:d.raw
 
   # ---------------------------------------------------------------
   # B216 — froze mid-February 2026; children-sum patch active
@@ -253,3 +240,72 @@ annotations:
       decisions.md. Does not affect Jan/Feb 2026 totals because both
       meters are leaf-level relative to their building's accounting.
     related_refs: []
+
+
+# B217.Å1_VMM71 — drop the auto-generated 4-segment split and replace
+# with a single full-period raw + bracket derived ref. Each rebuild
+# will re-emit :d.A/B/C/D (driven by meter_swaps.csv entries) and a
+# rolling_sum :d; Phase 7 then removes them and installs the bracket
+# pair below. Idempotent.
+delete:
+  refs:
+    - B217.Å1_VMM71:d.A
+    - B217.Å1_VMM71:d.B
+    - B217.Å1_VMM71:d.C
+    - B217.Å1_VMM71:d.D
+  annotations:
+    # Glitch-sub annotations referencing the removed A|B|C|D segments.
+    # The broader `ann-snv-anga-b217-register-corruption` already
+    # captures the event window.
+    - ann-snv-anga-b217-glitch-aug
+    - ann-snv-anga-b217-glitch-sep
+
+
+refs:
+  # Full-period raw — the unmodified daily counter from Snowflake,
+  # preferred=False. Kept as the factual record of what the upstream
+  # DB served, including the Jul–Oct 2025 multi-register artifacts.
+  - timeseries_id: B217.Å1_VMM71:d.raw
+    sensor_id: B217.Å1_VMM71.energy
+    aggregate: daily
+    reading_type: counter
+    kind: raw
+    preferred: false
+    database_id: ion_sweden_bms
+    path: OPS_WRK.ION_SWEDEN.DATALOG2
+    external_id: B217.Å1_VM71
+
+  # Bracket clip over the corruption window. Endpoints come from
+  # :d.raw readings just outside [valid_from, valid_to): the last
+  # pre-gap clean value and the first post-gap clean value. Output
+  # keeps only source samples whose value lies in that range, so
+  # artifact days (<100 or >100k) drop out as gaps.
+  - timeseries_id: B217.Å1_VMM71:d.clip
+    sensor_id: B217.Å1_VMM71.energy
+    aggregate: daily
+    reading_type: counter
+    kind: derived
+    preferred: false
+    sources:
+      - B217.Å1_VMM71:d.raw
+    aggregation: bracket
+    valid_from: 2025-07-15
+    valid_to: 2025-10-10
+
+  # New preferred canonical: rolling_sum stitches the bracket-cleaned
+  # corruption window over the raw counter. Outside the corruption
+  # window the raw is the only source with readings, so rolling_sum
+  # passes it through; inside the window the clip output takes over,
+  # and the flat-carry behaviour across bracket's gaps (artifact days)
+  # is honest — it's exactly how much consumption the upstream DB
+  # actually conveyed on a given day.
+  - timeseries_id: B217.Å1_VMM71:d
+    sensor_id: B217.Å1_VMM71.energy
+    aggregate: daily
+    reading_type: counter
+    kind: derived
+    preferred: true
+    sources:
+      - B217.Å1_VMM71:d.raw
+      - B217.Å1_VMM71:d.clip
+    aggregation: rolling_sum

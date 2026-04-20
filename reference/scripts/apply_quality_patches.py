@@ -130,8 +130,11 @@ def apply(ws: Path) -> int:
 
     annotations_yaml = data.get("annotations") or []
     refs_yaml = data.get("refs") or []
+    delete_cfg = data.get("delete") or {}
+    delete_refs = set(delete_cfg.get("refs") or [])
+    delete_annotations = set(delete_cfg.get("annotations") or [])
 
-    if not annotations_yaml and not refs_yaml:
+    if not annotations_yaml and not refs_yaml and not delete_refs and not delete_annotations:
         print(f"{patches_path.name}: empty — nothing to apply")
         return 0
 
@@ -159,26 +162,38 @@ def apply(ws: Path) -> int:
 
     onto = ws / "05_ontology"
 
-    if annotations_yaml:
+    if annotations_yaml or delete_annotations:
         ann_path = onto / "annotations.csv"
         existing = read_rows(ann_path)
+        if delete_annotations:
+            before = len(existing)
+            existing = [r for r in existing if r.get("annotation_id") not in delete_annotations]
+            removed = before - len(existing)
+        else:
+            removed = 0
         new_rows = [_to_row(e, ANNOTATION_FIELDS) for e in annotations_yaml]
         merged, over, app = merge_rows(existing, new_rows, key="annotation_id")
         write_rows(ann_path, ANNOTATION_FIELDS, merged)
         print(
-            f"  annotations.csv: +{app} new, {over} overwritten "
-            f"(total {len(merged)})"
+            f"  annotations.csv: +{app} new, {over} overwritten, "
+            f"{removed} removed (total {len(merged)})"
         )
 
-    if refs_yaml:
+    if refs_yaml or delete_refs:
         ref_path = onto / "timeseries_refs.csv"
         existing = read_rows(ref_path)
+        if delete_refs:
+            before = len(existing)
+            existing = [r for r in existing if r.get("timeseries_id") not in delete_refs]
+            removed = before - len(existing)
+        else:
+            removed = 0
         new_rows = [_to_row(e, REF_FIELDS) for e in refs_yaml]
         merged, over, app = merge_rows(existing, new_rows, key="timeseries_id")
         write_rows(ref_path, REF_FIELDS, merged)
         print(
-            f"  timeseries_refs.csv: +{app} new, {over} overwritten "
-            f"(total {len(merged)})"
+            f"  timeseries_refs.csv: +{app} new, {over} overwritten, "
+            f"{removed} removed (total {len(merged)})"
         )
 
     return 0

@@ -9,49 +9,35 @@ fix it, and the pipeline work required to execute the patch.
 
 ---
 
-## 1. B217 — replace A|B|C|D segment split with bracket + interpolate
+## 1. B217 — bracket replaces A|B|C|D segment split  ✓ **APPLIED**
 
-**What is today:**  
-`B217.Å1_VMM71:d` is a `rolling_sum` over four raw segments
-(:d.A, :d.B, :d.C, :d.D) whose validity windows skip the corruption
-period (2025-07-15 → 2025-10-10). The rolling_sum flat-carries across
-the skipped intervals, so the ~484 MWh of real consumption inside the
-corruption window is lost from the canonical counter.
+The 4-segment raw split (:d.A|:d.B|:d.C|:d.D) has been replaced with
+- `:d.raw` — single full-period raw ref (non-preferred)
+- `:d.clip` — `bracket` derived ref scoped to the corruption window
+  (2025-07-15 → 2025-10-10)
+- `:d` — preferred `rolling_sum` stitching :d.raw with :d.clip
 
-**What it should be:**  
-A single full-period raw ref carrying the corrupted hourly data
-unchanged, topped by:
-- `B217.Å1_VMM71:d.clip` (bracket, valid_from=2025-07-15,
-  valid_to=2025-10-10) — keeps in-band samples (~55 of 87 days based
-  on the raw hourly inspection).
-- One or more `B217.Å1_VMM71:d.patch.N` (interpolate) refs across
-  sub-gaps where bracket output has zero samples (the longest observed
-  stretch is 5 days; there are 14 such stretches).
-- `B217.Å1_VMM71:d` (rolling_sum, preferred) combining the full raw
-  with the clip and patch refs.
+See `reference/media_workstreams/snv_anga/quality_patches.yaml` for
+the exact `delete` + `refs` blocks. The `apply_quality_patches.py`
+script was extended with deletion support to make this possible.
 
-**Why deferred:**  
-The existing :d.A|:d.B|:d.C|:d.D raw refs overlap validity with any
-new full-period raw ref under the same `(sensor, database, path)`
-triple, which violates `ref_validity_non_overlapping`. Restructuring
-requires either:
-- removing the B217 entries from `meter_swaps.csv` so build_ontology
-  stops emitting the 4-segment split, then adding the full-period raw
-  via `quality_patches.yaml`, or
-- adding a deletion directive to `apply_quality_patches.py` and
-  explicitly removing :d.A/:d.B/:d.C/:d.D in the YAML.
+**Outcome:** bracket filters the multi-register artifacts (< 100 and
+> 100k) from the corruption window while preserving days whose daily
+V_LAST landed on the real counter register. Days where V_LAST landed
+on an artifact drop out as gaps; downstream LAG-diff views treat them
+as cross-gap accumulation (total is conserved).
 
-**Impact on Jan/Feb 2026 reconciliation:**  
-None. The corruption window is Jul–Oct 2025. Monthly deltas after Oct
-2025 are invariant; only the cumulative counter rises by ~484 MWh
-earlier. The 2025 monthly totals (Jul–Oct) would shift from near-zero
-(flat-carry) to recovering the real consumption.
+**Not yet applied:** `interpolate` sub-gap patches. At daily V_LAST
+aggregation we don't know a priori which days will have artifact
+V_LAST values, so we can't pre-author per-stretch interpolate refs.
+Revisit if the Jul–Oct 2025 monthly residuals prove meaningful once
+the production pipeline re-runs with the new structure.
 
-**Raw-data evidence available:**  
+**Raw-data evidence:**  
 `reference/snowflake_meter_readings/B217.Å1_VM71.csv` — 5830 hourly
-rows covering 2025-07-01 → 2026-02-28. Tri-modal value histogram
-(<100 / 1k–10k / ~800k) with zero overlap between bands; 53 days
-recoverable by bracket, 34 need interpolate; longest sub-gap 5 days.
+rows, tri-modal value histogram (<100 / 1k–10k / ~800k) with zero
+overlap between bands. At hourly resolution, 53 of 87 corruption-
+window days have ≥1 real-register sample.
 
 ---
 
