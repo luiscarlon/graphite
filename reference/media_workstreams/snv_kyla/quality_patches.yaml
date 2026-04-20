@@ -1,0 +1,80 @@
+# Hand-authored data-quality annotations and patches for Snäckviken cooling (kyla).
+#
+# Applied by reference/scripts/apply_quality_patches.py into
+# 05_ontology/annotations.csv + 05_ontology/timeseries_refs.csv.
+#
+# Current state: all Jan/Feb 2026 Excel comparisons match (diff=0).
+# No bracket/interpolate patches needed; YAML carries outage annotations
+# so the six offlines tracked in meter_swaps.csv are documented in the
+# ontology rather than only in the detector's extraction output.
+
+annotations:
+  - annotation_id: ann-snv-kyla-b203-kb1-offline
+    target_kind: meter
+    target_id: B203.KB1
+    category: outage
+    valid_from: 2025-10-17
+    description: >-
+      Counter went offline 2025-10-17 at value 6023.20. Leaf meter;
+      ref carries valid_to=2025-10-17 so no flat-carry past the event.
+
+  - annotation_id: ann-snv-kyla-b203-kb5-offline
+    target_kind: meter
+    target_id: B203.KB5-Intverk
+    category: outage
+    valid_from: 2025-10-17
+    description: >-
+      Counter went offline 2025-10-17 at value 7879.81. Same upstream
+      event family as B203.KB1 and B209.KB4.
+
+  - annotation_id: ann-snv-kyla-b209-kb4-offline
+    target_kind: meter
+    target_id: B209.KB4_VMM51
+    category: outage
+    valid_from: 2025-10-17
+    description: >-
+      Counter went offline 2025-10-17 at value 7346.35. Three-meter
+      coincident offline (B203.KB1, B203.KB5-Intverk, B209.KB4_VMM51)
+      suggests a shared upstream network event.
+
+  - annotation_id: ann-snv-kyla-b201-kb1-elogg-offline
+    target_kind: meter
+    target_id: B201.KB1_Elogg
+    category: outage
+    valid_from: 2026-02-17
+    description: >-
+      Counter went offline 2026-02-17 at value 494.0. Inside the
+      Jan/Feb 2026 reference period — affects the last ~2 weeks of
+      February. Leaf meter; no children to patch from.
+
+  - annotation_id: ann-snv-kyla-b207-vent-offline
+    target_kind: meter
+    target_id: B207.VENT
+    category: outage
+    valid_from: 2026-02-15
+    description: >-
+      Counter went offline 2026-02-15 at value 936.7. Inside the Feb
+      2026 reference period — affects the last ~2 weeks of February.
+
+  - annotation_id: ann-snv-kyla-b216-vent-offline
+    target_kind: meter
+    target_id: B216.VENT
+    category: outage
+    valid_from: 2025-09-27
+    description: >-
+      Counter went offline 2025-09-27 at value 1050.1. Outside the
+      Jan/Feb 2026 reference period; no impact on the current facit.
+
+  - annotation_id: ann-snv-kyla-fractional-splits
+    target_kind: campus
+    target_id: SNV
+    category: calibration
+    description: >-
+      Four meter refs carry tenant/pool splits that require a
+      fractional-subtract primitive not available in views.sql:
+      B304.KB2 → B302/B303 @ 0.5/0.5; B307.KB1 → B305/B307 @ 0.5/0.5;
+      B305.KB1 → B305 @ 1.0; B307.KB1_VMM52 → B307 @ 1.0. Source
+      meters are attached to campus (building_id='') per the
+      fully-split convention. Residuals of ±1–3 MWh on B302/B303/
+      B305/B307 are expected until a weighted-subtract primitive
+      exists. See decisions.md in this workstream.

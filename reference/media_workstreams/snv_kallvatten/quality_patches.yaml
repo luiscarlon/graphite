@@ -1,0 +1,144 @@
+# Hand-authored data-quality annotations and patches for Snäckviken cold water (kallvatten).
+#
+# Applied by reference/scripts/apply_quality_patches.py.
+#
+# Most Jan/Feb 2026 Excel deltas trace to triple-meter attribution
+# bugs in the Excel sheet (B313, B315 claimed by multiple parent rows).
+# Those are immutable in Excel and documented here as `unknown`
+# category so the ~140 MWh cumulative topology/Excel gap is explained
+# rather than hidden.
+
+annotations:
+
+  # ---------------------------------------------------------------
+  # Excel double-attribution conflicts (immutable, document only)
+  # ---------------------------------------------------------------
+  - annotation_id: ann-snv-kv-b313-double-subtract
+    target_kind: meter
+    target_id: B313.KV1_VMM22_V
+    category: unknown
+    description: >-
+      Excel double-subtracts this meter: it appears as a subtracted
+      −term on row 26 (B310 formula) AND on row 30 (B314 formula).
+      Ontology enforces one-parent-per-meter and attached it to B314
+      (shorter-formula-wins). B310 therefore over-counts vs Excel by
+      Δ(B313.KV1_VMM22_V) each month (+120.82 MWh Jan-2026,
+      +26.73 MWh Feb-2026). Excel is immutable.
+    related_refs:
+      - B310.KV1:d
+      - B314.KV1:d
+
+  - annotation_id: ann-snv-kv-b315-double-subtract
+    target_kind: meter
+    target_id: B315.KV1_VMM21_V
+    category: unknown
+    description: >-
+      Excel lists B315.KV1_VMM21_V as both a +term on row 30 (B314)
+      AND the sole +term on row 31 (B315). Ontology attached the
+      meter to B315 (prefix-match convention). Result: B311 over-
+      counts by +23.72 Jan / +15.22 Feb (via the pool share), and
+      B314 under-counts by the same magnitude. B315 itself matches
+      Excel exactly. Excel is immutable.
+    related_refs:
+      - B311.KV1:d
+      - B314.KV1:d
+      - B315.KV1:d
+
+  # ---------------------------------------------------------------
+  # Device swap — already handled via rolling_sum
+  # ---------------------------------------------------------------
+  - annotation_id: ann-snv-kv-b302-swap
+    target_kind: meter
+    target_id: B302.KV1_VMM21_V
+    category: swap
+    valid_from: 2025-01-09
+    valid_to: 2025-01-09
+    description: >-
+      Device swap 2025-01-09 (last value 5386.99). Split A|B via
+      rolling_sum.
+    related_refs:
+      - B302.KV1_VMM21_V:d.A
+      - B302.KV1_VMM21_V:d.B
+      - B302.KV1_VMM21_V:d
+
+  # ---------------------------------------------------------------
+  # Offline events — ref carries valid_to; leaf meters annotated only
+  # ---------------------------------------------------------------
+  - annotation_id: ann-snv-kv-b389-swap
+    target_kind: meter
+    target_id: B389.BRV1_VM21
+    category: swap
+    valid_from: 2025-10-17
+    valid_to: 2025-10-17
+    description: >-
+      Device swap 2025-10-17 (last value 799.85). Outside Jan/Feb
+      2026 reference period.
+
+  - annotation_id: ann-snv-kv-b409-offline
+    target_kind: meter
+    target_id: B409.KV1_VM21
+    category: outage
+    valid_from: 2025-10-17
+    description: >-
+      Counter went offline 2025-10-17 at value 236425.72. Leaf meter;
+      no children for sum-patch. Outside Jan/Feb 2026 reference.
+
+  - annotation_id: ann-snv-kv-b301-offline
+    target_kind: meter
+    target_id: B301.KV1_VMM21_V
+    category: outage
+    valid_from: 2026-01-14
+    description: >-
+      Counter went offline 2026-01-14 at value 278.83. Inside the
+      Jan 2026 reference period — affects Jan 14 → Feb 28. Ref
+      carries valid_to so downstream gets zero delta post-outage
+      (flat-carry equivalent). Excel total not materially impacted
+      (B301 is a small consumer).
+
+  - annotation_id: ann-snv-kv-b305-offline
+    target_kind: meter
+    target_id: B305.KV1_VMM23_V
+    category: outage
+    valid_from: 2026-02-24
+    description: >-
+      Counter went offline 2026-02-24 at value 79.15. Inside Feb 2026
+      — last 4 days of the month missing.
+
+  - annotation_id: ann-snv-kv-b317-vm22-offline
+    target_kind: meter
+    target_id: B317.KV1_VMM22_V
+    category: outage
+    valid_from: 2026-02-21
+    description: >-
+      Counter went offline 2026-02-21 at value 35.62. Inside Feb 2026
+      reference period.
+
+  - annotation_id: ann-snv-kv-b317-vm23-offline
+    target_kind: meter
+    target_id: B317.KV1_VMM23_V
+    category: outage
+    valid_from: 2026-02-10
+    description: >-
+      Counter went offline 2026-02-10 at near-zero value
+      (8.74e-05). Inside Feb 2026 reference period.
+
+  - annotation_id: ann-snv-kv-b317-vm25-offline
+    target_kind: meter
+    target_id: B317.KV1_VMM25_V
+    category: outage
+    valid_from: 2026-01-09
+    description: >-
+      Counter went offline 2026-01-09 at value 77.94. Inside Jan 2026
+      reference period.
+
+  # ---------------------------------------------------------------
+  # Distribution node — patchable if it ever goes offline
+  # ---------------------------------------------------------------
+  - annotation_id: ann-snv-kv-b311-vm26-distribution
+    target_kind: meter
+    target_id: B311.KV1_VMM26
+    category: calibration
+    description: >-
+      B311.KV1_VMM26 is the main kallvatten distribution node with 13
+      children. Currently healthy; candidate for sum-children patch
+      if it ever goes offline.

@@ -1,0 +1,146 @@
+# Hand-authored data-quality annotations and patches for Snäckviken heating (värme).
+#
+# Applied by reference/scripts/apply_quality_patches.py.
+#
+# Current state: all Jan/Feb 2026 Excel comparisons match. Five device
+# swaps already handled via rolling_sum segment splits. YAML documents
+# each one so the ontology self-describes the state.
+
+annotations:
+
+  # --- B201.VP1 — 2025-08-05 swap, already split A|B ---
+  - annotation_id: ann-snv-varme-b201-swap
+    target_kind: meter
+    target_id: B201.VP1_VMM61
+    category: swap
+    valid_from: 2025-08-05
+    valid_to: 2025-08-05
+    description: >-
+      Device swap 2025-08-05 (last value 67.26). Handled by 2-segment
+      split B201.VP1_VMM61:d.A | :d.B via rolling_sum.
+    related_refs:
+      - B201.VP1_VMM61:d.A
+      - B201.VP1_VMM61:d.B
+      - B201.VP1_VMM61:d
+
+  # --- B217.VP1 — multi-event: offline Aug 5, two swaps Oct 4 + Oct 9 ---
+  - annotation_id: ann-snv-varme-b217-offline
+    target_kind: meter
+    target_id: B217.VP1_VMM61
+    category: outage
+    valid_from: 2025-08-05
+    valid_to: 2025-10-04
+    description: >-
+      Counter went offline 2025-08-05 at value 662831.21. Resumed with
+      a device swap on 2025-10-04 (value 2958426.22, then again on
+      2025-10-09 at 23724.03). Combined multi-event pattern handled by
+      3-segment split :d.A | :d.B | :d.C via rolling_sum. The gap
+      between Aug 5 and Oct 4 is flat-carried by rolling_sum;
+      consumption during those 60 days is lost from the canonical
+      counter — candidate for a children-sum or interpolate patch if
+      we want to recover the integral (see followups).
+    related_refs:
+      - B217.VP1_VMM61:d.A
+      - B217.VP1_VMM61:d.B
+      - B217.VP1_VMM61:d.C
+      - B217.VP1_VMM61:d
+
+  - annotation_id: ann-snv-varme-b217-swap-oct
+    target_kind: meter
+    target_id: B217.VP1_VMM61
+    category: swap
+    valid_from: 2025-10-04
+    valid_to: 2025-10-09
+    description: >-
+      Two back-to-back swaps 2025-10-04 and 2025-10-09 (values
+      2958426.22 and 23724.03). Segment :d.B covers the 5-day window
+      between; :d.C carries forward from 2025-10-09.
+    related_refs:
+      - B217.VP1_VMM61:d.B
+      - B217.VP1_VMM61:d.C
+
+  # --- Jan 7 2025 coincident swaps on four buildings ---
+  - annotation_id: ann-snv-varme-b330-swap
+    target_kind: meter
+    target_id: B330.VS1_VMM61
+    category: swap
+    valid_from: 2025-01-07
+    valid_to: 2025-01-07
+    description: >-
+      Device swap 2025-01-07 (last value 1758.83). Coincident with
+      B334, B337, B341 swaps — suggests a coordinated device-family
+      replacement. Split A|B via rolling_sum.
+    related_refs:
+      - B330.VS1_VMM61:d.A
+      - B330.VS1_VMM61:d.B
+      - B330.VS1_VMM61:d
+
+  - annotation_id: ann-snv-varme-b334-swap
+    target_kind: meter
+    target_id: B334.VS1_VMM61
+    category: swap
+    valid_from: 2025-01-07
+    valid_to: 2025-01-07
+    description: >-
+      Device swap 2025-01-07 (last value 983.69). Coincident swap
+      family (B330, B334, B337, B341). Split A|B via rolling_sum.
+    related_refs:
+      - B334.VS1_VMM61:d.A
+      - B334.VS1_VMM61:d.B
+      - B334.VS1_VMM61:d
+
+  - annotation_id: ann-snv-varme-b337-swap
+    target_kind: meter
+    target_id: B337.VP12_VMM61
+    category: swap
+    valid_from: 2025-01-07
+    valid_to: 2025-01-07
+    description: >-
+      Device swap 2025-01-07 (last value 296.97). Coincident swap
+      family. Split A|B via rolling_sum.
+    related_refs:
+      - B337.VP12_VMM61:d.A
+      - B337.VP12_VMM61:d.B
+      - B337.VP12_VMM61:d
+
+  - annotation_id: ann-snv-varme-b341-swap
+    target_kind: meter
+    target_id: B341.VS1_VMM61
+    category: swap
+    valid_from: 2025-01-07
+    valid_to: 2025-01-07
+    description: >-
+      Device swap 2025-01-07 (last value 1520.07). Coincident swap
+      family. Not currently carrying a multi-segment split in
+      timeseries_refs.csv — may be covered by a valid_from on the
+      existing raw ref. Review if a rolling_sum split is needed.
+
+  # --- Other offlines ---
+  - annotation_id: ann-snv-varme-b203-fv1-offline
+    target_kind: meter
+    target_id: B203.FV1_MQ4
+    category: outage
+    valid_from: 2025-10-18
+    description: >-
+      Counter went offline 2025-10-18 at value 4582.21. Leaf meter.
+
+  - annotation_id: ann-snv-varme-b311-vp1-offline
+    target_kind: meter
+    target_id: B311.VP1_VMM61
+    category: outage
+    valid_from: 2025-02-13
+    description: >-
+      Counter went offline 2025-02-13 at value 158.73. Outside
+      Jan/Feb 2026 reference period.
+
+  # --- Major distribution node note ---
+  - annotation_id: ann-snv-varme-b310-vp2-distribution
+    target_kind: meter
+    target_id: B310.VP2_VMM61
+    category: calibration
+    description: >-
+      B310.VP2_VMM61 is the primary värme distribution node with 23
+      children across B301–B305, B311, B312, B313, B317, B341, B385.
+      Not currently flagged as having issues in Jan/Feb 2026 Excel
+      comparisons, but is the obvious candidate for sum-children
+      patching if it ever goes offline.
