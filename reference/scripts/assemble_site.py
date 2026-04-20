@@ -462,7 +462,15 @@ def main() -> int:
                 # reset/rollover instant isn't in daily V_LAST data —
                 # honest trade-off vs. making up a spike.
                 ROLLOVER_CEILINGS = (1_000_000.0, 10_000_000.0, 100_000_000.0)
-                ROLLOVER_TOLERANCE = 0.01
+                # 3% — see detect_meter_swaps.py for rationale. Near-
+                # ceiling operator/utility resets (B660.H23_1 pattern)
+                # land 1–3% below the ceiling depending on when in the
+                # day the reset happened. Keeping detector and stitcher
+                # tolerances in sync avoids the dip shown in the rate
+                # view when prev_raw is in the 1–3% band but post_raw
+                # is tiny (operator reset near end of day, minimal
+                # post-reset accumulation).
+                ROLLOVER_TOLERANCE = 0.03
                 # Below this value, a big-drop boundary is more likely a
                 # fresh-install device swap than a reset — the new
                 # counter's first reading is treated as an arbitrary

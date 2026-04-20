@@ -46,8 +46,14 @@ from pathlib import Path
 # values is strong evidence the reset is a register wrap, not a device
 # change.
 ROLLOVER_CEILINGS = (1_000_000.0, 10_000_000.0, 100_000_000.0)
-ROLLOVER_TOLERANCE = 0.01  # 1% — reset happens mid-day at a value just
-                           # shy of the ceiling.
+# 3% — reset happens mid-day at a value just shy of the ceiling.
+# Originally set to 1% but real utility-meter patterns (B660.H23_1)
+# show operator/rollover resets landing anywhere from 97.8% to 99.5%
+# of the ceiling depending on when in the day the meter was read;
+# widening to 3% catches all observed near-ceiling resets without
+# introducing false positives (no non-ceiling resets sit in the 1–3%
+# band across any of the workstreams).
+ROLLOVER_TOLERANCE = 0.03
 
 
 def _looks_like_rollover(pre_reset_v_last: float) -> float | None:
