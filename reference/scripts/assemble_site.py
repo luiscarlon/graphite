@@ -430,40 +430,57 @@ def main() -> int:
 
             elif agg == "rolling_sum":
                 # Stitch: concatenate source segments at their validity
-                # boundaries. Two boundary types to distinguish:
+                # boundaries. Three boundary types to distinguish:
                 #
-                #   (a) Device swap — new device starts counting from
-                #       some arbitrary offset. We want the stitched
-                #       counter to stay flat across the boundary; only
-                #       deltas from the new device add. Achieved by
-                #       anchoring on the new source's first raw reading
-                #       (stitched = prev + (raw - anchor) = prev on
-                #       boundary; subsequent readings add delta).
+                #   (a) Register rollover — same device, accumulator
+                #       wrapped at a known ceiling (Schneider PowerLogic
+                #       / ION default 10,000,000). Pre-wrap remainder
+                #       (ceiling - prev_raw) + post-wrap raw both count
+                #       as reset-day consumption.
+                #       Heuristic: prev_raw within 1% below a known
+                #       ceiling AND big drop at boundary.
                 #
-                #   (b) Register rollover (Schneider PowerLogic / ION
-                #       default ceiling 10,000,000) — same device, its
-                #       accumulator wrapped. The new source's first raw
-                #       IS consumption since the wrap, so we must add
-                #       both the pre-wrap remainder (ceiling - prev_raw)
-                #       and the new raw value itself to the cumulative.
-                #       Without this, the reset-day's consumption is
-                #       silently lost (the stitched counter stays flat
-                #       across the rollover day, producing a visible
-                #       zero-delta dip in rate views).
+                #   (b) Counter reset — same device, counter zeroed by
+                #       an operator or utility reader (not at a
+                #       ceiling). No fictional ceiling-gap to add, but
+                #       the new source's first raw IS consumption-since
+                #       -reset and must be added to cumulative.
+                #       Heuristic: prev_raw is large enough to rule out
+                #       a fresh device's starting value (> 100,000) AND
+                #       big drop at boundary.
                 #
-                # Heuristic to distinguish: prev_raw is within 1% below
-                # a known Schneider ceiling AND new raw is much smaller.
-                # Mirrors detect_meter_swaps.py classification.
+                #   (c) Device swap — new physical device installed;
+                #       its counter starts at an arbitrary (possibly
+                #       non-zero) offset. Anchoring on the new source's
+                #       first raw keeps the stitched counter flat
+                #       across the boundary so only subsequent deltas
+                #       add.
+                #       Everything not matching (a) or (b).
+                #
+                # Under-counts reset-day slightly for (a)/(b) because the
+                # portion between yesterday's end-of-day reading and the
+                # reset/rollover instant isn't in daily V_LAST data —
+                # honest trade-off vs. making up a spike.
                 ROLLOVER_CEILINGS = (1_000_000.0, 10_000_000.0, 100_000_000.0)
                 ROLLOVER_TOLERANCE = 0.01
+                # Below this value, a big-drop boundary is more likely a
+                # fresh-install device swap than a reset — the new
+                # counter's first reading is treated as an arbitrary
+                # offset. Water / gas / small-flow meters cluster below
+                # this threshold; industrial energy meters cluster well
+                # above it.
+                RESET_THRESHOLD = 100_000.0
 
-                def _rollover_ceiling(prev_val: float, new_val: float) -> float | None:
+                def _classify_boundary(prev_val: float, new_val: float):
+                    """Return ('rollover', ceiling) | 'reset' | 'swap'."""
                     if new_val >= prev_val * 0.5:
-                        return None
+                        return "swap"  # no meaningful drop
                     for C in ROLLOVER_CEILINGS:
                         if (1.0 - ROLLOVER_TOLERANCE) * C <= prev_val <= C:
-                            return C
-                    return None
+                            return ("rollover", C)
+                    if prev_val > RESET_THRESHOLD:
+                        return "reset"
+                    return "swap"
 
                 source_readings = []
                 for sid in source_ids:
@@ -482,16 +499,23 @@ def main() -> int:
                 for sr in source_readings:
                     raw_val = float(sr["value"])
                     if sr["timeseries_id"] != prev_source:
-                        ceiling = _rollover_ceiling(prev_raw, raw_val)
-                        if ceiling is not None:
-                            # Rollover: add the pre-wrap remainder to
-                            # offset and anchor at 0 so the new raw is
-                            # counted as additional consumption.
+                        kind = _classify_boundary(prev_raw, raw_val)
+                        if isinstance(kind, tuple) and kind[0] == "rollover":
+                            # Rollover: add the pre-wrap remainder and
+                            # anchor at 0 so the new raw counts as
+                            # post-wrap consumption.
+                            _, ceiling = kind
                             offset = prev_stitched + (ceiling - prev_raw)
                             anchor = 0.0
-                        else:
-                            # Plain swap: new device's first raw is the
-                            # anchor; stitched flat across boundary.
+                        elif kind == "reset":
+                            # Operator / utility reset: no ceiling gap,
+                            # but new raw is consumption-since-reset.
+                            offset = prev_stitched
+                            anchor = 0.0
+                        else:  # "swap"
+                            # Device replacement with arbitrary offset:
+                            # anchor on the new raw so stitched stays
+                            # flat across the boundary.
                             offset = prev_stitched
                             anchor = raw_val
                         prev_source = sr["timeseries_id"]
