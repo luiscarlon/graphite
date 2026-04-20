@@ -267,13 +267,20 @@ def main() -> int:
                         "recorded_at": "",
                     })
 
-        # Materialize derived refs. Process `sum` first (patches depend on
-        # raw children), then `rolling_sum` (stitches raw + patch segments).
+        # Materialize derived refs.
+        #   sum         — children-sum patch (source = other real meter refs)
+        #   bracket     — monotone value-range clip (parameter-free)
+        #   interpolate — linear counter fill between source-derived endpoints
+        #   rolling_sum — stitch raw + patch segments, preserving the offset
+        #
+        # Order matters: sum/bracket/interpolate produce readings that
+        # rolling_sum may consume; all three run before rolling_sum.
         readings_by_ts: dict[str, list[dict]] = {}
         for r in readings:
             readings_by_ts.setdefault(r["timeseries_id"], []).append(r)
 
-        for dr in sorted(derived_refs, key=lambda d: d.get("aggregation", "") != "sum"):
+        _AGG_ORDER = {"sum": 0, "bracket": 1, "interpolate": 2, "rolling_sum": 3}
+        for dr in sorted(derived_refs, key=lambda d: _AGG_ORDER.get(d.get("aggregation", ""), 99)):
             source_ids = [s for s in (dr.get("sources", "") or "").split("|") if s]
             if not source_ids:
                 continue
@@ -305,6 +312,121 @@ def main() -> int:
                     })
                 readings.extend(new_readings)
                 readings_by_ts[dr["timeseries_id"]] = new_readings
+
+            elif agg == "bracket":
+                # Monotone value-range clip. Within [valid_from, valid_to)
+                # keep source samples whose value lies between the source
+                # values just outside the window. Parameter-free — the
+                # bracket endpoints come from the source's last reading
+                # strictly before valid_from and its first reading at or
+                # after valid_to. Requires exactly one source ref.
+                if len(source_ids) != 1:
+                    print(f"  WARN: bracket ref {dr['timeseries_id']} expects "
+                          f"1 source, got {len(source_ids)} — skipping",
+                          file=sys.stderr)
+                    continue
+                vf = dr.get("valid_from", "")
+                vt = dr.get("valid_to", "")
+                if not vf or not vt:
+                    print(f"  WARN: bracket ref {dr['timeseries_id']} needs "
+                          f"both valid_from and valid_to — skipping",
+                          file=sys.stderr)
+                    continue
+                src = sorted(
+                    readings_by_ts.get(source_ids[0], []),
+                    key=lambda r: r["timestamp"],
+                )
+                before = [r for r in src if r["timestamp"] < vf]
+                atafter = [r for r in src if r["timestamp"] >= vt]
+                if not before or not atafter:
+                    print(f"  WARN: bracket ref {dr['timeseries_id']} cannot "
+                          f"anchor endpoints (no source reading before "
+                          f"{vf!r} or at/after {vt!r}) — skipping",
+                          file=sys.stderr)
+                    continue
+                v_lo = float(before[-1]["value"])
+                v_hi = float(atafter[0]["value"])
+                lo, hi = (v_lo, v_hi) if v_lo <= v_hi else (v_hi, v_lo)
+                new_readings = []
+                for sr in src:
+                    if not (vf <= sr["timestamp"] < vt):
+                        continue
+                    val = float(sr["value"])
+                    if lo <= val <= hi:
+                        new_readings.append({
+                            "timeseries_id": dr["timeseries_id"],
+                            "timestamp": sr["timestamp"],
+                            "value": sr["value"],
+                            "recorded_at": "",
+                        })
+                readings.extend(new_readings)
+                readings_by_ts[dr["timeseries_id"]] = new_readings
+
+            elif agg == "interpolate":
+                # Linear counter fill. Between the source's last reading
+                # strictly before valid_from and its first reading at or
+                # after valid_to, emit one reading per day (or whatever
+                # the aggregate cadence is) on the source's grid that
+                # linearly interpolates the counter across time.
+                if len(source_ids) != 1:
+                    print(f"  WARN: interpolate ref {dr['timeseries_id']} "
+                          f"expects 1 source, got {len(source_ids)} — skipping",
+                          file=sys.stderr)
+                    continue
+                vf = dr.get("valid_from", "")
+                vt = dr.get("valid_to", "")
+                if not vf or not vt:
+                    print(f"  WARN: interpolate ref {dr['timeseries_id']} "
+                          f"needs both valid_from and valid_to — skipping",
+                          file=sys.stderr)
+                    continue
+                src = sorted(
+                    readings_by_ts.get(source_ids[0], []),
+                    key=lambda r: r["timestamp"],
+                )
+                before = [r for r in src if r["timestamp"] < vf]
+                atafter = [r for r in src if r["timestamp"] >= vt]
+                if not before or not atafter:
+                    print(f"  WARN: interpolate ref {dr['timeseries_id']} "
+                          f"cannot anchor endpoints — skipping",
+                          file=sys.stderr)
+                    continue
+                t_lo_s = before[-1]["timestamp"]
+                v_lo = float(before[-1]["value"])
+                t_hi_s = atafter[0]["timestamp"]
+                v_hi = float(atafter[0]["value"])
+                # Days assume ISO yyyy-mm-dd strings for timestamps; fall
+                # back to exact-string compare if parsing fails.
+                try:
+                    from datetime import date as _date
+                    t_lo = _date.fromisoformat(t_lo_s[:10])
+                    t_hi = _date.fromisoformat(t_hi_s[:10])
+                    vf_d = _date.fromisoformat(vf[:10])
+                    vt_d = _date.fromisoformat(vt[:10])
+                    span_days = (t_hi - t_lo).days
+                    if span_days <= 0:
+                        print(f"  WARN: interpolate ref {dr['timeseries_id']} "
+                              f"degenerate span — skipping", file=sys.stderr)
+                        continue
+                    new_readings = []
+                    cur = vf_d
+                    from datetime import timedelta as _td
+                    while cur < vt_d:
+                        frac = (cur - t_lo).days / span_days
+                        val = v_lo + (v_hi - v_lo) * frac
+                        new_readings.append({
+                            "timeseries_id": dr["timeseries_id"],
+                            "timestamp": cur.isoformat(),
+                            "value": f"{val:.3f}",
+                            "recorded_at": "",
+                        })
+                        cur = cur + _td(days=1)
+                    readings.extend(new_readings)
+                    readings_by_ts[dr["timeseries_id"]] = new_readings
+                except ValueError:
+                    print(f"  WARN: interpolate ref {dr['timeseries_id']} "
+                          f"non-ISO timestamps — skipping", file=sys.stderr)
+                    continue
 
             elif agg == "rolling_sum":
                 # Stitch: concatenate source segments. When switching to a
