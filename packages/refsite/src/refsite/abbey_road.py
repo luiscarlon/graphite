@@ -127,6 +127,18 @@ M14_GLITCH_END = date(2026, 1, 22)
 M14_OFFLINE = date(2026, 2, 15)
 # M16 frozen counter: stops incrementing late February.
 M16_FREEZE_START = date(2026, 2, 20)
+# M17 BMS register corruption: mid-span window where the raw source
+# randomly alternates between the real counter register, a low-value
+# artifact register, and a stuck-high register. Inside the window we
+# also create a sub-gap (Jan 27–30) where every hourly sample is an
+# artifact, so the `bracket` ref's in-band output has a real gap that
+# an `interpolate` patch needs to bridge.
+M17_CORRUPTION_START = date(2026, 1, 20)
+M17_CORRUPTION_END = date(2026, 2, 15)   # exclusive; first clean day after
+M17_SUBGAP_START = date(2026, 1, 27)
+M17_SUBGAP_END = date(2026, 1, 30)       # exclusive
+M17_HIGH_STUCK_VALUE = 805175.296
+M17_LOW_ARTIFACT_VALUE = 0.2
 
 
 SUMMARY = (
@@ -414,6 +426,13 @@ def build() -> Dataset:
         Meter(meter_id="M16", name="Frozen counter", building_id="B14", media_type_id="EL"),
         Meter(meter_id="R1", name="Parallel root A", building_id=None, media_type_id="EL"),
         Meter(meter_id="R2", name="Parallel root B", building_id=None, media_type_id="EL"),
+        # M17 stands in for the B217 steam-meter pattern: a single
+        # campus-level counter whose upstream source is corrupted inside
+        # a known window by a multi-register BMS misconfig. Raw samples
+        # alternate between the real register, a near-zero artifact, and
+        # a stuck-high register. Kept campus-level so it stays isolated
+        # from the other topology invariants.
+        Meter(meter_id="M17", name="BMS corruption", building_id=None, media_type_id="EL"),
     ]
 
     relations = [
@@ -530,6 +549,7 @@ def build() -> Dataset:
         MeterMeasures(meter_id="M16", target_kind="zone", target_id="B14.warehouse"),
         MeterMeasures(meter_id="R1", target_kind="campus", target_id=CAMPUS_ID),
         MeterMeasures(meter_id="R2", target_kind="campus", target_id=CAMPUS_ID),
+        MeterMeasures(meter_id="M17", target_kind="campus", target_id=CAMPUS_ID),
     ]
 
     media_types = [
@@ -584,6 +604,7 @@ def build() -> Dataset:
         "M16",
         "R1",
         "R2",
+        "M17",
     ]
     sensors = [
         Sensor(
@@ -630,6 +651,7 @@ def build() -> Dataset:
         "M16": "631:263",
         "R1": "631:300",
         "R2": "631:301",
+        "M17": "631:270",
     }
 
     timeseries_refs = (
@@ -793,6 +815,69 @@ def build() -> Dataset:
                 aggregation="rolling_sum",
             ),
         ]
+        # M17 register-corruption pattern. The raw ref carries the
+        # corrupted samples as they arrive from upstream. Two derived
+        # refs clean them up, and the canonical M17:h stitches the
+        # clean counter for the full period — which is what the app
+        # and downstream analytics should consume by default.
+        #   - M17:h.raw (raw, non-preferred): full-period counter whose
+        #     values inside [CORRUPTION_START, CORRUPTION_END) alternate
+        #     between the real counter, a low artifact, and a stuck-high
+        #     register. Preserved as-is for audit and diagnostics.
+        #   - M17:h.clip (bracket): keeps only in-band samples of
+        #     M17:h.raw within the corruption window. Parameter-free.
+        #   - M17:h.patch (interpolate): linear counter fill across the
+        #     sub-gap where every raw sample is out-of-band, so clip
+        #     leaves a real gap that interpolate has to bridge.
+        #   - M17:h (derived, preferred): rolling_sum over the segments
+        #     above, giving the canonical clean counter the UI defaults to.
+        + [
+            TimeseriesRef(
+                timeseries_id="M17:h.raw",
+                sensor_id="M17.energy",
+                aggregate="hourly",
+                reading_type="counter",
+                kind="raw",
+                preferred=False,
+                database_id="PME_SQL",
+                path="ingest.hourly",
+                external_id=pme_external["M17"],
+            ),
+            TimeseriesRef(
+                timeseries_id="M17:h.clip",
+                sensor_id="M17.energy",
+                aggregate="hourly",
+                reading_type="counter",
+                kind="derived",
+                preferred=False,
+                sources=["M17:h.raw"],
+                aggregation="bracket",
+                valid_from=M17_CORRUPTION_START,
+                valid_to=M17_CORRUPTION_END,
+            ),
+            TimeseriesRef(
+                timeseries_id="M17:h.patch",
+                sensor_id="M17.energy",
+                aggregate="hourly",
+                reading_type="counter",
+                kind="derived",
+                preferred=False,
+                sources=["M17:h.clip"],
+                aggregation="interpolate",
+                valid_from=M17_SUBGAP_START,
+                valid_to=M17_SUBGAP_END,
+            ),
+            TimeseriesRef(
+                timeseries_id="M17:h",
+                sensor_id="M17.energy",
+                aggregate="hourly",
+                reading_type="counter",
+                kind="derived",
+                preferred=True,
+                sources=["M17:h.raw", "M17:h.clip", "M17:h.patch"],
+                aggregation="rolling_sum",
+            ),
+        ]
     )
 
     annotations = [
@@ -864,6 +949,47 @@ def build() -> Dataset:
             target_id="V4",
             category="calibration",
             description="V4.net occasionally negative when M9 exceeds 0.6×M12; coefficient may need recalibration.",
+        ),
+        Annotation(
+            annotation_id="ann-m17-corruption",
+            target_kind="meter",
+            target_id="M17",
+            category="data_quality",
+            valid_from=M17_CORRUPTION_START,
+            valid_to=M17_CORRUPTION_END,
+            description=(
+                "BMS multi-register misconfig: raw samples alternate between the "
+                "real counter, a near-zero artifact, and a stuck-high register."
+            ),
+            related_refs=["M17:h.raw", "M17:h.clip", "M17:h.patch"],
+        ),
+        Annotation(
+            annotation_id="ann-m17-clip",
+            target_kind="timeseries",
+            target_id="M17:h.clip",
+            category="patch",
+            valid_from=M17_CORRUPTION_START,
+            valid_to=M17_CORRUPTION_END,
+            description=(
+                "Value-range clip (bracket): keep M17:h.raw samples whose value lies "
+                "between the clean endpoint values at the corruption-window "
+                "boundaries; drop the rest."
+            ),
+            related_refs=["M17:h.raw"],
+        ),
+        Annotation(
+            annotation_id="ann-m17-patch",
+            target_kind="timeseries",
+            target_id="M17:h.patch",
+            category="patch",
+            valid_from=M17_SUBGAP_START,
+            valid_to=M17_SUBGAP_END,
+            description=(
+                "Linear counter interpolation across the sub-gap where every raw "
+                "sample is out-of-band; endpoints read from M17:h.clip at the "
+                "ref's validity boundaries."
+            ),
+            related_refs=["M17:h.clip"],
         ),
     ]
 

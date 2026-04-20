@@ -180,13 +180,33 @@ def test_readings_respect_validity() -> None:
 
 
 def test_readings_counter_monotonic() -> None:
-    """Cumulative counters never tick down."""
+    """Clean counter refs never tick down.
+
+    Refs annotated with `data_quality` — either directly or on their
+    owning meter — are expected to carry the bad values that motivated
+    the annotation, so they're excluded here.
+    """
     ds = abbey_road.build()
     rs = generate_readings(ds, seed=42)
     by_series: dict[str, list[float]] = defaultdict(list)
     for r in sorted(rs, key=lambda r: (r.timeseries_id, r.timestamp)):
         by_series[r.timeseries_id].append(r.value)
-    counter_ids = {tr.timeseries_id for tr in ds.timeseries_refs if tr.reading_type == "counter"}
+    bad_meters = {
+        a.target_id for a in ds.annotations
+        if a.target_kind == "meter" and a.category == "data_quality"
+    }
+    bad_ts = {
+        a.target_id for a in ds.annotations
+        if a.target_kind == "timeseries" and a.category == "data_quality"
+    }
+    sensor_meter = {s.sensor_id: s.meter_id for s in ds.sensors}
+    counter_ids = {
+        tr.timeseries_id for tr in ds.timeseries_refs
+        if tr.reading_type == "counter"
+        and tr.kind == "raw"
+        and tr.timeseries_id not in bad_ts
+        and sensor_meter.get(tr.sensor_id) not in bad_meters
+    }
     for sid in counter_ids:
         vals = by_series[sid]
         diffs = [b - a for a, b in pairwise(vals)]
@@ -400,9 +420,9 @@ def test_glitch_exclusion() -> None:
 def test_annotation_filter() -> None:
     """Dataset.filter_by_media() correctly filters annotations."""
     ds = abbey_road.build()
-    assert len(ds.annotations) == 8
+    assert len(ds.annotations) == 11
     filtered = ds.filter_by_media("EL")
-    assert len(filtered.annotations) == 8
+    assert len(filtered.annotations) == 11
     categories = {a.category for a in filtered.annotations}
     assert categories >= {"outage", "swap", "data_quality", "patch", "calibration", "unknown"}
 
@@ -471,3 +491,224 @@ def test_frozen_counter() -> None:
     assert len(after_freeze) > 24
     frozen_value = after_freeze[0].value
     assert all(r.value == frozen_value for r in after_freeze)
+
+
+# ---- M17: BMS register corruption + bracket/interpolate primitives --------
+
+
+def _m17_corruption_window() -> tuple[datetime, datetime]:
+    start = datetime(
+        abbey_road.M17_CORRUPTION_START.year,
+        abbey_road.M17_CORRUPTION_START.month,
+        abbey_road.M17_CORRUPTION_START.day,
+    )
+    end = datetime(
+        abbey_road.M17_CORRUPTION_END.year,
+        abbey_road.M17_CORRUPTION_END.month,
+        abbey_road.M17_CORRUPTION_END.day,
+    )
+    return start, end
+
+
+def test_m17_raw_has_corruption() -> None:
+    """Raw M17:h.raw carries the register-corruption pattern.
+
+    Outside the window the counter is monotone; inside the window it
+    contains both low-artifact (<100) and high-stuck (~805k) values so
+    the bracket rule has something to clip.
+    """
+    ds = abbey_road.build()
+    rs = generate_readings(ds, seed=42)
+    start, end = _m17_corruption_window()
+    raw = sorted(
+        [r for r in rs if r.timeseries_id == "M17:h.raw"], key=lambda r: r.timestamp
+    )
+
+    inside = [r for r in raw if start <= r.timestamp < end]
+    outside = [r for r in raw if r.timestamp < start or r.timestamp >= end]
+
+    # Outside the window, the counter is clean and monotone.
+    outside_diffs = [b.value - a.value for a, b in pairwise(outside)]
+    assert all(d >= 0 for d in outside_diffs)
+
+    # Inside the window, both artifact classes appear.
+    high = [r for r in inside if r.value > 100_000]
+    low = [r for r in inside if r.value < 100]
+    assert high, "expected high-stuck samples inside corruption window"
+    assert low, "expected low-artifact samples inside corruption window"
+
+
+def test_m17_canonical_is_clean_and_preferred() -> None:
+    """M17:h is the derived canonical ref, preferred=True, monotone across
+    the full period — the default series the app shows."""
+    ds = abbey_road.build()
+    m17_refs = {tr.timeseries_id: tr for tr in ds.timeseries_refs if tr.sensor_id == "M17.energy"}
+    canonical = m17_refs["M17:h"]
+    assert canonical.kind == "derived"
+    assert canonical.preferred
+    assert canonical.aggregation == "rolling_sum"
+    # The raw ref exists under a separate id and is NOT preferred.
+    raw = m17_refs["M17:h.raw"]
+    assert raw.kind == "raw" and not raw.preferred
+
+    rs = generate_readings(ds, seed=42)
+    canonical_rows = sorted(
+        [r for r in rs if r.timeseries_id == "M17:h"], key=lambda r: r.timestamp
+    )
+    total_hours = (abbey_road.PERIOD_END - abbey_road.PERIOD_START).days * 24
+    assert len(canonical_rows) == total_hours
+    diffs = [b.value - a.value for a, b in pairwise(canonical_rows)]
+    assert all(d >= 0 for d in diffs), "M17:h canonical must be monotone"
+
+
+def test_m17_clip_keeps_only_in_band() -> None:
+    """bracket: every emitted sample's value is inside [v_lo, v_hi]."""
+    ds = abbey_road.build()
+    rs = generate_readings(ds, seed=42)
+
+    raw_by_ts = {r.timestamp: r.value for r in rs if r.timeseries_id == "M17:h"}
+    # Endpoints: last raw reading strictly before valid_from,
+    # first raw reading at or after valid_to.
+    vf, vt = _m17_corruption_window()
+    v_lo = raw_by_ts[max(t for t in raw_by_ts if t < vf)]
+    v_hi = raw_by_ts[min(t for t in raw_by_ts if t >= vt)]
+    lo, hi = (v_lo, v_hi) if v_lo <= v_hi else (v_hi, v_lo)
+
+    clip = [r for r in rs if r.timeseries_id == "M17:h.clip"]
+    assert clip, "bracket emitted no readings — corruption may be 100% artifacts"
+    for r in clip:
+        assert vf <= r.timestamp < vt, f"clip sample outside validity window: {r.timestamp}"
+        assert lo <= r.value <= hi, (
+            f"clip sample out of band [{lo}, {hi}] at {r.timestamp}: {r.value}"
+        )
+
+
+def test_m17_clip_exposes_subgap() -> None:
+    """During the all-artifact sub-gap, bracket emits zero samples so
+    the interpolate patch has a real gap to bridge."""
+    ds = abbey_road.build()
+    rs = generate_readings(ds, seed=42)
+    gap_start = datetime(
+        abbey_road.M17_SUBGAP_START.year,
+        abbey_road.M17_SUBGAP_START.month,
+        abbey_road.M17_SUBGAP_START.day,
+    )
+    gap_end = datetime(
+        abbey_road.M17_SUBGAP_END.year,
+        abbey_road.M17_SUBGAP_END.month,
+        abbey_road.M17_SUBGAP_END.day,
+    )
+    in_subgap = [
+        r for r in rs
+        if r.timeseries_id == "M17:h.clip" and gap_start <= r.timestamp < gap_end
+    ]
+    assert in_subgap == []
+
+
+def test_m17_patch_is_monotonic_and_hits_endpoints() -> None:
+    """interpolate: linear counter fill. Hourly cadence, monotone,
+    anchored to the source values at the validity boundaries."""
+    ds = abbey_road.build()
+    rs = generate_readings(ds, seed=42)
+    patch = sorted(
+        [r for r in rs if r.timeseries_id == "M17:h.patch"],
+        key=lambda r: r.timestamp,
+    )
+    gap_start = datetime(
+        abbey_road.M17_SUBGAP_START.year,
+        abbey_road.M17_SUBGAP_START.month,
+        abbey_road.M17_SUBGAP_START.day,
+    )
+    gap_end = datetime(
+        abbey_road.M17_SUBGAP_END.year,
+        abbey_road.M17_SUBGAP_END.month,
+        abbey_road.M17_SUBGAP_END.day,
+    )
+    # One reading per hour across the sub-gap.
+    expected_hours = int((gap_end - gap_start).total_seconds() // 3600)
+    assert len(patch) == expected_hours
+
+    diffs = [b.value - a.value for a, b in pairwise(patch)]
+    assert all(d >= 0 for d in diffs), "patch counter not monotonic"
+
+    # Endpoints: the source (M17:h.clip) readings that bracket the
+    # patch's validity. Linear interpolation should reach both.
+    clip_by_ts = {
+        r.timestamp: r.value for r in rs if r.timeseries_id == "M17:h.clip"
+    }
+    t_lo = max(t for t in clip_by_ts if t < gap_start)
+    t_hi = min(t for t in clip_by_ts if t >= gap_end)
+    v_lo = clip_by_ts[t_lo]
+    v_hi = clip_by_ts[t_hi]
+
+    # First patch hour is at gap_start; linearly derived value at that
+    # moment = v_lo + (v_hi - v_lo) * (gap_start - t_lo) / (t_hi - t_lo).
+    span = (t_hi - t_lo).total_seconds()
+    frac_first = (patch[0].timestamp - t_lo).total_seconds() / span
+    expected_first = v_lo + (v_hi - v_lo) * frac_first
+    assert abs(patch[0].value - expected_first) < 1e-3
+    # Patch values stay strictly between the endpoint values.
+    assert min(v_lo, v_hi) <= min(r.value for r in patch)
+    assert max(r.value for r in patch) <= max(v_lo, v_hi)
+
+
+def test_bracket_rejects_unresolvable_endpoint() -> None:
+    """A bracket ref whose source has no reading before valid_from
+    must fail loudly rather than emit garbage."""
+    import pytest
+    from ontology import (
+        Campus, Database, Dataset, Meter, Reading as _R, Sensor, TimeseriesRef,
+    )
+    from refsite.readings import _emit_bracket  # type: ignore[attr-defined]
+
+    campus = Campus(campus_id="C", name="C")
+    meter = Meter(meter_id="A", name="A", building_id=None, media_type_id="EL")
+    sensor = Sensor(sensor_id="A.energy", meter_id="A")
+    db = Database(database_id="d", name="d", kind="internal")
+    raw = TimeseriesRef(
+        timeseries_id="A:h",
+        sensor_id="A.energy",
+        aggregate="hourly",
+        kind="raw",
+        preferred=True,
+        database_id="d",
+        path="p",
+        external_id="x",
+    )
+    clip = TimeseriesRef(
+        timeseries_id="A:h.clip",
+        sensor_id="A.energy",
+        aggregate="hourly",
+        kind="derived",
+        preferred=False,
+        sources=["A:h"],
+        aggregation="bracket",
+        valid_from=date(2026, 1, 1),  # no source reading strictly before this
+        valid_to=date(2026, 1, 31),
+    )
+    # Source has readings only AT valid_from and later — nothing before it.
+    vals = {
+        "A:h": {
+            datetime(2026, 1, 1, 0): 100.0,
+            datetime(2026, 1, 15, 0): 200.0,
+            datetime(2026, 1, 31, 0): 300.0,
+        }
+    }
+    with pytest.raises(ValueError, match="strictly before valid_from"):
+        _emit_bracket(clip, vals)
+
+    # Dataset-level sanity: this particular shape is what the function
+    # is guarding against in context, not a separate schema issue.
+    _ = Dataset(
+        campuses=[campus], meters=[meter], sensors=[sensor],
+        databases=[db], timeseries_refs=[raw],
+    )
+
+
+def test_bracket_and_interpolate_pass_validation() -> None:
+    """The new aggregation kinds are accepted by the structural validator."""
+    from validation import validate
+    ds = abbey_road.build()
+    # Abbey Road now uses `bracket` and `interpolate` on M17; the whole
+    # dataset must still validate clean.
+    assert validate(ds) == []

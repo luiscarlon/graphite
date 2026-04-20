@@ -30,3 +30,7 @@ M14:h.A,M14.energy,hourly,counter,raw,False,2026-01-01,2026-01-20,PME_SQL,ingest
 M14:h.B,M14.energy,hourly,counter,raw,False,2026-01-22,2026-02-15,PME_SQL,ingest.hourly,631:261,,,
 M14:h.patch,M14.energy,hourly,counter,derived,False,2026-02-15,,,,,,M15:h,sum
 M14:h,M14.energy,hourly,counter,derived,True,,,,,,,M14:h.A|M14:h.B|M14:h.patch,rolling_sum
+M17:h.raw,M17.energy,hourly,counter,raw,False,,,PME_SQL,ingest.hourly,631:270,,,
+M17:h.clip,M17.energy,hourly,counter,derived,False,2026-01-20,2026-02-15,,,,,M17:h.raw,bracket
+M17:h.patch,M17.energy,hourly,counter,derived,False,2026-01-27,2026-01-30,,,,,M17:h.clip,interpolate
+M17:h,M17.energy,hourly,counter,derived,True,,,,,,,M17:h.raw|M17:h.clip|M17:h.patch,rolling_sum

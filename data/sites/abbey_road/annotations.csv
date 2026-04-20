@@ -1,9 +1,12 @@
-annotation_id,target_kind,target_id,category,valid_from,valid_to,description,related_refs
-ann-m6-swap,meter,M6,swap,2026-02-10,2026-02-10,Device A replaced by device B.,M6:h.A|M6:h.B|M6:h
-ann-m5-outage,meter,M5,outage,2026-01-13,2026-01-14,8-hour communication gap; physical consumption continues.,
-ann-m14-glitch,meter,M14,data_quality,2026-01-20,2026-01-22,Counter drop and revert; 2-day window excluded from raw segments.,M14:h.A|M14:h.B
-ann-m14-outage,meter,M14,outage,2026-02-15,,Permanent offline; patched from child M15.,M14:h.patch
-ann-m14-patch,timeseries,M14:h.patch,patch,2026-02-15,,Children-sum patch for M14 from M15.,M15:h
-ann-m14-conservation,meter,M14,unknown,,,M14 recorded consumption exceeds M13 allocation; undocumented extra feed suspected.,
-ann-m16-freeze,meter,M16,data_quality,2026-02-20,,Counter frozen (delta=0); device reports same value.,
-ann-v4-calibration,meter,V4,calibration,,,V4.net occasionally negative when M9 exceeds 0.6×M12; coefficient may need recalibration.,
+annotation_id,target_kind,target_id,category,valid_from,valid_to,description,related_refs,media
+ann-m6-swap,meter,M6,swap,2026-02-10,2026-02-10,Device A replaced by device B.,M6:h.A|M6:h.B|M6:h,
+ann-m5-outage,meter,M5,outage,2026-01-13,2026-01-14,8-hour communication gap; physical consumption continues.,,
+ann-m14-glitch,meter,M14,data_quality,2026-01-20,2026-01-22,Counter drop and revert; 2-day window excluded from raw segments.,M14:h.A|M14:h.B,
+ann-m14-outage,meter,M14,outage,2026-02-15,,Permanent offline; patched from child M15.,M14:h.patch,
+ann-m14-patch,timeseries,M14:h.patch,patch,2026-02-15,,Children-sum patch for M14 from M15.,M15:h,
+ann-m14-conservation,meter,M14,unknown,,,M14 recorded consumption exceeds M13 allocation; undocumented extra feed suspected.,,
+ann-m16-freeze,meter,M16,data_quality,2026-02-20,,Counter frozen (delta=0); device reports same value.,,
+ann-v4-calibration,meter,V4,calibration,,,V4.net occasionally negative when M9 exceeds 0.6×M12; coefficient may need recalibration.,,
+ann-m17-corruption,meter,M17,data_quality,2026-01-20,2026-02-15,"BMS multi-register misconfig: raw samples alternate between the real counter, a near-zero artifact, and a stuck-high register.",M17:h.raw|M17:h.clip|M17:h.patch,
+ann-m17-clip,timeseries,M17:h.clip,patch,2026-01-20,2026-02-15,Value-range clip (bracket): keep M17:h.raw samples whose value lies between the clean endpoint values at the corruption-window boundaries; drop the rest.,M17:h.raw,
+ann-m17-patch,timeseries,M17:h.patch,patch,2026-01-27,2026-01-30,Linear counter interpolation across the sub-gap where every raw sample is out-of-band; endpoints read from M17:h.clip at the ref's validity boundaries.,M17:h.clip,

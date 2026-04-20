@@ -51,7 +51,7 @@ from typing import cast
 
 import numpy as np
 
-from ontology import Dataset, Reading
+from ontology import Dataset, Reading, TimeseriesRef
 
 
 def _det_seed(base: int, key: str) -> int:
@@ -92,6 +92,7 @@ OWN_BASELINE_KWH_H: dict[str, float] = {
     "M16": 10.0,  # B14 frozen counter
     "R1": 25.0,   # B15 parallel root A
     "R2": 20.0,   # B16 parallel root B
+    "M17": 15.0,  # campus-level, BMS register corruption analog
     # Virtuals holding unmetered-building consumption
     "V1": 35.0,   # B3
     "V2": 15.0,   # B4
@@ -150,6 +151,7 @@ SHAPE: dict[str, dict[str, float]] = {
     "M16": {"daily": 0.20, "weekly": 0.10, "monthly": 0.30, "noise": 0.08, "phase": 1.0},
     "R1":  {"daily": 0.35, "weekly": 0.20, "monthly": 0.15, "noise": 0.06, "phase": 0.0},
     "R2":  {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.07, "phase": 0.5},
+    "M17": {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.06, "phase": 0.5},
     # Virtuals — synthesized as warehouse-like flat profiles so the
     # downstream buildings have plausible consumption curves.
     "V1":  {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.07, "phase": 0.5},
@@ -448,9 +450,27 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
         else:
             raise ValueError(f"unknown reading_type: {ref.reading_type}")
 
-    # ---- Pass 2: derived refs (sum first, then rolling_sum) ----
+    # ---- Pass 1.5: inject BMS register corruption on M17:h ----
+    # Replace emitted hourly counter readings with artifacts during the
+    # corruption window. Some hours stay real (for `bracket` to recover);
+    # every hour inside the sub-gap is forced out-of-band so that `bracket`
+    # leaves a real gap that `interpolate` has to bridge.
+    _inject_m17_corruption(readings, seed)
+
+    # Build a value index over emitted readings so derived dispatches that
+    # read source *values* (bracket, interpolate) don't have to rescan the
+    # full readings list per ref.
+    values_by_ref: dict[str, dict[datetime, float]] = {}
+    for r in readings:
+        values_by_ref.setdefault(r.timeseries_id, {})[r.timestamp] = r.value
+
+    # ---- Pass 2: derived refs (sum, bracket, interpolate, rolling_sum) ----
+    # Order matters: sum feeds rolling_sum; bracket feeds interpolate; both
+    # clean outputs can feed rolling_sum. Unknown aggregations sort last
+    # so the dispatch below can raise a clear error.
+    _AGG_ORDER = {"sum": 0, "bracket": 1, "interpolate": 2, "rolling_sum": 3}
     derived_refs = [r for r in ds.timeseries_refs if r.kind == "derived"]
-    derived_refs.sort(key=lambda r: r.aggregation == "rolling_sum")
+    derived_refs.sort(key=lambda r: _AGG_ORDER.get(r.aggregation or "", 99))
 
     for ref in derived_refs:
         ref_mid = sensor_meter.get(ref.sensor_id)
@@ -480,6 +500,29 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
                         value=round(float(cum[i]), 3),
                     )
                 )
+                values_by_ref.setdefault(ref.timeseries_id, {})[
+                    cast(datetime, t.astype("datetime64[s]").astype(object))
+                ] = round(float(cum[i]), 3)
+
+        elif ref.aggregation == "bracket":
+            # Monotone-clip: within [valid_from, valid_to), keep source
+            # samples whose value lies between the source values just
+            # outside the window. Parameter-free — endpoints come from
+            # the source readings straddling the ref's validity.
+            new_rows = _emit_bracket(ref, values_by_ref)
+            readings.extend(new_rows)
+            values_by_ref.setdefault(ref.timeseries_id, {}).update(
+                {r.timestamp: r.value for r in new_rows}
+            )
+
+        elif ref.aggregation == "interpolate":
+            # Linear counter fill between two source-derived endpoints;
+            # emits one reading per hour in [valid_from, valid_to).
+            new_rows = _emit_interpolate(ref, values_by_ref, ts)
+            readings.extend(new_rows)
+            values_by_ref.setdefault(ref.timeseries_id, {}).update(
+                {r.timestamp: r.value for r in new_rows}
+            )
 
         elif ref.aggregation == "rolling_sum":
             src_refs = sorted(
@@ -555,3 +598,178 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
             break
 
     return readings
+
+
+def _inject_m17_corruption(readings: list[Reading], seed: int) -> None:
+    """Mutate `readings` in place: replace M17:h hourly values inside the
+    corruption window with artifacts (low / high-stuck). Outside the
+    sub-gap some hours remain real; inside the sub-gap every hour is
+    forced out-of-band so `bracket` leaves a gap to be patched.
+
+    Real-world analog: a BMS misconfiguration feeds the same stream from
+    multiple registers, so consecutive hourly polls land on different
+    registers with no rhyme. We model that as a per-hour independent
+    three-way Bernoulli: real (k) / high-stuck / low-artifact.
+    """
+    from . import abbey_road
+
+    corr_start = datetime(
+        abbey_road.M17_CORRUPTION_START.year,
+        abbey_road.M17_CORRUPTION_START.month,
+        abbey_road.M17_CORRUPTION_START.day,
+    )
+    corr_end = datetime(
+        abbey_road.M17_CORRUPTION_END.year,
+        abbey_road.M17_CORRUPTION_END.month,
+        abbey_road.M17_CORRUPTION_END.day,
+    )
+    gap_start = datetime(
+        abbey_road.M17_SUBGAP_START.year,
+        abbey_road.M17_SUBGAP_START.month,
+        abbey_road.M17_SUBGAP_START.day,
+    )
+    gap_end = datetime(
+        abbey_road.M17_SUBGAP_END.year,
+        abbey_road.M17_SUBGAP_END.month,
+        abbey_road.M17_SUBGAP_END.day,
+    )
+    rng = np.random.default_rng(_det_seed(seed, "M17:corruption"))
+    high = abbey_road.M17_HIGH_STUCK_VALUE
+    low = abbey_road.M17_LOW_ARTIFACT_VALUE
+
+    for i, r in enumerate(readings):
+        if r.timeseries_id != "M17:h.raw":
+            continue
+        if not (corr_start <= r.timestamp < corr_end):
+            continue
+        in_gap = gap_start <= r.timestamp < gap_end
+        roll = rng.random()
+        if in_gap:
+            # 70% high-stuck, 30% low-artifact, never real.
+            new_value = high if roll < 0.7 else low + rng.uniform(0, 20)
+        else:
+            # 40% real (keep), 40% high-stuck, 20% low-artifact.
+            if roll < 0.4:
+                continue
+            if roll < 0.8:
+                new_value = high
+            else:
+                new_value = low + rng.uniform(0, 20)
+        readings[i] = Reading(
+            timeseries_id=r.timeseries_id,
+            timestamp=r.timestamp,
+            value=round(float(new_value), 3),
+            recorded_at=r.recorded_at,
+        )
+
+
+def _ref_endpoints(
+    ref: TimeseriesRef, values_by_ref: dict[str, dict[datetime, float]]
+) -> tuple[datetime, float, datetime, float]:
+    """Resolve a derived ref's validity-anchored endpoints against its
+    single source. Returns (t_lo, v_lo, t_hi, v_hi).
+
+    - `v_lo` = the source's most recent reading strictly BEFORE valid_from.
+    - `v_hi` = the source's first reading AT OR AFTER valid_to.
+
+    Both endpoints must resolve; otherwise we raise so callers see a
+    clear materialization failure rather than silently inventing values.
+    """
+    if ref.valid_from is None or ref.valid_to is None:
+        raise ValueError(
+            f"derived ref {ref.timeseries_id} ({ref.aggregation}) requires "
+            f"both valid_from and valid_to to anchor its endpoints"
+        )
+    if len(ref.sources) != 1:
+        raise ValueError(
+            f"derived ref {ref.timeseries_id} ({ref.aggregation}) requires "
+            f"exactly one source, got {len(ref.sources)}"
+        )
+    src_id = ref.sources[0]
+    src_values = values_by_ref.get(src_id, {})
+    if not src_values:
+        raise ValueError(
+            f"derived ref {ref.timeseries_id} has source {src_id} with no "
+            f"readings available"
+        )
+    vf = datetime(ref.valid_from.year, ref.valid_from.month, ref.valid_from.day)
+    vt = datetime(ref.valid_to.year, ref.valid_to.month, ref.valid_to.day)
+    before = [t for t in src_values if t < vf]
+    atafter = [t for t in src_values if t >= vt]
+    if not before:
+        raise ValueError(
+            f"derived ref {ref.timeseries_id}: source {src_id} has no reading "
+            f"strictly before valid_from={vf}; can't anchor lo endpoint"
+        )
+    if not atafter:
+        raise ValueError(
+            f"derived ref {ref.timeseries_id}: source {src_id} has no reading "
+            f"at or after valid_to={vt}; can't anchor hi endpoint"
+        )
+    t_lo = max(before)
+    t_hi = min(atafter)
+    return t_lo, src_values[t_lo], t_hi, src_values[t_hi]
+
+
+def _emit_bracket(
+    ref: TimeseriesRef, values_by_ref: dict[str, dict[datetime, float]]
+) -> list[Reading]:
+    """Parameter-free value-range filter. Within the ref's validity
+    window, emit source samples whose value lies in [v_lo, v_hi] where
+    (v_lo, v_hi) are the source readings just outside the window.
+
+    Physical rationale: for a monotone cumulative counter, any reading
+    between two known clean readings must itself lie between their
+    values. Anything outside that band is necessarily an artifact.
+    """
+    _t_lo, v_lo, _t_hi, v_hi = _ref_endpoints(ref, values_by_ref)
+    lo, hi = (v_lo, v_hi) if v_lo <= v_hi else (v_hi, v_lo)
+    src_values = values_by_ref[ref.sources[0]]
+    vf = datetime(ref.valid_from.year, ref.valid_from.month, ref.valid_from.day)  # type: ignore[union-attr]
+    vt = datetime(ref.valid_to.year, ref.valid_to.month, ref.valid_to.day)        # type: ignore[union-attr]
+    out: list[Reading] = []
+    for t, v in sorted(src_values.items()):
+        if not (vf <= t < vt):
+            continue
+        if lo <= v <= hi:
+            out.append(
+                Reading(timeseries_id=ref.timeseries_id, timestamp=t, value=v)
+            )
+    return out
+
+
+def _emit_interpolate(
+    ref: TimeseriesRef,
+    values_by_ref: dict[str, dict[datetime, float]],
+    ts: np.ndarray,
+) -> list[Reading]:
+    """Parameter-free linear interpolation. Between the two source
+    readings that bracket the ref's validity window, emit one reading
+    per hour in [valid_from, valid_to) with a counter value that
+    linearly interpolates between the two endpoint values over wall
+    time (not reading count — the two endpoints may be far apart).
+    """
+    t_lo, v_lo, t_hi, v_hi = _ref_endpoints(ref, values_by_ref)
+    vf = datetime(ref.valid_from.year, ref.valid_from.month, ref.valid_from.day)  # type: ignore[union-attr]
+    vt = datetime(ref.valid_to.year, ref.valid_to.month, ref.valid_to.day)        # type: ignore[union-attr]
+    span_seconds = (t_hi - t_lo).total_seconds()
+    if span_seconds <= 0:
+        raise ValueError(
+            f"interpolate ref {ref.timeseries_id}: degenerate endpoint span "
+            f"(t_lo={t_lo}, t_hi={t_hi})"
+        )
+    out: list[Reading] = []
+    for t_np in ts:
+        t = cast(datetime, t_np.astype("datetime64[s]").astype(object))
+        if not (vf <= t < vt):
+            continue
+        frac = (t - t_lo).total_seconds() / span_seconds
+        value = v_lo + (v_hi - v_lo) * frac
+        out.append(
+            Reading(
+                timeseries_id=ref.timeseries_id,
+                timestamp=t,
+                value=round(float(value), 3),
+            )
+        )
+    return out

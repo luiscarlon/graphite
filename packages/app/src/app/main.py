@@ -607,14 +607,34 @@ def _annotations_picker(ds: Dataset) -> tuple[pd.DataFrame | None, dict | None]:
             if a.target_kind == "meter":
                 meter_ids.add(a.target_id)
                 m = next((m for m in ds.meters if m.meter_id == a.target_id), None)
-                if m and m.building_id:
-                    building_ids.add(m.building_id)
+                if m is not None:
+                    # Campus-level meters (building_id is None) are
+                    # rendered under the synthetic "(campus)" bucket in
+                    # the reading view — isolate must include that
+                    # bucket so the meter survives the building filter.
+                    building_ids.add(m.building_id or "(campus)")
             elif a.target_kind == "building":
                 building_ids.add(a.target_id)
                 meter_ids.update(m.meter_id for m in ds.meters if m.building_id == a.target_id)
             elif a.target_kind == "campus":
                 building_ids.update(b.building_id for b in ds.buildings)
+                building_ids.add("(campus)")
                 meter_ids.update(m.meter_id for m in ds.meters)
+            elif a.target_kind == "timeseries":
+                # Resolve the targeted ref back to its meter via sensor,
+                # then to the meter's building bucket.
+                sensor_meter = {s.sensor_id: s.meter_id for s in ds.sensors}
+                ref = next(
+                    (tr for tr in ds.timeseries_refs if tr.timeseries_id == a.target_id),
+                    None,
+                )
+                if ref is not None:
+                    mid = sensor_meter.get(ref.sensor_id)
+                    if mid is not None:
+                        meter_ids.add(mid)
+                        m = next((m for m in ds.meters if m.meter_id == mid), None)
+                        if m is not None:
+                            building_ids.add(m.building_id or "(campus)")
             if a.valid_from and a.valid_from < date_min:
                 date_min = a.valid_from
             if a.valid_to and a.valid_to > date_max:
