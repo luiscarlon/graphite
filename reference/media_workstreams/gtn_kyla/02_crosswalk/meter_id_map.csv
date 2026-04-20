@@ -1,0 +1,26 @@
+facit_id,snowflake_id,strux_id,excel_used,confidence,evidence
+B600-KB2,,B600-KB2,yes,high,virtual aggregator (south distribution pool); no Snowflake meter; sources = +B623.KB1_INT_VERK1 +B653.KB2_WVÄRME_ACK +B654.KB2_Pkyl_Ack −B658.KB2_VM51 −B661.KB1_INTVERK −B821.KB2_VMM1 per Excel row 8
+Prod-600,,Prod-600,yes,high,virtual aggregator (total chilled-water production); no Snowflake meter; sources = +B653.KB2_WVÄRME_ACK +B654.KB1_KylEffekt_Ack +B654.KB2_Pkyl_Ack +B661.KB1_Pkyl_Ack per Excel row 9
+B612.KB1_PKYL,B612.KB1_PKYL,B612-KB1-PKYL,yes,high,"Excel uses dash-form 'B612-KB1-PKYL'; Snowflake uses dot-form B612.KB1_PKYL; normalized match (non-alphanum stripped)"
+B614.KB1_INT_VERK,B614.KB1_INT_VERK,B614.KB1_INT_VERK,yes,high,snowflake exact match; excel row 16 add
+B615.KB1_INT_VERK1,B615.KB1_INT_VERK1,B615.KB1_INT_VERK1,yes,high,snowflake exact match; excel row 17 add and row 16 sub (into B614)
+B616.KB1_PKYL,B616.KB1_PKYL,B616-KB1-PKYL,yes,high,dash-form in Excel; dot-form in Snowflake
+B623.KB1_INT_VERK1,B623.KB1_INT_VERK1,B623.KB1_INT_VERK1,yes,high,snowflake exact match; +term for B600-KB2 and building 623
+B631.KB1_INTE_VERK2,B631.KB1_INTE_VERK2,B631.KB1_INTE_VERK2,yes,high,snowflake exact match; +term B631 and sub-term in B611 formula at 0.38
+B631.KB1_VMM51_E,B631.KB1_VMM51_E,B631.KB1_VMM51_E,yes,high,snowflake exact match; sub-term in B611 formula at 0.38
+B634.KB1_PKYL,B634.KB1_PKYL,B634.KB1_PKYL,yes,high,snowflake exact match; +term for 634 at 0.744
+B637.KB2_INT_VERK,B637.KB2_INT_VERK,B637.KB2_INT_VERK,yes,high,snowflake exact match
+B638.KB1_INT_VERK1,B638.KB1_INT_VERK1,B638.KB1_INT_VERK1,yes,high,snowflake exact match
+B642.KB1_INT_VERK_1,B642.KB1_INT_VERK_1,B642.KB1_INT_VERK_1,yes,high,snowflake exact match
+B643.KB1_INT_VERK,B643.KB1_INT_VERK,B643.KB1_INT_VERK,yes,high,snowflake exact match
+B653.KB2_WVÄRME_ACK,B653.KB2_WVÄRME_ACK,B653.KB2_WVÄRME_ACK,yes,high,snowflake exact match (UTF-8 Å); +term for B600-KB2 and Prod-600
+B654.KB1_KylEffekt_Ack,B654.KB1_KylEffekt_Ack,B654.KB1_KylEffekt_Ack,yes,high,snowflake exact match
+B654.KB2_Pkyl_Ack,B654.KB2_Pkyl_Ack,B654.KB2_Pkyl_Ack,yes,high,snowflake exact match
+B658.KB2_VMM51_E,B658.KB2_VMM51_E,B658.KB2_VM51,yes,high,"Excel uses 'VM51'; Snowflake uses 'VMM51_E'; VM→VMM and _E energy-variant suffix (confirmed by real flow: Jan 12.10 MWh, Feb 10.47 MWh while Excel cache=0, the known 'Excel=0 but meter live' pattern)"
+B661.KB1_INTVERK,B661.KB1_INTVERK,B661.KB1_INTVERK,yes,high,snowflake exact match
+B661.KB1_Pkyl_Ack,B661.KB1_Pkyl_Ack,B661.KB1_Pkyl_Ack,yes,high,snowflake exact match
+B674.KB1_PKYL2_Ack,B674.KB1_PKYL2_Ack,B674.KB1_PKYL2_Ack,yes,high,snowflake exact match
+B821.KB2_VMM51,B821.KB2_VMM51,B821.KB2_VMM1,yes,medium,"Excel 'B821.KB2_VMM1' and dash-form 'B821-55-KB2-VMM1' both refer to the single B821 cooling meter. Snowflake has B821.KB2_VMM50_E and B821.KB2_VMM51 — picked VMM51 as canonical. Both Snowflake candidates show 0 MWh delta for Jan–Feb 2026 so attribution is academic during the comparison window."
+B833.KB1_GF4,B833.KB1_GF4,B833-55-KB1-GF4,yes,high,"Excel uses 'B833-55-KB1-GF4' (with '55' system code and dashes); Snowflake uses 'B833.KB1_GF4' (dot-underscore, no system code)."
+B834.KB2_INT_VERK,B834.KB2_INT_VERK,B834.KB2_INT_VERK,yes,high,snowflake exact match
+B841.KB2_VM51,B841.KB2_VM51,B841.KB2_VM51,yes,high,snowflake exact match

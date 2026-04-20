@@ -35,11 +35,14 @@ Instructions for building a Brick-style metering ontology from heterogeneous doc
 
 6. **Document every decision.** In `decisions.md`, with evidence citations (file + row/cell). In `open_questions.md` for unresolved issues.
 
+7. **Classify every building-month diff.** After the first app-validation pass, fill `05_ontology/excel_comparison_annotations.csv` with `reason` + `explanation` for each row. See §5 under `05_ontology` for the current tag vocabulary. Keep tags short; invent new ones when warranted (the vocabulary is intentionally flexible). Update the file whenever the ontology changes — it is a snapshot of the current reconciliation state, not an aspirational target.
+
 **What NOT to do:**
 
 - Do NOT run `regenerate_workstream.py` blindly and call it done
 - Do NOT re-run `build_ontology.py` on a working workstream — it destroys outage patches, curated timeseries refs, cross-ID device swaps, relation type fixes, and other manual refinements in `05_ontology/`. **If you must rebuild, re-apply ALL manual edits from Phase 7 afterwards.** The manual edits are documented in `decisions.md` — search for "device swap", "false positive", "relation type" entries.
 - Do NOT skip `generate_building_virtuals.py` — it is MANDATORY, not optional. Every building with an Excel formula row needs a virtual meter. Without them, `meter_allocations.csv` is incomplete and the app's Excel comparison view breaks.
+- Do NOT skip `classify_excel_diffs.py` — every new workstream must have its `excel_comparison_annotations.csv` filled in before shipping. An unexplained >0.1% offender without a `reason`/`explanation` is an undocumented gap that future-you won't remember.
 - Do NOT generate annotations in bulk — every one is curated
 - Do NOT model Excel accounting formulas as physical topology. `B600-KB2 = B623 + B653 − B658` is bookkeeping, not pipes. B623 is a standalone building meter, not a feed into a cooling main.
 - Do NOT include meters in the ontology that don't belong to this media. If the crosswalk is too broad (includes heating meters in a cooling workstream), narrow it to only the formula-referenced meters + their confirmed physical sub-meters.
@@ -78,12 +81,13 @@ Flow-chart PDFs available under `reference/flow_charts/`:
 
 | workstream | pipeline stage reached | notes |
 |---|---|---|
-| `gtn_anga` | through `06_assembly` + app-validated (meter_net vs cached Excel) | 21 meters, 5 hasSubMeter edges. 46/48 buildings match within ±0.5 MWh for 2026-01 and 2026-02. Residuals: B600 (intake, expected) and B616 (~900 MWh/month genuinely unallocated in Excel — known "Excel=0 but meter live"). 2026-04-19 fix: replaced B642.Å1_VMM72 VMM71-derived patch with proper `:d.C` raw segment; B642 Jan now 88.87 MWh (Excel 89.04). |
-| `gtn_varme` | through `06_assembly` + app-validated | 59 meters, 29 hasSubMeter edges after Excel-priority realignment (16 PDF/naming edges removed, 5 Excel-derived edges added, 4 VÅ9 meters reattributed to campus). 48/48 match Jan, 47/48 Feb (B833 +23 MWh from outage patch — ontology captures consumption Excel's frozen VP1 counter misses). |
-| `gtn_el` | through `06_assembly` + app-validated | 76 meters, 10 hasSubMeter edges. 17/50 buildings within ±0.5 MWh, but of 33 remaining offenders: 3 cascading from genuinely BMS-absent STRUX-only sub-feeders (B611.T4-A3/C1/C4 → affect B611/B631/B613), 1 known Excel-stale pattern (B664/B665 for T42-2-1), 2 small % drifts (B660, B652), and 26 residuals <1%. Fix applied: direct edge `B612.T8 → B652.T8-A3-A14-112` to mirror Excel's double-subtraction of deep sub-feeder from both B612 and B641; B659.T28-3-5 moved from phantom BUNATTR building to campus. |
-| `gtn_kyla` | through `06_assembly` + app-validated (full rebuild 2026-04-19) | 32 meters (22 physical + 10 virtual), 20 edges (6 hasSubMeter + 14 feeds). **0 Brick validation violations.** Excel-facit rebuild from scratch: 11 curated annotations documenting every known gap. **45/49 match within ±0.5 MWh** both months (90/98 Jan+Feb combined). Remaining 4 offender patterns × 2 months = 8 cells, all documented: **B658** known "Excel=0 but meter live"; **B623** double-counted by Excel in both B623 building and B600-KB2 pool (conservation violation in the source — topology can only match one); **B612/B641** fractional subtractions (Excel subtracts B637 at k=0.9 for B612 and k=0.1 for B641; `views.sql` has no fractional-subtract primitive). **Negative building values** (B611 −20.88 MWh / B833 −0.84 MWh / B641 −1.75 MWh) are **data-quality artifacts** caused by dead pool meters (B653 died 2025-10-09, B654.KB2 died 2025-02-10) combined with active downstream sub-meters — the pool collapses to just B623 (3.67 MWh) while B631 sub-meters draw 22 MWh, producing physically-nonsensical negatives. Topology faithfully mirrors this. Also: **B612.KB1_PKYL and B833.KB1_GF4 are bi-daily BMS sensors** (31 readings over 59-day window), so any hasSubMeter with them as parent only subtracts on half the days. See `03_reconciliation/decisions.md` — `$R`-style per-row factors and mixed inline coefficients are mis-recorded in `01_extracted/excel_formulas.csv` for kyla rows 13/14/15/20/22/26/29/33/38/50; always re-parse formula text directly via `openpyxl.ArrayFormula.text` for kyla. |
-| `gtn_kallvatten` | through `06_assembly` + app-validated (built 2026-04-19) | 63 meters (62 with Snowflake + 1 STRUX-only inactive B869). 11 hasSubMeter edges, 0 feeds (no fractional shares). 39 buildings. **98/98 match within ±0.5 m³ for Jan+Feb** (100%). 0 Brick validation violations. Simplest pattern of the energy-intensive media: all coefficients 1.0, no cross-building virtuals. PDF exists (`V600-52.B.8-001.pdf`) but not needed — Excel accounting structure is sufficient. Building label `850/662` (dual-building Excel label) normalized to `B850`. |
-| `gtn_kyltornsvatten` | through `06_assembly` + app-validated (built 2026-04-19) | 7 meters (4 with Snowflake + 3 Excel-only inactive system-code meters `B621-52-V2-INT_VERK2`, `B654-55-V2`, `B661-52-V2-MQ43`). 0 edges, 0 virtuals. 7 buildings. **90/90 match for Jan+Feb** (100%). 0 Brick validation violations. Each building has a single +term meter, no subtractions. |
+| `gtn_anga` | through `06_assembly` + app-validated + classified | 21 meters, 5 hasSubMeter edges. 96 building-months classified: **92 match**, 2 `match_intake` (B600 — intake residual expected), 2 `excel_stale` (B616 ~900 MWh/month genuinely unallocated in Excel). 2026-04-19 fix: replaced B642.Å1_VMM72 VMM71-derived patch with proper `:d.C` raw segment. |
+| `gtn_varme` | through `06_assembly` + app-validated + classified | 59 meters, 29 hasSubMeter edges after Excel-priority realignment. 96 building-months classified: **95 match**, 1 `meter_outage` (B833 Feb +23 MWh — outage patch captures consumption that Excel's frozen VP1 counter misses). 16 PDF/naming edges removed, 5 Excel-derived edges added, 4 VÅ9 meters reattributed to campus. |
+| `gtn_el` | through `06_assembly` + app-validated + classified | 76 meters, 10 hasSubMeter edges. 100 building-months classified: **85 match**, 6 `strux_only_meter` (B611/B613/B631 — T4-A3/C1/C4 not in BMS), 4 `excel_stale` (B664/B665 T42-2-1 mirror), 2 `excel_bug` (B652 residual from B612 double-sub fix), 2 `ontology_drift` (small <0.2% unexplained), 1 `under_investigation` (B660 Feb only, −141 MWh). Fix applied: direct edge `B612.T8 → B652.T8-A3-A14-112` to mirror Excel's double-subtraction; B659.T28-3-5 moved from phantom BUNATTR building to campus. |
+| `gtn_kyla` | through `06_assembly` + app-validated + classified (full rebuild 2026-04-19) | 32 meters (22 physical + 10 virtual), 20 edges (6 hasSubMeter + 14 feeds). **0 Brick validation violations.** 98 building-months classified: **84 match**, 4 `data_quality_artifact` (B611/B833 — dead pool meters + active sub-meters yield negative residuals), 4 `excel_cooked_coefficient` (B612/B641 — fractional 0.9×/0.1×B637 with no views.sql primitive), 2 `excel_bug` (B623 double-counted in B623 building AND B600-KB2 pool), 2 `excel_stale` (B658 known "Excel=0 but meter live"), 2 `ontology_drift` (B621/B622 small residuals). See `03_reconciliation/decisions.md` — `$R`-style per-row factors and mixed inline coefficients are mis-recorded in `01_extracted/excel_formulas.csv` for kyla rows 13/14/15/20/22/26/29/33/38/50; always re-parse formula text directly via `openpyxl.ArrayFormula.text` for kyla. |
+| `gtn_kallvatten` | through `06_assembly` + app-validated + classified (built 2026-04-19) | 63 meters (62 with Snowflake + 1 STRUX-only inactive B869). 11 hasSubMeter edges, 0 feeds. 98 building-months classified: **98/98 match** (100%). 0 Brick validation violations. Simplest pattern of the energy-intensive media: all coefficients 1.0, no cross-building virtuals. Building label `850/662` (dual-building Excel label) normalized to `B850`. |
+| `gtn_kyltornsvatten` | through `06_assembly` + app-validated + classified (built 2026-04-19) | 7 meters (4 with Snowflake + 3 Excel-only inactive system-code meters). 0 edges, 0 virtuals. 90 building-months classified: **90/90 match** (100%). 0 Brick validation violations. Each building has a single +term meter, no subtractions. |
+| `snv_el` | through `06_assembly` + app-validated + classified (built 2026-04-20) | 156 meters, 125 edges + 43 building virtuals. 137 building-months classified: **117 match**, 6 `under_investigation` (B305/B392 −23 MWh complex-formula undercount likely same root cause; B344 −2.3 MWh hasSubMeter-child double-attribution), 5 `excel_cooked_coefficient` (B310/B311/B317 cross-building fractional pools — 0.5/0.5, 1/3/2/3, 0.4/0.5/0.1 — no views.sql primitive), 2 `strux_only_meter` (B304 STRUX-only summary meters), 7 `ontology_drift` (B318/B330/B337/B342 small <3% unexplained). First SNV workstream: establishes `-1` summary suffix, `_1_1` underscore trunk, and dash↔underscore separator drift crosswalk rules for other SNV media. |
 
 **Expected difficulty per media** (based on GTN completion, use for SNV planning):
 
@@ -107,7 +111,8 @@ Flow-chart PDFs available under `reference/flow_charts/`:
 7. Build `05_ontology/` CSVs by hand (don't rely on `build_ontology.py` for anything non-trivial — use it only as a template). Ensure every `+` term meter's building_id is set; orphans go to campus (blank building_id).
 8. Run `assemble_site.py` with all SNV workstreams once the first two are ready (need at least 2 to test cross-workstream join logic).
 9. App-validate: `SUM(meter_net)` per (building, media, month) vs `excel_building_totals.csv` cached values. Target: >95% of populated buildings within ±0.5 (unit). Investigate every offender; annotate or fix.
-10. `validate(ds)` must return 0 violations. If a feeds-sum-to-1 violation appears for power-to-energy conversions (like GTN B634), add a residual-destination virtual at k=`1 − coefficient`.
+10. **Classify every building-month in `05_ontology/excel_comparison_annotations.csv`** (see checklist item 7 in §0 and the schema in §5 under `05_ontology`). This is **required before declaring the workstream done** — it's how known gaps get documented and carried into the app. Run `python reference/scripts/classify_excel_diffs.py`; add a `(workstream, site, media_id)` entry to its `WORKSTREAMS` list and populate the `CURATED` dict with known-offender buildings keyed by reason (pull evidence from your `decisions.md` / `open_questions.md`). Then re-run `assemble_site.py` so the site bundle picks up the new file. Noise threshold is already encoded: `excel > 0 and pct < 0.1` or `excel == 0 and absd < 10` (native unit) → `match`. Everything above noise must have a curated reason or falls through to `ontology_drift` / `under_investigation`.
+11. `validate(ds)` must return 0 violations. If a feeds-sum-to-1 violation appears for power-to-energy conversions (like GTN B634), add a residual-destination virtual at k=`1 − coefficient`.
 
 ## 3. Sources and authority scopes
 
@@ -170,6 +175,7 @@ reference/media_workstreams/{site}_{media}/
       timeseries_refs.csv        # includes swap/offline/glitch multi-segment refs
       meter_allocations.csv      # Excel accounting formulas (documentation only)
       annotations.csv            # auto-generated from pipeline events + manual additions
+      excel_comparison_annotations.csv  # curated reason+explanation per (building, month)
       buildings.csv              # stub for site-level merging
       media_types.csv
 ```
@@ -185,6 +191,7 @@ data/sites/{site}/               # single Dataset loadable by ontology.load_data
     timeseries_refs.csv
     readings.csv                 # materialized from Snowflake + derived refs
     annotations.csv              # merged from all media + manual additions
+    excel_comparison_annotations.csv  # merged reason+explanation per (building, month)
     meter_allocations.csv        # Excel formulas for comparison
     campuses.csv, buildings.csv, zones.csv, databases.csv, devices.csv
     meter_measures.csv           # auto-generated: meter → building/campus
@@ -291,6 +298,27 @@ Matches the Abbey Road schema (`data/sites/abbey_road/*`). Produced by `build_on
 - If the meter already has a multi-segment derived ref (from glitch handling), the patch is appended to its sources — no double-stitching.
 - After patching, the analyst writes curated annotations explaining each event.
 
+**`excel_comparison_annotations.csv` — curated reason + explanation per (building, month):**
+
+After the first full app-validation pass (`SUM(meter_net)` vs cached Excel), the analyst classifies every building-month in this file. `assemble_site.py` merges it into `data/sites/{site}/excel_comparison_annotations.csv`, and the app's Excel-comparison table renders the two extra columns next to each month. Columns:
+
+```
+media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
+```
+
+`reason` is a short tag; vocabulary is **flexible and short-lived** (pick what fits, invent when warranted). Current in-use tags:
+
+- `match` — within floating-point / day-boundary noise (typical: ≤1 kWh and ≤0.1%)
+- `strux_only_meter` — Excel references a meter not in BMS (typically STRUX-read)
+- `excel_stale` — Excel formula hasn't been updated to reflect physical reality (e.g. B664/B665)
+- `excel_bug` — confirmed Excel formula error (e.g. B612 double-subtraction residual)
+- `excel_cooked_coefficient` — round-fraction tenant split without a views.sql primitive (kyla 0.9/0.1, SNV EL 0.5/0.5)
+- `meter_outage` — real meter went offline; ontology patched (or gap accepted)
+- `ontology_drift` — ontology off by a small amount of unclear cause
+- `under_investigation` — known offender, root cause not yet diagnosed
+
+`explanation` is one sentence. This file is **documentation of the state at the last reconciliation**, not an aspirational target — rewrite it when the ontology changes. It supersedes `04_validation/building_totals_spot_check.csv` for per-building, per-month diagnosis.
+
 ### 06_assembly — site-level dataset
 
 Produced by `assemble_site.py`. Merges all media workstreams into a single Dataset:
@@ -330,7 +358,10 @@ Working rules for meter ID reconciliation, per media:
 
 **Electricity (transformer naming):**
 - EL meters use `B###.T##` / `B###.T##-#-#` (T = transformer station / feeder). No `VMM##` suffix.
-- **`-S` suffix convention**: Excel references bare transformer IDs (`B611.T1`); Snowflake carries them with a `-S` suffix (`B611.T1-S`). The crosswalk builder must try `<id>-S` when exact match fails. Discovered on GTN; presumed campus-wide.
+- **`-S` suffix convention (GTN)**: Excel references bare transformer IDs (`B611.T1`); Snowflake carries them with a `-S` suffix (`B611.T1-S`). Try `<id>-S` when exact match fails.
+- **`-1` summary-suffix convention (SNV)**: Excel references bare trunk (`B209.T21`); Snowflake carries `<id>-1` as the summary feeder (`B209.T21-1`). Verified: BMS `T21-1` = 7287 kWh Jan matches STRUX `T21` = 7294 kWh (0.08%). Analogous role to GTN's `-S`.
+- **`_1_1` underscore trunk (SNV)**: Some SNV transformers (e.g. `B334.T87`) use underscore-separated position tuples in Snowflake. The `_1_1` variant is the TRUNK feeder (matches STRUX bare-ID value); other positions (`_2_2`, `_4_1`, etc.) are downstream taps that should NOT be summed into the trunk. Verified: BMS `T87_1_1` = 94528 Jan matches STRUX `T87` = 94561 (0.04%).
+- **Dash↔underscore separator drift (SNV)**: Some B3xx sub-feeders use underscore in Snowflake and dash in Excel. `B334.T87-5-2` (Excel) = `B334.T87_5_2` (Snowflake). Covered by the normalized-match step of the fuzzy-match procedure.
 - Some Excel transformer IDs have no Snowflake match at all (`B660.H23-1`, `B951.H3-B`) — these are likely provider/utility meters (H-prefix) with manual reads, not on BMS.
 
 **Kallvatten (standard water naming):**
@@ -345,11 +376,13 @@ Working rules for meter ID reconciliation, per media:
 **Fuzzy-matching procedure** (applies to every media; use before declaring a meter Snowflake-absent):
 
 1. **Exact match** `em in sf_ids`.
-2. **Normalized match** `re.sub(r'[^A-Za-z0-9]', '', em).lower()` against the same normalisation of every Snowflake ID — catches dash↔dot, separator drift, case differences.
-3. **Known suffix toggles**: try `em + '_E'`, `em + '_V'`, `em[:-2]` (strip trailing `_V` or `_E`).
-4. **Known transformations**: `VM`↔`VMM`, dash→dot on first separator, strip `-##-` system code.
+2. **Normalized match** `re.sub(r'[^A-Za-z0-9]', '', em).lower()` against the same normalisation of every Snowflake ID — catches dash↔dot↔underscore, separator drift, case differences.
+3. **Known suffix toggles**: try `em + '_E'`, `em + '_V'`, `em + '-S'` (GTN summary), `em + '-1'` (SNV summary), `em + '_1_1'` (SNV underscore trunk), `em + '-A1'`/`em + '-B1'`, `em[:-2]` (strip trailing `_V` or `_E`).
+4. **Known transformations**: `VM`↔`VMM`, dash→dot on first separator, strip `-##-` system code, dash↔underscore separator substitution (SNV B334).
 5. **Tail-segment search** within the same building prefix: strip `B###.`, compare normalised tails across all `B###.*` Snowflake IDs.
-6. **Last resort**: manually inspect STRUX catalog (`excel_intake_meters.csv`) to see if the meter is marked `Manuell` (manually read, legacy) — often explains why it's not in Snowflake.
+6. **Building-prefix drift**: scan all Snowflake IDs whose tail matches the Excel meter's tail — catches cases where Excel uses B307 prefix but Snowflake has B339 (etc).
+7. **Cross-quantity search**: the same meter might appear under a different QUANTITY column in Snowflake (e.g. `Active Energy Delivered(Mega)` vs `Active Energy Delivered`). Check all quantities if the primary one misses.
+8. **Last resort**: manually inspect STRUX catalog (`excel_intake_meters.csv`) to see if the meter is marked `Manuell` (manually read, legacy) — often explains why it's not in Snowflake. Also verify the STRUX monthly values magnitude: if a "trunk" candidate's BMS Jan reading matches STRUX's cached trunk value within ~1%, the candidate is the true trunk.
 
 If all six fail, the meter is genuinely Snowflake-absent. Record with `snowflake_id=""` and evidence. **Never synthesize Snowflake rows from STRUX monthly values** (see memory "feedback_no_snowflake_overwrite").
 

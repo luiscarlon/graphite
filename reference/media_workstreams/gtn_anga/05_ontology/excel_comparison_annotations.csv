@@ -1,0 +1,97 @@
+media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
+ANGA,B600,2026-01,3932.15,-1732.60,-5664.74,match_intake,B600 is the site intake; residual vs per-building sum is expected.
+ANGA,B600,2026-02,2431.89,381.16,-2050.73,match_intake,B600 is the site intake; residual vs per-building sum is expected.
+ANGA,B602,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B602,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B604,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B611,2026-01,1211.87,1211.87,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B611,2026-02,1200.91,1200.91,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B612,2026-01,777.28,777.28,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B612,2026-02,815.16,815.16,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B613,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B613,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B614,2026-01,711.08,711.08,-0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B614,2026-02,677.81,677.81,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B615,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B615,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B616,2026-01,0.00,858.75,858.75,excel_stale,"Meter live (~900 MWh/month) but Excel attributes 0 — known ""Excel=0 but meter live"" misallocation."
+ANGA,B616,2026-02,0.00,942.01,942.01,excel_stale,"Meter live (~900 MWh/month) but Excel attributes 0 — known ""Excel=0 but meter live"" misallocation."
+ANGA,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B621,2026-01,961.07,961.07,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B621,2026-02,943.51,943.51,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B622,2026-01,43.19,43.19,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B622,2026-02,52.57,52.57,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B623,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B623,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B625,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B625,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B631,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B631,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B634,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B634,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B637,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B637,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B638,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B638,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B641,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B641,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B642,2026-01,89.04,89.04,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B642,2026-02,105.76,105.76,-0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B643,2026-01,132.06,132.06,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B643,2026-02,169.00,169.00,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B649,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B649,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B650,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B650,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B651,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B651,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B652,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B652,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B653,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B653,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B654,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B654,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B655,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B655,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B658,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B658,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B659,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B659,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B660,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B660,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B661,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B661,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B664,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B664,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B665,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B665,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B674,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B674,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B682,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B682,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B821,2026-01,45.16,45.16,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B821,2026-02,44.93,44.93,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B833,2026-01,304.42,304.42,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B833,2026-02,137.49,137.49,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B834,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B834,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B841,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B841,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B850,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B869,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B869,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B921,2026-01,530.82,530.82,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B921,2026-02,530.72,530.72,0.00,match,within floating-point / day-boundary rounding noise.

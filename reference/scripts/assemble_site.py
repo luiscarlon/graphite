@@ -175,6 +175,20 @@ def main() -> int:
                   ["building_id", "month", "excel_mwh", "media"],
                   all_excel_totals)
 
+    # Merge curated Excel-comparison annotations (reason + explanation per building-month)
+    all_excel_annotations: list[dict] = []
+    for ws_dir in args.workstreams:
+        ann_path = ws_dir / "05_ontology" / "excel_comparison_annotations.csv"
+        if ann_path.exists():
+            all_excel_annotations.extend(read_csv_rows(ann_path))
+    if all_excel_annotations:
+        write_csv(
+            out / "excel_comparison_annotations.csv",
+            ["media", "building_id", "month", "excel_kwh", "onto_kwh",
+             "diff_kwh", "reason", "explanation"],
+            all_excel_annotations,
+        )
+
     # Copy meter_allocations (Excel accounting formulas) for comparison views
     all_allocations: list[dict] = []
     for ws_dir in args.workstreams:

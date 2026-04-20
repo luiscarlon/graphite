@@ -1,0 +1,97 @@
+media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
+VARME,B600,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B600,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B602,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B602,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B604,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B611,2026-01,830.61,830.61,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B611,2026-02,951.59,951.59,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B612,2026-01,144.79,144.79,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B612,2026-02,252.52,252.52,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B613,2026-01,59.01,59.01,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B613,2026-02,62.49,62.49,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B614,2026-01,267.54,267.54,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B614,2026-02,408.46,408.46,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B615,2026-01,29.39,29.39,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B615,2026-02,29.82,29.82,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B616,2026-01,601.68,601.68,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B616,2026-02,605.20,605.20,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B621,2026-01,779.67,779.67,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B621,2026-02,834.44,834.44,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B622,2026-01,52.01,52.01,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B622,2026-02,54.24,54.24,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B623,2026-01,22.44,22.44,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B623,2026-02,22.66,22.66,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B625,2026-01,318.90,318.90,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B625,2026-02,326.03,326.03,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B631,2026-01,155.34,155.34,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B631,2026-02,156.61,156.61,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B634,2026-01,118.27,118.27,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B634,2026-02,133.84,133.84,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B637,2026-01,53.14,53.14,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B637,2026-02,55.52,55.52,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B638,2026-01,25.13,25.13,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B638,2026-02,25.29,25.29,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B641,2026-01,118.65,118.65,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B641,2026-02,122.08,122.08,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B642,2026-01,438.63,438.63,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B642,2026-02,439.07,439.07,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B643,2026-01,361.55,361.55,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B643,2026-02,364.51,364.51,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B649,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B649,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B650,2026-01,252.17,252.17,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B650,2026-02,208.53,208.53,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B651,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B651,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B652,2026-01,11.88,11.88,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B652,2026-02,11.66,11.66,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B653,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B653,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B654,2026-01,436.25,436.25,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B654,2026-02,412.58,412.58,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B655,2026-01,49.97,49.97,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B655,2026-02,51.92,51.92,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B658,2026-01,14.27,14.27,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B658,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B659,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B659,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B660,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B660,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B661,2026-01,74.51,74.51,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B661,2026-02,73.82,73.82,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B664,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B664,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B665,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B665,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B674,2026-01,135.59,135.59,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B674,2026-02,151.56,151.56,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B682,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B682,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B821,2026-01,79.20,79.20,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B821,2026-02,80.95,80.95,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B833,2026-01,321.33,321.33,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B833,2026-02,135.09,158.18,23.09,meter_outage,B833 outage patch captures consumption that Excel's frozen VP1 counter misses.
+VARME,B834,2026-01,70.71,70.71,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B834,2026-02,79.63,79.63,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B841,2026-01,18.46,18.46,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B841,2026-02,25.69,25.69,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B850,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B869,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B869,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B921,2026-01,233.67,233.67,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B921,2026-02,265.12,265.12,0.00,match,within floating-point / day-boundary rounding noise.

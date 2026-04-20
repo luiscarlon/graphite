@@ -1,0 +1,2 @@
+media_type_id,name,description,brick_meter_class,brick_substance
+EL,Electrical,Electrical energy (kWh / MWh).,Electrical_Meter,

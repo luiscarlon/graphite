@@ -746,6 +746,17 @@ def _excel_comparison_section(ds: Dataset, site_dir: Path) -> None:
     on = onto_df[onto_df["month"].isin(compare_months)]
     merged = ex.merge(on, on=["building", "month"], how="outer").fillna(0.0)
 
+    ann_path = site_dir / "excel_comparison_annotations.csv"
+    ann_lookup: dict[tuple[str, str], dict[str, str]] = {}
+    if ann_path.exists():
+        ann_df = pd.read_csv(ann_path)
+        ann_df = ann_df[ann_df["media"] == media]
+        for _, ar in ann_df.iterrows():
+            ann_lookup[(str(ar["building_id"]), str(ar["month"]))] = {
+                "reason": str(ar.get("reason", "") or ""),
+                "explanation": str(ar.get("explanation", "") or ""),
+            }
+
     rows: list[dict[str, object]] = []
     for bid, grp in merged.groupby("building"):
         row: dict[str, object] = {"building": bid}
@@ -759,6 +770,9 @@ def _excel_comparison_section(ds: Dataset, site_dir: Path) -> None:
             row[f"diff%_{m}"] = (
                 round((on_val - ex_val) / ex_val * 100, 1) if ex_val != 0 else None
             )
+            ann = ann_lookup.get((bid, str(m)), {})
+            row[f"reason_{m}"] = ann.get("reason", "")
+            row[f"explanation_{m}"] = ann.get("explanation", "")
         rows.append(row)
     cdf = pd.DataFrame(sorted(rows, key=lambda r: r["building"]))
 

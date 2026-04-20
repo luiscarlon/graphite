@@ -1,0 +1,145 @@
+facit_id,snowflake_id,strux_id,excel_used,confidence,evidence
+B207.T94-2-1,B207.T94-2-1,B207.T94-2-1,yes,high,exact Snowflake match
+B207.T94-2-2,B207.T94-2-2,B207.T94-2-2,yes,high,exact Snowflake match
+B207.T94-2-3,B207.T94-2-3,B207.T94-2-3,yes,high,exact Snowflake match
+B207.T94-2-4,B207.T94-2-4,B207.T94-2-4,yes,high,exact Snowflake match
+B207.T94-4-3,B207.T94-4-3,B207.T94-4-3,yes,high,exact Snowflake match
+B207.T94-4-4,B207.T94-4-4,B207.T94-4-4,yes,high,exact Snowflake match
+B207.T94-4-5,B207.T94-4-5,B207.T94-4-5,yes,high,exact Snowflake match
+B207.T94-4-6,B207.T94-4-6,B207.T94-4-6,yes,high,exact Snowflake match
+B207.T94-4-7,B207.T94-4-7,B207.T94-4-7,yes,high,exact Snowflake match
+B207.T95-3-1,B207.T95-3-1,B207.T95-3-1,yes,high,exact Snowflake match
+B207.T95-3-2,B207.T95-3-2,B207.T95-3-2,yes,high,exact Snowflake match
+B207.T95-3-3,B207.T95-3-3,B207.T95-3-3,yes,high,exact Snowflake match
+B207.T95-3-4,B207.T95-3-4,B207.T95-3-4,yes,high,exact Snowflake match
+B207.T95-3-6,B207.T95-3-6,B207.T95-3-6,yes,high,exact Snowflake match
+B207.T95-5-5,B207.T95-5-5,B207.T95-5-5,yes,high,exact Snowflake match
+B207.T95-5-6,B207.T95-5-6,B207.T95-5-6,yes,high,exact Snowflake match
+B207.T95-5-7,B207.T95-5-7,B207.T95-5-7,yes,high,exact Snowflake match
+B209.T21,B209.T21-1,B209.T21,yes,high,extended fuzzy-match: suffix -1 → Snowflake has B209.T21-1
+B209.T21-4-6,B209.T21-4-6,B209.T21-4-6,yes,high,exact Snowflake match
+B209.T32,B209.T32-1,B209.T32,yes,high,extended fuzzy-match: suffix -1 → Snowflake has B209.T32-1
+B209.T32-2-2,B209.T32-2-2,B209.T32-2-2,yes,high,exact Snowflake match
+B209.T32-2-4,B209.T32-2-4,B209.T32-2-4,yes,high,exact Snowflake match
+B209.T32-4-2,B209.T32-4-2,B209.T32-4-2,yes,high,exact Snowflake match
+B307.T10-1,B307.T10-1,B307.T10-1,yes,high,exact Snowflake match
+B307.T10-5-2,B307.T10-5-2,B307.T10-5-2,yes,high,exact Snowflake match
+B307.T10-5-3,B307.T10-5-3,B307.T10-5-3,yes,high,exact Snowflake match
+B307.T10-6-2,B307.T10-6-2,B307.T10-6-2,yes,high,exact Snowflake match
+B307.T10-6-5,B307.T10-6-5,B307.T10-6-5,yes,high,exact Snowflake match
+B307.T10-6-8,B307.T10-6-8,B307.T10-6-8,yes,high,exact Snowflake match
+B307.T10-6-9,B307.T10-6-9,B307.T10-6-9,yes,high,exact Snowflake match
+B307.T10-7-3,B307.T10-7-3,B307.T10-7-3,yes,high,exact Snowflake match
+B307.T10-7-4,B307.T10-7-4,B307.T10-7-4,yes,high,exact Snowflake match
+B307.T10-7-5,B307.T10-7-5,B307.T10-7-5,yes,high,exact Snowflake match
+B307.T10-7-6,B307.T10-7-6,B307.T10-7-6,yes,high,exact Snowflake match
+B307.T10-7-7,B307.T10-7-7,B307.T10-7-7,yes,high,exact Snowflake match
+B307.T11-1,B307.T11-1,B307.T11-1,yes,high,exact Snowflake match
+B307.T11-7-10,B307.T11-7-10,B307.T11-7-10,yes,high,exact Snowflake match
+B307.T11-7-7,,B307.T11-7-7,yes,medium,"STRUX-only (not in Snowflake BMS); betjanar=B308 Central pl.2, avlasning=Automatisk; value empty in STRUX_data"
+B307.T11-8-5,B307.T11-8-5,B307.T11-8-5,yes,high,exact Snowflake match
+B307.T77-4-5-B,,,yes,low,neither Snowflake nor STRUX catalog — likely Excel placeholder/decommissioned
+B308.T57,B308.T57,B308.T57,yes,high,exact Snowflake match
+B308.T57-3-2,B308.T57-3-2,B308.T57-3-2,yes,high,exact Snowflake match
+B308.T57-4-7,B308.T57-4-7,B308.T57-4-7,yes,high,exact Snowflake match
+B308.T58,B308.T58,B308.T58,yes,high,exact Snowflake match
+B308.T58-4-2,B308.T58-4-2,B308.T58-4-2,yes,high,exact Snowflake match
+B308.T58-7-8,B308.T58-7-8,B308.T58-7-8,yes,high,exact Snowflake match
+B308.T58-8-3,B308.T58-8-3,B308.T58-8-3,yes,high,exact Snowflake match
+B308.T59,B308.T59,B308.T59,yes,high,exact Snowflake match
+B310.T27,B310.T27,B310.T27,yes,high,exact Snowflake match
+B310.T27-12-2,B310.T27-12-2,B310.T27-12-2,yes,high,exact Snowflake match
+B310.T28,B310.T28,B310.T28,yes,high,exact Snowflake match
+B310.T28-23-2,B310.T28-23-2,B310.T28-23-2,yes,high,exact Snowflake match
+B311.T29,B311.T29,B311.T29,yes,high,exact Snowflake match
+B311.T56,B311.T56,B311.T56,yes,high,exact Snowflake match
+B311.T56-4-7,B311.T56-4-7,B311.T56-4-7,yes,high,exact Snowflake match
+B311.T79,B311.T79,B311.T79,yes,high,exact Snowflake match
+B311.T80,B311.T80,B311.T80,yes,high,exact Snowflake match
+B311.T80-2-3,B311.T80-2-3,B311.T80-2-3,yes,high,exact Snowflake match
+B312.T34,B312.T34,B312.T34,yes,high,exact Snowflake match
+B312.T34-2-3,B312.T34-2-3,B312.T34-2-3,yes,high,exact Snowflake match
+B312.T34-2-4,B312.T34-2-4,B312.T34-2-4,yes,high,exact Snowflake match
+B312.T34-2-5,B312.T34-2-5,B312.T34-2-5,yes,high,exact Snowflake match
+B313.T26S,,B313.T26S,yes,medium,"STRUX-only (not in Snowflake BMS); betjanar=Hela ställverk, avlasning=Automatisk; value empty in STRUX_data"
+B313.T26S-2-12,B313.T26S-2-12,B313.T26S-2-12,yes,high,exact Snowflake match
+B313.T26S-2-32,B313.T26S-2-32,B313.T26S-2-32,yes,high,exact Snowflake match
+B313.T26S-2-6,,B313.T26S-2-6,yes,medium,"STRUX-only (not in Snowflake BMS); betjanar=B301, avlasning=Automatisk; value empty in STRUX_data"
+B313.T26S-2-XX,B313.T26S-2-XX,B313.T26S-2-XX,yes,high,exact Snowflake match
+B313.T26S-3-12,,B313.T26S-3-12,yes,medium,"STRUX-only (not in Snowflake BMS); betjanar=B304, avlasning=Automatisk; value empty in STRUX_data"
+B313.T26S-3-16,B313.T26S-3-16,B313.T26S-3-16,yes,high,exact Snowflake match
+B313.T26S-3-20,B313.T26S-3-20,B313.T26S-3-20,yes,high,exact Snowflake match
+B313.T26S-3-24,B313.T26S-3-24,B313.T26S-3-24,yes,high,exact Snowflake match
+B313.T26S-3-28,B313.T26S-3-28,B313.T26S-3-28,yes,high,exact Snowflake match
+B313.T26S-3-32,B313.T26S-3-32,B313.T26S-3-32,yes,high,exact Snowflake match
+B317.T49,B317.T49,B317.T49,yes,high,exact Snowflake match
+B317.T49-3-9,B317.T49-3-9,B317.T49-3-9,yes,high,exact Snowflake match
+B317.T49-4-2,B317.T49-4-2,B317.T49-4-2,yes,high,exact Snowflake match
+B317.T49-4-3,B317.T49-4-3,B317.T49-4-3,yes,high,exact Snowflake match
+B317.T49-4-4,B317.T49-4-4,B317.T49-4-4,yes,high,exact Snowflake match
+B317.T49-4-6,B317.T49-4-6,B317.T49-4-6,yes,high,exact Snowflake match
+B317.T49-4-7,B317.T49-4-7,B317.T49-4-7,yes,high,exact Snowflake match
+B317.T49-4-9,B317.T49-4-9,B317.T49-4-9,yes,high,exact Snowflake match
+B317.T49-5-1,B317.T49-5-1,B317.T49-5-1,yes,high,exact Snowflake match
+B317.T49-5-2,B317.T49-5-2,B317.T49-5-2,yes,high,exact Snowflake match
+B317.T49-5-5,B317.T49-5-5,B317.T49-5-5,yes,high,exact Snowflake match
+B317.T49-5-6,B317.T49-5-6,B317.T49-5-6,yes,high,exact Snowflake match
+B317.T49-5-7,B317.T49-5-7,B317.T49-5-7,yes,high,exact Snowflake match
+B317.T49-5-9,B317.T49-5-9,B317.T49-5-9,yes,high,exact Snowflake match
+B318.T21-6-2-A,B318.T21-6-2-A,B318.T21-6-2-A,yes,high,exact Snowflake match
+B324.T14-4-1,B324.T14-4-1,B324.T14-4-1,yes,high,exact Snowflake match
+B325.T12,B325.T12,B325.T12,yes,high,exact Snowflake match
+B325.T13,B325.T13,B325.T13,yes,high,exact Snowflake match
+B328.T19-3-1,B328.T19-3-1,B328.T19-3-1,yes,high,exact Snowflake match
+B328.T19-3-3,B328.T19-3-3,B328.T19-3-3,yes,high,exact Snowflake match
+B328.T19-3-4,B328.T19-3-4,B328.T19-3-4,yes,high,exact Snowflake match
+B328.T19-4-2,B328.T19-4-2,B328.T19-4-2,yes,high,exact Snowflake match
+B328.T19-5-1,B328.T19-5-1,B328.T19-5-1,yes,high,exact Snowflake match
+B328.T20-2-1,B328.T20-2-1,B328.T20-2-1,yes,high,exact Snowflake match
+B328.T20-2-4,B328.T20-2-4,B328.T20-2-4,yes,high,exact Snowflake match
+B328.T20-3-1,B328.T20-3-1,B328.T20-3-1,yes,high,exact Snowflake match
+B328.T20-4-1,B328.T20-4-1,B328.T20-4-1,yes,high,exact Snowflake match
+B330.T30,B330.T30,B330.T30,yes,high,exact Snowflake match
+B330.T36,B330.T36,B330.T36,yes,high,exact Snowflake match
+B330.T37,B330.T37,B330.T37,yes,high,exact Snowflake match
+B330.T64,B330.T64,B330.T64,yes,high,exact Snowflake match
+B330.T65,B330.T65,B330.T65,yes,high,exact Snowflake match
+B334.T87,B334.T87_1_1,B334.T87,yes,high,extended fuzzy-match: suffix _1_1 → Snowflake has B334.T87_1_1
+B334.T87-5-2,B334.T87_5_2,B334.T87-5-2,yes,high,normalized match (dash↔underscore): Snowflake has B334.T87_5_2
+B334.T88,B334.T88_1_1,B334.T88,yes,high,extended fuzzy-match: suffix _1_1 → Snowflake has B334.T88_1_1
+B334.T88-4-2,B334.T88_4_2,B334.T88-4-2,yes,high,normalized match (dash↔underscore): Snowflake has B334.T88_4_2
+B334.T89,B334.T89_1_1,B334.T89,yes,high,extended fuzzy-match: suffix _1_1 → Snowflake has B334.T89_1_1
+B334.T91,B334.T91_1_1,B334.T91,yes,high,extended fuzzy-match: suffix _1_1 → Snowflake has B334.T91_1_1
+B334.T92,B334.T92_1_1,B334.T92,yes,high,extended fuzzy-match: suffix _1_1 → Snowflake has B334.T92_1_1
+B336.T40-3-1,,B336.T40-3-1,yes,medium,"STRUX-only (not in Snowflake BMS); betjanar=B304 Stripper, avlasning=Automatisk; value empty in STRUX_data"
+B337.T43,B337.T43,B337.T43,yes,high,exact Snowflake match
+B337.T44,B337.T44,B337.T44,yes,high,exact Snowflake match
+B339.T71-1,B339.T71-1,B339.T71-1,yes,high,exact Snowflake match
+B339.T72-1,B339.T72-1,B339.T72-1,yes,high,exact Snowflake match
+B339.T73-1,B339.T73-1,B339.T73-1,yes,high,exact Snowflake match
+B339.T74-1,B339.T74-1,B339.T74-1,yes,high,exact Snowflake match
+B339.T74-2-2,B339.T74-2-2,B339.T74-2-2,yes,high,exact Snowflake match
+B339.T75-1,B339.T75-1,B339.T75-1,yes,high,exact Snowflake match
+B339.T76-1,B339.T76-1,B339.T76-1,yes,high,exact Snowflake match
+B339.T77-1,B339.T77-1,B339.T77-1,yes,high,exact Snowflake match
+B339.T77-4-5,B339.T77-4-5,B339.T77-4-5,yes,high,exact Snowflake match
+B339.T77-5-1,B339.T77-5-1,B339.T77-5-1,yes,high,exact Snowflake match
+B339.T78-1,B339.T78-1,B339.T78-1,yes,high,exact Snowflake match
+B339.T78-4-1,B339.T78-4-1,B339.T78-4-1,yes,high,exact Snowflake match
+B339.T78-4-2,B339.T78-4-2,B339.T78-4-2,yes,high,exact Snowflake match
+B341.T60,B341.T60,B341.T60,yes,high,exact Snowflake match
+B341.T61,B341.T61,B341.T61,yes,high,exact Snowflake match
+B341.T62,B341.T62,B341.T62,yes,high,exact Snowflake match
+B341.T63,B341.T63,B341.T63,yes,high,exact Snowflake match
+B342.T66,B342.T66,B342.T66,yes,high,exact Snowflake match
+B342.T67,B342.T67,B342.T67,yes,high,exact Snowflake match
+B360.T99-4-1,B360.T99-4-1,B360.T99-4-1,yes,high,exact Snowflake match
+B360.T99-4-2,B360.T99-4-2,B360.T99-4-2,yes,high,exact Snowflake match
+B360.T99-4-4,B360.T99-4-4,B360.T99-4-4,yes,high,exact Snowflake match
+B360.T99-4-5,B360.T99-4-5,B360.T99-4-5,yes,high,exact Snowflake match
+B360.T99-4-6,B360.T99-4-6,B360.T99-4-6,yes,high,exact Snowflake match
+B360.T99-7-1,B360.T99-7-1,B360.T99-7-1,yes,high,exact Snowflake match
+B371.T23-4-4,,B371.T23-4-4,yes,medium,"STRUX-only (not in Snowflake BMS); betjanar=B301, avlasning=Automatisk; value empty in STRUX_data"
+B371.T31-4-4,,B371.T31-4-4,yes,medium,"STRUX-only (not in Snowflake BMS); betjanar=B302, avlasning=Automatisk; value empty in STRUX_data"
+B371.T31-5,,B371.T31-5,yes,medium,"STRUX-only (not in Snowflake BMS); betjanar=B302, avlasning=Automatisk; value empty in STRUX_data"
+Reservkraft pl7,,,yes,low,neither Snowflake nor STRUX catalog — likely Excel placeholder/decommissioned

@@ -1,0 +1,579 @@
+media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
+ANGA,B600,2026-01,3932.15,-1732.60,-5664.74,match_intake,B600 is the site intake; residual vs per-building sum is expected.
+ANGA,B600,2026-02,2431.89,381.16,-2050.73,match_intake,B600 is the site intake; residual vs per-building sum is expected.
+ANGA,B602,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B602,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B604,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B611,2026-01,1211.87,1211.87,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B611,2026-02,1200.91,1200.91,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B612,2026-01,777.28,777.28,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B612,2026-02,815.16,815.16,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B613,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B613,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B614,2026-01,711.08,711.08,-0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B614,2026-02,677.81,677.81,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B615,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B615,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B616,2026-01,0.00,858.75,858.75,excel_stale,"Meter live (~900 MWh/month) but Excel attributes 0 — known ""Excel=0 but meter live"" misallocation."
+ANGA,B616,2026-02,0.00,942.01,942.01,excel_stale,"Meter live (~900 MWh/month) but Excel attributes 0 — known ""Excel=0 but meter live"" misallocation."
+ANGA,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B621,2026-01,961.07,961.07,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B621,2026-02,943.51,943.51,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B622,2026-01,43.19,43.19,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B622,2026-02,52.57,52.57,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B623,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B623,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B625,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B625,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B631,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B631,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B634,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B634,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B637,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B637,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B638,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B638,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B641,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B641,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B642,2026-01,89.04,89.04,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B642,2026-02,105.76,105.76,-0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B643,2026-01,132.06,132.06,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B643,2026-02,169.00,169.00,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B649,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B649,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B650,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B650,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B651,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B651,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B652,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B652,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B653,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B653,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B654,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B654,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B655,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B655,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B658,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B658,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B659,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B659,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B660,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B660,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B661,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B661,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B664,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B664,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B665,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B665,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B674,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B674,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B682,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B682,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B821,2026-01,45.16,45.16,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B821,2026-02,44.93,44.93,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B833,2026-01,304.42,304.42,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B833,2026-02,137.49,137.49,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B834,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B834,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B841,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B841,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B850,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B869,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B869,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+ANGA,B921,2026-01,530.82,530.82,0.00,match,within floating-point / day-boundary rounding noise.
+ANGA,B921,2026-02,530.72,530.72,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B600,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B600,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B602,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B602,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B604,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B611,2026-01,830.61,830.61,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B611,2026-02,951.59,951.59,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B612,2026-01,144.79,144.79,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B612,2026-02,252.52,252.52,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B613,2026-01,59.01,59.01,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B613,2026-02,62.49,62.49,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B614,2026-01,267.54,267.54,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B614,2026-02,408.46,408.46,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B615,2026-01,29.39,29.39,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B615,2026-02,29.82,29.82,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B616,2026-01,601.68,601.68,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B616,2026-02,605.20,605.20,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B621,2026-01,779.67,779.67,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B621,2026-02,834.44,834.44,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B622,2026-01,52.01,52.01,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B622,2026-02,54.24,54.24,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B623,2026-01,22.44,22.44,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B623,2026-02,22.66,22.66,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B625,2026-01,318.90,318.90,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B625,2026-02,326.03,326.03,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B631,2026-01,155.34,155.34,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B631,2026-02,156.61,156.61,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B634,2026-01,118.27,118.27,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B634,2026-02,133.84,133.84,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B637,2026-01,53.14,53.14,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B637,2026-02,55.52,55.52,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B638,2026-01,25.13,25.13,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B638,2026-02,25.29,25.29,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B641,2026-01,118.65,118.65,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B641,2026-02,122.08,122.08,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B642,2026-01,438.63,438.63,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B642,2026-02,439.07,439.07,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B643,2026-01,361.55,361.55,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B643,2026-02,364.51,364.51,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B649,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B649,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B650,2026-01,252.17,252.17,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B650,2026-02,208.53,208.53,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B651,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B651,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B652,2026-01,11.88,11.88,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B652,2026-02,11.66,11.66,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B653,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B653,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B654,2026-01,436.25,436.25,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B654,2026-02,412.58,412.58,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B655,2026-01,49.97,49.97,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B655,2026-02,51.92,51.92,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B658,2026-01,14.27,14.27,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B658,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B659,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B659,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B660,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B660,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B661,2026-01,74.51,74.51,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B661,2026-02,73.82,73.82,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B664,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B664,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B665,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B665,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B674,2026-01,135.59,135.59,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B674,2026-02,151.56,151.56,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B682,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B682,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B821,2026-01,79.20,79.20,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B821,2026-02,80.95,80.95,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B833,2026-01,321.33,321.33,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B833,2026-02,135.09,158.18,23.09,meter_outage,B833 outage patch captures consumption that Excel's frozen VP1 counter misses.
+VARME,B834,2026-01,70.71,70.71,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B834,2026-02,79.63,79.63,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B841,2026-01,18.46,18.46,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B841,2026-02,25.69,25.69,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B850,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B869,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B869,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B921,2026-01,233.67,233.67,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B921,2026-02,265.12,265.12,0.00,match,within floating-point / day-boundary rounding noise.
+EL,B602,2026-01,614.31,614.39,0.07,match,within floating-point / day-boundary rounding noise.
+EL,B602,2026-02,647.83,647.62,-0.20,match,within floating-point / day-boundary rounding noise.
+EL,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B604,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B611,2026-01,934585.67,980677.37,46091.70,strux_only_meter,"B611.T4 trunk in BMS includes T4-A3/C1/C4 flow; Excel subtracts those via STRUX, ontology cannot."
+EL,B611,2026-02,811288.92,855111.59,43822.67,strux_only_meter,"B611.T4 trunk in BMS includes T4-A3/C1/C4 flow; Excel subtracts those via STRUX, ontology cannot."
+EL,B612,2026-01,493402.99,493356.78,-46.21,match,within floating-point / day-boundary rounding noise.
+EL,B612,2026-02,447699.95,447687.20,-12.75,match,within floating-point / day-boundary rounding noise.
+EL,B613,2026-01,11407.24,0.00,-11407.24,strux_only_meter,B613.T4-C1 is STRUX-only (no BMS data). Ontology has nothing to attribute.
+EL,B613,2026-02,10233.32,0.00,-10233.32,strux_only_meter,B613.T4-C1 is STRUX-only (no BMS data). Ontology has nothing to attribute.
+EL,B614,2026-01,642223.84,642259.59,35.75,match,within floating-point / day-boundary rounding noise.
+EL,B614,2026-02,630000.09,629974.91,-25.19,match,within floating-point / day-boundary rounding noise.
+EL,B615,2026-01,4961.60,4961.61,0.00,match,within floating-point / day-boundary rounding noise.
+EL,B615,2026-02,4618.57,4618.56,-0.02,match,within floating-point / day-boundary rounding noise.
+EL,B616,2026-01,555788.83,555803.62,14.79,match,within floating-point / day-boundary rounding noise.
+EL,B616,2026-02,602851.05,602831.20,-19.85,match,within floating-point / day-boundary rounding noise.
+EL,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B621,2026-01,734004.75,734152.93,148.18,match,within floating-point / day-boundary rounding noise.
+EL,B621,2026-02,685726.83,685688.43,-38.40,match,within floating-point / day-boundary rounding noise.
+EL,B622,2026-01,41144.56,41148.32,3.76,match,within floating-point / day-boundary rounding noise.
+EL,B622,2026-02,37521.72,37518.32,-3.40,match,within floating-point / day-boundary rounding noise.
+EL,B623,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B623,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B625,2026-01,150435.00,150433.00,-2.00,match,within floating-point / day-boundary rounding noise.
+EL,B625,2026-02,142599.00,142590.50,-8.50,match,within floating-point / day-boundary rounding noise.
+EL,B631,2026-01,45299.98,0.00,-45299.98,strux_only_meter,B631.T4-A3 and B631.T4-C4 are STRUX-only (no BMS data). Ontology has nothing to attribute.
+EL,B631,2026-02,42461.51,0.00,-42461.51,strux_only_meter,B631.T4-A3 and B631.T4-C4 are STRUX-only (no BMS data). Ontology has nothing to attribute.
+EL,B634,2026-01,79137.88,79142.31,4.44,match,within floating-point / day-boundary rounding noise.
+EL,B634,2026-02,83577.94,83576.56,-1.38,match,within floating-point / day-boundary rounding noise.
+EL,B637,2026-01,2006.97,2008.39,1.42,match,within floating-point / day-boundary rounding noise.
+EL,B637,2026-02,2370.73,2370.81,0.08,match,within floating-point / day-boundary rounding noise.
+EL,B638,2026-01,1774.22,1775.69,1.47,match,within floating-point / day-boundary rounding noise.
+EL,B638,2026-02,1908.42,1908.45,0.04,match,within floating-point / day-boundary rounding noise.
+EL,B641,2026-01,46179.16,46184.22,5.06,match,within floating-point / day-boundary rounding noise.
+EL,B641,2026-02,40968.17,40962.02,-6.15,match,within floating-point / day-boundary rounding noise.
+EL,B642,2026-01,136241.00,136243.81,2.81,match,within floating-point / day-boundary rounding noise.
+EL,B642,2026-02,114170.58,114162.24,-8.34,match,within floating-point / day-boundary rounding noise.
+EL,B643,2026-01,149175.25,149183.69,8.44,match,within floating-point / day-boundary rounding noise.
+EL,B643,2026-02,138952.17,138945.26,-6.91,match,within floating-point / day-boundary rounding noise.
+EL,B649,2026-01,9257.12,9257.77,0.65,match,within floating-point / day-boundary rounding noise.
+EL,B649,2026-02,9297.36,9295.43,-1.93,match,within floating-point / day-boundary rounding noise.
+EL,B650,2026-01,150368.69,150456.87,88.18,match,within floating-point / day-boundary rounding noise.
+EL,B650,2026-02,162330.04,162321.45,-8.59,match,within floating-point / day-boundary rounding noise.
+EL,B651,2026-01,25575.17,25566.91,-8.26,match,within floating-point / day-boundary rounding noise.
+EL,B651,2026-02,31536.22,31540.47,4.25,match,within floating-point / day-boundary rounding noise.
+EL,B652,2026-01,21179.03,21782.53,603.50,excel_bug,Residual from the B612 T8-A3-A14-112 double-subtraction mirror edge; ~0.6 MWh redistribution is approximate.
+EL,B652,2026-02,20500.01,21144.23,644.22,excel_bug,Residual from the B612 T8-A3-A14-112 double-subtraction mirror edge; ~0.6 MWh redistribution is approximate.
+EL,B653,2026-01,362349.55,362358.68,9.13,match,within floating-point / day-boundary rounding noise.
+EL,B653,2026-02,370006.70,370008.45,1.75,match,within floating-point / day-boundary rounding noise.
+EL,B654,2026-01,288836.75,288830.75,-6.00,match,within floating-point / day-boundary rounding noise.
+EL,B654,2026-02,115446.75,115231.25,-215.50,ontology_drift,Drift of -216 (0.2%). Cause not yet classified.
+EL,B655,2026-01,5637.88,5638.04,0.16,match,within floating-point / day-boundary rounding noise.
+EL,B655,2026-02,6888.05,6887.42,-0.63,match,within floating-point / day-boundary rounding noise.
+EL,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B658,2026-01,27619.51,27619.21,-0.30,match,within floating-point / day-boundary rounding noise.
+EL,B658,2026-02,24576.77,24575.83,-0.94,match,within floating-point / day-boundary rounding noise.
+EL,B659,2026-01,142804.39,142812.65,8.25,match,within floating-point / day-boundary rounding noise.
+EL,B659,2026-02,119431.03,119409.37,-21.66,match,within floating-point / day-boundary rounding noise.
+EL,B660,2026-01,7016098.56,7016707.94,609.38,match,within floating-point / day-boundary rounding noise.
+EL,B660,2026-02,6455431.55,6314411.62,-141019.93,under_investigation,"Jan matches within 609 kWh, Feb drifts -141 MWh (-2.2%). Root cause not yet diagnosed."
+EL,B661,2026-01,79741.38,79742.94,1.56,match,within floating-point / day-boundary rounding noise.
+EL,B661,2026-02,139002.75,139143.06,140.31,ontology_drift,Drift of 140 (0.1%). Cause not yet classified.
+EL,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B664,2026-01,0.00,4913.65,4913.65,excel_stale,Excel formula attributes 0 to B664; T42-2-1 actually feeds this building. Mirror delta vs B665.
+EL,B664,2026-02,0.00,4698.68,4698.68,excel_stale,Excel formula attributes 0 to B664; T42-2-1 actually feeds this building. Mirror delta vs B665.
+EL,B665,2026-01,16113.16,11198.29,-4914.87,excel_stale,Excel over-attributes T42-2-1 to B665. Mirror delta vs B664.
+EL,B665,2026-02,14442.62,9739.85,-4702.78,excel_stale,Excel over-attributes T42-2-1 to B665. Mirror delta vs B664.
+EL,B674,2026-01,70850.00,70855.50,5.50,match,within floating-point / day-boundary rounding noise.
+EL,B674,2026-02,65687.00,65686.00,-1.00,match,within floating-point / day-boundary rounding noise.
+EL,B682,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B682,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B821,2026-01,89443.72,89450.87,7.15,match,within floating-point / day-boundary rounding noise.
+EL,B821,2026-02,88854.19,88847.55,-6.64,match,within floating-point / day-boundary rounding noise.
+EL,B833,2026-01,309463.23,309379.05,-84.18,match,within floating-point / day-boundary rounding noise.
+EL,B833,2026-02,206103.78,206046.57,-57.21,match,within floating-point / day-boundary rounding noise.
+EL,B834,2026-01,8735.27,8737.45,2.18,match,within floating-point / day-boundary rounding noise.
+EL,B834,2026-02,14190.72,14197.93,7.21,match,within floating-point / day-boundary rounding noise.
+EL,B835,2026-01,3089.10,3089.63,0.53,match,within floating-point / day-boundary rounding noise.
+EL,B835,2026-02,3185.43,3184.80,-0.63,match,within floating-point / day-boundary rounding noise.
+EL,B841,2026-01,60734.00,60734.00,0.00,match,within floating-point / day-boundary rounding noise.
+EL,B841,2026-02,55818.00,55805.25,-12.75,match,within floating-point / day-boundary rounding noise.
+EL,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B850,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B869,2026-01,73856.28,73857.13,0.85,match,within floating-point / day-boundary rounding noise.
+EL,B869,2026-02,71636.31,71625.95,-10.36,match,within floating-point / day-boundary rounding noise.
+EL,B921,2026-01,588699.00,588775.00,76.00,match,within floating-point / day-boundary rounding noise.
+EL,B921,2026-02,573120.00,573099.00,-21.00,match,within floating-point / day-boundary rounding noise.
+EL,B951,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B951,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,BPARKING,2026-01,9398.32,9398.32,-0.00,match,within floating-point / day-boundary rounding noise.
+EL,BPARKING,2026-02,9885.93,9885.92,-0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B602,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B602,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B604,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B611,2026-01,-20.88,-20.88,0.00,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
+KYLA,B611,2026-02,-12.01,-11.94,0.08,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
+KYLA,B612,2026-01,7.99,6.24,-1.75,excel_cooked_coefficient,Excel uses fractional 0.9×B637 subtraction; views.sql has no fractional-subtract primitive so 1–3 MWh residuals are expected.
+KYLA,B612,2026-02,13.77,11.97,-1.80,excel_cooked_coefficient,Excel uses fractional 0.9×B637 subtraction; views.sql has no fractional-subtract primitive so 1–3 MWh residuals are expected.
+KYLA,B613,2026-01,6.04,6.04,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B613,2026-02,7.65,7.65,0.01,match,within floating-point / day-boundary rounding noise.
+KYLA,B614,2026-01,22.60,22.60,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B614,2026-02,19.62,19.62,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B615,2026-01,1.00,1.00,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B615,2026-02,0.88,0.88,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B616,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B616,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B621,2026-01,1.83,1.83,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B621,2026-02,2.43,2.53,0.10,ontology_drift,Drift of 0 (4.1%). Cause not yet classified.
+KYLA,B622,2026-01,0.33,0.33,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B622,2026-02,0.44,0.46,0.02,ontology_drift,Drift of 0 (4.1%). Cause not yet classified.
+KYLA,B623,2026-01,3.67,0.00,-3.67,excel_bug,B623 double-counted: appears as + term for B623 AND inside the B600-KB2 pool formula. Conservation violation in the source; topology can only match one side.
+KYLA,B623,2026-02,5.06,0.00,-5.06,excel_bug,B623 double-counted: appears as + term for B623 AND inside the B600-KB2 pool formula. Conservation violation in the source; topology can only match one side.
+KYLA,B625,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B625,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B631,2026-01,9.31,9.31,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B631,2026-02,8.50,8.50,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B634,2026-01,22.13,22.13,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B634,2026-02,19.94,19.94,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B637,2026-01,17.50,17.50,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B637,2026-02,18.03,18.03,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B638,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B638,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B641,2026-01,-1.75,0.00,1.75,excel_cooked_coefficient,Excel uses fractional 0.1×B637 subtraction; views.sql has no fractional-subtract primitive so 1–3 MWh residuals are expected.
+KYLA,B641,2026-02,-1.80,0.00,1.80,excel_cooked_coefficient,Excel uses fractional 0.1×B637 subtraction; views.sql has no fractional-subtract primitive so 1–3 MWh residuals are expected.
+KYLA,B642,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B642,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B643,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B643,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B649,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B649,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B650,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B650,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B651,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B651,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B652,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B652,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B653,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B653,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B654,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B654,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B655,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B655,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B658,2026-01,0.00,12.49,12.49,excel_stale,"Meter live but Excel attributes 0 — known ""Excel=0 but meter live"" misallocation."
+KYLA,B658,2026-02,0.00,10.85,10.85,excel_stale,"Meter live but Excel attributes 0 — known ""Excel=0 but meter live"" misallocation."
+KYLA,B659,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B659,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B660,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B660,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B661,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B661,2026-02,0.20,0.20,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B664,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B664,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B665,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B665,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B674,2026-01,20.43,20.43,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B674,2026-02,23.16,23.16,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B682,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B682,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B821,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B821,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B833,2026-01,-0.84,-0.41,0.43,data_quality_artifact,Bi-daily BMS sensor (B833.KB1_GF4 reads ~31 times over 59 days). Negative residual is a sampling artifact.
+KYLA,B833,2026-02,-1.04,-0.54,0.50,data_quality_artifact,Bi-daily BMS sensor (B833.KB1_GF4 reads ~31 times over 59 days). Negative residual is a sampling artifact.
+KYLA,B834,2026-01,0.84,0.84,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B834,2026-02,1.04,1.04,0.00,match,within floating-point / day-boundary rounding noise.
+KYLA,B835,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B835,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B841,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B841,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B850,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B869,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B869,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B921,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B921,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B951,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B951,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B600,2026-01,21393.34,21393.34,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B600,2026-02,21072.64,21072.64,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B602,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B602,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B604,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B611,2026-01,1154.34,1154.34,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B611,2026-02,1337.69,1337.69,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B612,2026-01,990.89,990.89,-0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B612,2026-02,1005.33,1005.33,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B613,2026-01,19.52,19.52,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B613,2026-02,19.10,19.10,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B614,2026-01,2925.27,2925.27,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B614,2026-02,3177.37,3177.37,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B615,2026-01,45.62,45.62,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B615,2026-02,21.09,21.09,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B616,2026-01,3377.06,3377.06,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B616,2026-02,3776.98,3776.98,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B621,2026-01,1202.33,1202.33,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B621,2026-02,1379.63,1379.63,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B622,2026-01,1316.03,1316.03,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B622,2026-02,1187.89,1187.89,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B623,2026-01,36.34,36.34,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B623,2026-02,23.88,23.88,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B625,2026-01,619.33,619.33,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B625,2026-02,1850.95,1850.95,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B626,2026-01,65.31,65.31,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B626,2026-02,52.17,52.17,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B631,2026-01,167.93,167.93,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B631,2026-02,225.45,225.45,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B634,2026-01,242.18,242.18,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B634,2026-02,266.51,266.51,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B637,2026-01,17.31,17.31,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B637,2026-02,18.93,18.93,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B638,2026-01,20.18,20.18,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B638,2026-02,25.23,25.23,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B641,2026-01,8.19,8.19,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B641,2026-02,7.95,7.95,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B642,2026-01,56.58,56.58,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B642,2026-02,59.17,59.17,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B643,2026-01,184.13,184.13,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B643,2026-02,181.44,181.44,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B649,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B649,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B650,2026-01,1207.23,1207.23,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B650,2026-02,1110.41,1110.41,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B651,2026-01,171.19,171.19,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B651,2026-02,21.15,21.15,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B652,2026-01,15.95,15.95,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B652,2026-02,17.43,17.43,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B653,2026-01,495.34,495.34,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B653,2026-02,926.44,926.44,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B654,2026-01,8.62,8.62,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B654,2026-02,2.20,2.20,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B655,2026-01,12.30,12.30,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B655,2026-02,16.11,16.11,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B658,2026-01,54.23,54.23,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B658,2026-02,55.17,55.17,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B659,2026-01,0.02,0.02,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B659,2026-02,0.03,0.03,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B660,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B660,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B661,2026-01,389.53,389.53,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B661,2026-02,607.11,607.11,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B664,2026-01,3.65,3.65,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B664,2026-02,1.74,1.74,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B665,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B665,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B674,2026-01,251.56,251.56,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B674,2026-02,259.17,259.17,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B684,2026-01,5.72,5.72,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B684,2026-02,7.44,7.44,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B821,2026-01,27.88,27.88,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B821,2026-02,29.56,29.56,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B833,2026-01,3357.53,3357.53,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B833,2026-02,1531.50,1531.50,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B834,2026-01,44.88,44.88,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B834,2026-02,47.22,47.22,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B841,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B841,2026-02,0.00,0.00,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B850,2026-02,2.88,2.88,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B869,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B869,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KALLVATTEN,B921,2026-01,1927.48,1927.48,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B921,2026-02,1965.51,1965.51,0.00,match,within floating-point / day-boundary rounding noise.
+KYLTORNSVATTEN,B602,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B602,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B611,2026-01,24161.00,24161.00,0.00,match,within floating-point / day-boundary rounding noise.
+KYLTORNSVATTEN,B611,2026-02,15831.00,15831.00,0.00,match,within floating-point / day-boundary rounding noise.
+KYLTORNSVATTEN,B612,2026-01,2144.00,2144.00,0.00,match,within floating-point / day-boundary rounding noise.
+KYLTORNSVATTEN,B612,2026-02,1606.00,1606.00,0.00,match,within floating-point / day-boundary rounding noise.
+KYLTORNSVATTEN,B613,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B613,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B614,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B614,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B615,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B615,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B616,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B616,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B621,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B621,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B622,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B622,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B623,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B623,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B625,2026-01,3648.86,3648.86,0.00,match,within floating-point / day-boundary rounding noise.
+KYLTORNSVATTEN,B625,2026-02,3030.94,3030.94,0.00,match,within floating-point / day-boundary rounding noise.
+KYLTORNSVATTEN,B631,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B631,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B634,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B634,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B637,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B637,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B638,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B638,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B641,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B641,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B642,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B642,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B643,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B643,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B649,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B649,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B650,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B650,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B651,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B651,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B652,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B652,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B653,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B653,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B654,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B655,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B655,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B658,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B658,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B659,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B660,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B660,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B661,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B664,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B664,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B665,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B665,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B674,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B674,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B682,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B682,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B821,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B821,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B833,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B833,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B834,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B834,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B841,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B841,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B850,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B869,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B869,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B921,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B921,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).

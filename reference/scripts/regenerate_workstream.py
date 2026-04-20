@@ -109,6 +109,17 @@ CONFIGS: dict[str, Config] = {
         unit="M3",
         has_pdf=False,
     ),
+    "snv_el": Config(
+        name="snv_el",
+        site="SNV",
+        media="EL",
+        media_slug="EL",
+        pdf_sources=[],
+        primary_role="T1",
+        quantity="Active Energy Delivered",
+        unit="KiloW-HR",
+        has_pdf=False,
+    ),
 }
 
 

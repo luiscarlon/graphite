@@ -29,6 +29,9 @@ reference/media_workstreams/*/04_validation/vlm_crops/
 # Generated data
 data/reference_site/
 
-# Human-authored CSVs — override the global *.csv ignore
-!reference/media_workstreams/*/03_reconciliation/topology_overrides.csv
-!data/sites/*/annotations.csv
+# Curated ontology CSVs — override the global *.csv ignore.
+# These are analyst-produced deliverables that must be version-controlled.
+!reference/media_workstreams/*/02_crosswalk/*.csv
+!reference/media_workstreams/*/03_reconciliation/*.csv
+!reference/media_workstreams/*/05_ontology/*.csv
+!data/sites/*/*.csv

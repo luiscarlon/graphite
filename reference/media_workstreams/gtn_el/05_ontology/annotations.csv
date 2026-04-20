@@ -1,0 +1,24 @@
+annotation_id,target_kind,target_id,category,valid_from,valid_to,description,related_refs
+B611_T1_swap,meter,B611.T1,swap,2026-01-14,,Device swap. Counter reset from 9993343. Stitched via rolling_sum.,B611.T1:d.A|B611.T1:d.B|B611.T1:d
+B611_T3_swap,meter,B611.T3,swap,2026-02-23,,Device swap. Counter reset from 9998247. Stitched via rolling_sum.,B611.T3:d.A|B611.T3:d.B|B611.T3:d
+B612_T9_swap,meter,B612.T9,swap,2025-07-09,,Device swap. Counter reset from 9995611. Stitched via rolling_sum.,B612.T9:d.A|B612.T9:d.B|B612.T9:d
+B614_T18_swap,meter,B614.T18,swap,2025-01-01,,Device swap at start of observation window. Stitched via rolling_sum.,B614.T18:d.A|B614.T18:d.B|B614.T18:d
+B614_T20_swap,meter,B614.T20,swap,2025-11-10,,Device swap. Counter reset from 9996529. Stitched via rolling_sum.,B614.T20:d.A|B614.T20:d.B|B614.T20:d
+B616_T33_swap,meter,B616.T33,swap,2025-04-06,,Device swap. Counter reset from 9994919. Stitched via rolling_sum.,B616.T33:d.A|B616.T33:d.B|B616.T33:d
+B621_T30_swap,meter,B621.T30,swap,2025-12-08,,Device swap. Counter reset from 9996928. Stitched via rolling_sum.,B621.T30:d.A|B621.T30:d.B|B621.T30:d
+B621_T5_swap,meter,B621.T5,swap,2025-03-26,,Device swap. Snowflake ID = B621.B621-T5-S (doubled building prefix). Stitched via rolling_sum.,B621.T5:d.A|B621.T5:d.B|B621.T5:d
+B621_T6_swap,meter,B621.T6,swap,2025-02-09,,Device swap. Snowflake ID = B621.B621-T6-S (doubled building prefix). Stitched via rolling_sum.,B621.T6:d.A|B621.T6:d.B|B621.T6:d
+B650_T23_swap,meter,B650.T23,swap,2025-12-30,,Device swap. Counter reset from 9999278. Stitched via rolling_sum.,B650.T23:d.A|B650.T23:d.B|B650.T23:d
+B653_T17_swap,meter,B653.T17,swap,2025-06-18,,Device swap. Counter reset from 9999965. Stitched via rolling_sum.,B653.T17:d.A|B653.T17:d.B|B653.T17:d
+B653_T55_swap,meter,B653.T55,swap,2025-06-29,,Device swap. Counter reset from 9996346. Stitched via rolling_sum.,B653.T55:d.A|B653.T55:d.B|B653.T55:d
+B661_T47_swap,meter,B661.T47,swap,2025-05-22,,Device swap. Counter reset from 9995369. Stitched via rolling_sum.,B661.T47:d.A|B661.T47:d.B|B661.T47:d
+B660_H23_resets,meter,B660.H23-1,data_quality,,,Provider/utility meter with 7 counter resets (~bimonthly read cycle). All segments stitched via rolling_sum. Boundary artifacts visible in daily chart on reset days — consumption on those days is partially lost.,
+B660_H3_resets,meter,B660.H3-1,data_quality,,,Provider/utility meter with 3 counter resets (~quarterly). All segments stitched via rolling_sum.,
+B616_T31-6-2_offline,meter,B616.T31-6-2,outage,2026-02-12,,Counter drops and stays dead from Feb 12. Leaf meter — cannot patch.,B616.T31-6-2:d
+B616_T33-6-1_dead,meter,B616.T33-6-1,outage,2025-01-01,,Counter at zero for entire observation window. Sub-feeder of B616.T33 serving B835.,
+B665_T42-2-1_misattr,meter,B665.T42-2-1,data_quality,,,B665.T42-2-1 reads ~5 MWh/month in Snowflake but Excel STRUX_data shows 0. B664 shows excel=0 vs topology=4.9 MWh. B665 overcredited by ~5 MWh/month. Stale STRUX_data.,
+B612_double_sub,building,B612,data_quality,,,B612 formula double-subtracts T8-A3-A14-112 (~19 MWh/month). B612 understated by ~3% vs physical reality.,
+B659_T28-3-5_unattr,meter,B659.T28-3-5,data_quality,,,Sub-feeder subtracted from B659 but not attributed to any building. ~8 MWh/month unaccounted.,
+el_t4_strux_only,building,B611,data_quality,,,"B611.T4-A3/C1/C4 exist in Excel + STRUX with monthly values but are absent from Snowflake BMS (fuzzy-matched against 1169 IDs; no match). Without BMS counter data the topology cannot subtract them from B611 or attribute to B631/B613. Results in B611 +46 GWh / B631 -45 GWh / B613 -11 GWh Excel diffs. Legitimate data gap — STRUX values not hardcoded into Snowflake stream.",
+el_b665_t42_misallocation,building,B664,data_quality,,,"B665.T42-2-1 has live Snowflake readings (~5 MWh/month) attributed to B664 per Excel formula, but Excel cache for B664 = 0 — STRUX_data value is stale/zero while Snowflake reads real consumption. Same pattern as B616 steam.",
+el_b612_t8_deep_subfeeder,meter,B612.T8,data_quality,,,"B652.T8-A3-A14-112 (deep sub-feeder of T8) is subtracted from BOTH B612 and B641 in Excel. Added direct hasSubMeter edge B612.T8 → B652.T8-A3-A14-112 to mirror Excel's double-subtraction accounting. Without it B612 was +21 GWh off.",

@@ -96,7 +96,24 @@ def main() -> int:
     for rec in meters_src:
         fid = rec["meter_id"]
         is_virtual = rec.get("meter_type") == "virtual"
+        # Keep non-_BUILDING virtuals (e.g. building pool virtuals like
+        # B611.KYLA_VIRT). Skip only the legacy _BUILDING virtuals that
+        # encode full Excel formulas — those are redundant with
+        # meter_measures + physical topology.
+        if is_virtual and fid.endswith("_BUILDING"):
+            continue
         if is_virtual:
+            # Virtual meter — no Snowflake crosswalk, no sensor/timeseries.
+            meters_out.append({
+                "meter_id": fid,
+                "name": f"{rec['building']} {args.media} virtual {fid}",
+                "building_id": f"B{rec['building']}" if rec["building"] else "",
+                "media_type_id": args.media,
+                "is_virtual_meter": "True",
+                "identifier": "",
+                "valid_from": "",
+                "valid_to": "",
+            })
             continue
         xw = xwalk.get(fid, {})
         sf_id = xw.get("snowflake_id", "")

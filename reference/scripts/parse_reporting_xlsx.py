@@ -463,6 +463,10 @@ def _normalize_building_id(raw) -> str | None:
     if s.lower() == "parkering":
         return "BPARKING"
     if s.startswith("B") and len(s) > 1 and s[1:2].isdigit():
+        # Reject meter IDs that look like building IDs (e.g. "B307.T10-1" from
+        # helper rows in EL). Real building IDs are just "B###" or "B### Suffix".
+        if "." in s:
+            return None
         return s
     return f"B{s}"
 
@@ -540,16 +544,25 @@ def main() -> int:
     write_comments_md(out / "excel_comments.md", args.media, cell_comments, records)
     write_tabs_inventory_md(out / "excel_tabs_inventory.md", args.media, sheets)
 
-    # Extract cached building totals (with sheet-factor correction)
-    numeric_factors = set()
-    for r in records:
-        f = r.get("faktor", "")
-        if f != "" and f is not None:
-            try:
-                numeric_factors.add(float(f))
-            except (TypeError, ValueError):
-                pass
-    sheet_factor = numeric_factors.pop() if len(numeric_factors) == 1 else 1.0
+    # Extract cached building totals (with sheet-factor correction).
+    # The canonical source is the sheet scalar at $F$5 (set to 0.001 on
+    # EL for kWh→MWh). Fall back to formula-faktor inference only when no
+    # scalar is present and all formulas share one factor.
+    sheet_scalars = _workbook_scalar_cells(ws_values)
+    sheet_factor = 1.0
+    if "$F$5" in sheet_scalars and 0 < sheet_scalars["$F$5"] < 1:
+        sheet_factor = sheet_scalars["$F$5"]
+    else:
+        numeric_factors = set()
+        for r in records:
+            f = r.get("faktor", "")
+            if f != "" and f is not None:
+                try:
+                    numeric_factors.add(float(f))
+                except (TypeError, ValueError):
+                    pass
+        if len(numeric_factors) == 1:
+            sheet_factor = numeric_factors.pop()
     building_totals = extract_building_totals(ws_values, sheet_factor=sheet_factor)
     if building_totals:
         bt_path = out / "excel_building_totals.csv"
