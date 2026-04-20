@@ -276,11 +276,21 @@ def main() -> int:
             segments: list[tuple[str, str]] = []  # (valid_from, valid_to)
             cursor = ""  # start of current segment
             for ev in meter_events:
-                if ev["event_type"] == "swap":
-                    # If the meter was offline, the swap just brings it back
-                    # online — don't emit an empty (None, swap_date) segment,
-                    # which would be written as blank valid_from and overlap
-                    # prior segments. Start a fresh segment from swap_date.
+                if ev["event_type"] in ("swap", "rollover"):
+                    # `swap` is a physical device replacement; `rollover`
+                    # is a register wrap at a known ceiling (Schneider
+                    # PowerLogic / ION meters default to a rollover at
+                    # 10,000,000). The stitching is identical for both —
+                    # we anchor on delta, so the absolute counter wrap
+                    # is absorbed cleanly. Only the event label differs,
+                    # so downstream annotations don't claim a physical
+                    # device change that didn't happen.
+                    #
+                    # If the meter was offline, the swap/rollover just
+                    # brings it back online — don't emit an empty
+                    # (None, swap_date) segment, which would be written
+                    # as blank valid_from and overlap prior segments.
+                    # Start a fresh segment from swap_date.
                     if cursor is not None:
                         segments.append((cursor, ev["swap_date"]))
                     cursor = ev["swap_date"]

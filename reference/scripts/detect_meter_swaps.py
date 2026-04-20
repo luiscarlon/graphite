@@ -4,12 +4,30 @@
 Reads ``01_extracted/timeseries_daily.csv`` (which already flags resets
 via ``is_reset=1``) and classifies each into:
 
-- ``swap``    — counter resets but readings resume (device replacement)
-- ``offline`` — counter resets and stays near zero (meter decommissioned)
+- ``swap``     — counter resets but readings resume (device replacement).
+- ``rollover`` — counter resets because the accumulator wrapped at a
+                 known register ceiling. Same stitching as ``swap``,
+                 but labelled honestly so downstream annotations don't
+                 claim a physical device change that didn't happen.
+- ``offline``  — counter resets and stays near zero (meter decommissioned).
+- ``glitch``   — counter drops and reverts within a few days.
+
+Schneider PowerLogic / ION meters have a built-in rollover at
+10,000,000 by default: the integrator modules that accumulate energy
+carry a ``rollover value`` setup register whose default for most
+integrator modules is 10,000,000 (the module could run higher — it
+uses 32-bit float — but precision degrades at large values, so
+Schneider caps it by default). When the accumulated value reaches the
+cap it wraps back to zero and continues. Other common caps we recognise
+are 1,000,000 (some legacy firmware) and 100,000,000 (newer ION
+configurations). See `reference/docs/` for the investigation that led
+to this classification.
 
 Output: ``01_extracted/meter_swaps.csv`` consumed by ``build_ontology.py``
 to generate the Abbey Road M6-style multi-ref pattern (two raw refs with
 validity windows + one derived rolling_sum ref marked preferred).
+``rollover`` and ``swap`` produce the same stitched ref shape — the
+classification only changes what downstream annotations say.
 
 Usage:
     python detect_meter_swaps.py WORKSTREAM_DIR
@@ -21,6 +39,27 @@ import argparse
 import csv
 import sys
 from pathlib import Path
+
+# Known Schneider PowerLogic / ION rollover ceilings. Default for most
+# ION integrator modules is 10,000,000; a few configurations use 1e6 or
+# 1e8. A pre-reset v_last within ROLLOVER_TOLERANCE below any of these
+# values is strong evidence the reset is a register wrap, not a device
+# change.
+ROLLOVER_CEILINGS = (1_000_000.0, 10_000_000.0, 100_000_000.0)
+ROLLOVER_TOLERANCE = 0.01  # 1% — reset happens mid-day at a value just
+                           # shy of the ceiling.
+
+
+def _looks_like_rollover(pre_reset_v_last: float) -> float | None:
+    """Return the matched ceiling if `pre_reset_v_last` is within
+    `ROLLOVER_TOLERANCE` below one of the known Schneider ceilings.
+    Return None otherwise.
+    """
+    for ceiling in ROLLOVER_CEILINGS:
+        lower = ceiling * (1.0 - ROLLOVER_TOLERANCE)
+        if lower <= pre_reset_v_last <= ceiling:
+            return ceiling
+    return None
 
 
 def main() -> int:
@@ -56,7 +95,13 @@ def main() -> int:
             nonzero_days = sum(1 for pr in post_reset if float(pr["delta"]) > 0.1)
 
             if nonzero_days >= 3:
-                event_type = "swap"
+                # Counter reset with resumed activity — either a real
+                # device swap or a register rollover. Distinguish by
+                # whether `old_last` sits just below a known Schneider
+                # rollover ceiling. If it does, the reset is explained
+                # by register wrap and we label honestly.
+                ceiling = _looks_like_rollover(old_last)
+                event_type = "rollover" if ceiling is not None else "swap"
             else:
                 event_type = "offline"
 
