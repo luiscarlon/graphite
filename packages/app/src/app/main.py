@@ -775,7 +775,7 @@ def _excel_comparison_section(ds: Dataset, site_dir: Path) -> None:
             row[f"excel_{m}"] = round(ex_val, 2)
             row[f"onto_{m}"] = round(on_val, 2)
             if ex_val != 0:
-                row[f"diff%_{m}"] = f"{(diff / ex_val * 100):.1f}%"
+                row[f"diff%_{m}"] = f"{(diff / ex_val * 100):.2f}%"
             else:
                 row[f"diff%_{m}"] = ""
             ann = ann_lookup.get((bid, str(m)), {})
