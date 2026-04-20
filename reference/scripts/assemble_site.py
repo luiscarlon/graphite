@@ -429,10 +429,42 @@ def main() -> int:
                     continue
 
             elif agg == "rolling_sum":
-                # Stitch: concatenate source segments. When switching to a
-                # new segment, carry forward the last stitched value and
-                # subtract the new segment's first raw reading (its anchor)
-                # so only deltas from the new device are added.
+                # Stitch: concatenate source segments at their validity
+                # boundaries. Two boundary types to distinguish:
+                #
+                #   (a) Device swap — new device starts counting from
+                #       some arbitrary offset. We want the stitched
+                #       counter to stay flat across the boundary; only
+                #       deltas from the new device add. Achieved by
+                #       anchoring on the new source's first raw reading
+                #       (stitched = prev + (raw - anchor) = prev on
+                #       boundary; subsequent readings add delta).
+                #
+                #   (b) Register rollover (Schneider PowerLogic / ION
+                #       default ceiling 10,000,000) — same device, its
+                #       accumulator wrapped. The new source's first raw
+                #       IS consumption since the wrap, so we must add
+                #       both the pre-wrap remainder (ceiling - prev_raw)
+                #       and the new raw value itself to the cumulative.
+                #       Without this, the reset-day's consumption is
+                #       silently lost (the stitched counter stays flat
+                #       across the rollover day, producing a visible
+                #       zero-delta dip in rate views).
+                #
+                # Heuristic to distinguish: prev_raw is within 1% below
+                # a known Schneider ceiling AND new raw is much smaller.
+                # Mirrors detect_meter_swaps.py classification.
+                ROLLOVER_CEILINGS = (1_000_000.0, 10_000_000.0, 100_000_000.0)
+                ROLLOVER_TOLERANCE = 0.01
+
+                def _rollover_ceiling(prev_val: float, new_val: float) -> float | None:
+                    if new_val >= prev_val * 0.5:
+                        return None
+                    for C in ROLLOVER_CEILINGS:
+                        if (1.0 - ROLLOVER_TOLERANCE) * C <= prev_val <= C:
+                            return C
+                    return None
+
                 source_readings = []
                 for sid in source_ids:
                     source_readings.extend(
@@ -445,15 +477,27 @@ def main() -> int:
                 anchor = 0.0
                 prev_source = source_readings[0]["timeseries_id"]
                 prev_stitched = 0.0
+                prev_raw = 0.0
                 new_readings = []
                 for sr in source_readings:
                     raw_val = float(sr["value"])
                     if sr["timeseries_id"] != prev_source:
-                        offset = prev_stitched
-                        anchor = raw_val
+                        ceiling = _rollover_ceiling(prev_raw, raw_val)
+                        if ceiling is not None:
+                            # Rollover: add the pre-wrap remainder to
+                            # offset and anchor at 0 so the new raw is
+                            # counted as additional consumption.
+                            offset = prev_stitched + (ceiling - prev_raw)
+                            anchor = 0.0
+                        else:
+                            # Plain swap: new device's first raw is the
+                            # anchor; stitched flat across boundary.
+                            offset = prev_stitched
+                            anchor = raw_val
                         prev_source = sr["timeseries_id"]
                     stitched = offset + (raw_val - anchor)
                     prev_stitched = stitched
+                    prev_raw = raw_val
                     new_readings.append({
                         "timeseries_id": dr["timeseries_id"],
                         "timestamp": sr["timestamp"],
