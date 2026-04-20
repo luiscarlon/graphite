@@ -1,138 +1,138 @@
 media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
-EL,B201,2026-01,12050.16,12049.52,-0.64,match,within floating-point / day-boundary rounding noise.
-EL,B201,2026-02,10601.05,10602.16,1.11,match,within floating-point / day-boundary rounding noise.
-EL,B202,2026-01,2257.99,2257.99,-0.00,match,within floating-point / day-boundary rounding noise.
-EL,B202,2026-02,4972.61,4972.16,-0.45,match,within floating-point / day-boundary rounding noise.
-EL,B203,2026-01,3610.37,3610.25,-0.12,match,within floating-point / day-boundary rounding noise.
-EL,B203,2026-02,7800.01,7800.71,0.70,match,within floating-point / day-boundary rounding noise.
-EL,B204,2026-01,1930.63,1930.79,0.17,match,within floating-point / day-boundary rounding noise.
-EL,B204,2026-02,1731.28,1731.41,0.13,match,within floating-point / day-boundary rounding noise.
-EL,B205,2026-01,643.54,643.60,0.06,match,within floating-point / day-boundary rounding noise.
-EL,B205,2026-02,577.09,577.14,0.04,match,within floating-point / day-boundary rounding noise.
-EL,B207,2026-01,16097.92,16098.90,0.98,match,within floating-point / day-boundary rounding noise.
-EL,B207,2026-02,14892.09,14892.41,0.32,match,within floating-point / day-boundary rounding noise.
-EL,B209,2026-01,15243.57,15240.22,-3.35,match,within floating-point / day-boundary rounding noise.
-EL,B209,2026-02,14787.75,14787.49,-0.25,match,within floating-point / day-boundary rounding noise.
-EL,B216,2026-01,70995.05,71001.07,6.02,match,within floating-point / day-boundary rounding noise.
-EL,B216,2026-02,66022.69,66021.65,-1.04,match,within floating-point / day-boundary rounding noise.
-EL,B217,2026-01,60821.62,60819.04,-2.58,match,within floating-point / day-boundary rounding noise.
-EL,B217,2026-02,55032.19,55033.60,1.41,match,within floating-point / day-boundary rounding noise.
-EL,B228,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B228,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B301,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B301,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B201,2026-01,12050.16,12049.52,-0.64,match,
+EL,B201,2026-02,10601.05,10602.16,1.11,match,
+EL,B202,2026-01,2257.99,2257.99,-0.00,match,
+EL,B202,2026-02,4972.61,4972.16,-0.45,match,
+EL,B203,2026-01,3610.37,3610.25,-0.12,match,
+EL,B203,2026-02,7800.01,7800.71,0.70,match,
+EL,B204,2026-01,1930.63,1930.79,0.17,match,
+EL,B204,2026-02,1731.28,1731.41,0.13,match,
+EL,B205,2026-01,643.54,643.60,0.06,match,
+EL,B205,2026-02,577.09,577.14,0.04,match,
+EL,B207,2026-01,16097.92,16098.90,0.98,match,
+EL,B207,2026-02,14892.09,14892.41,0.32,match,
+EL,B209,2026-01,15243.57,15240.22,-3.35,match,
+EL,B209,2026-02,14787.75,14787.49,-0.25,match,
+EL,B216,2026-01,70995.05,71001.07,6.02,match,
+EL,B216,2026-02,66022.69,66021.65,-1.04,match,
+EL,B217,2026-01,60821.62,60819.04,-2.58,match,
+EL,B217,2026-02,55032.19,55033.60,1.41,match,
+EL,B228,2026-01,0.00,0.00,0.00,match,
+EL,B228,2026-02,0.00,0.00,0.00,match,
+EL,B301,2026-01,0.00,0.00,0.00,match,
+EL,B301,2026-02,0.00,0.00,0.00,match,
 EL,B302,2026-01,1956.77,1959.25,2.48,ontology_drift,Drift of 2 (0.1%). Cause not yet classified.
-EL,B302,2026-02,2370.27,2370.27,0.00,match,within floating-point / day-boundary rounding noise.
-EL,B303,2026-01,38954.07,38986.31,32.24,match,within floating-point / day-boundary rounding noise.
-EL,B303,2026-02,42974.74,42971.58,-3.15,match,within floating-point / day-boundary rounding noise.
+EL,B302,2026-02,2370.27,2370.27,0.00,match,
+EL,B303,2026-01,38954.07,38986.31,32.24,match,
+EL,B303,2026-02,42974.74,42971.58,-3.15,match,
 EL,B304,2026-01,4477.00,0.00,-4477.00,strux_only_meter,B304 formula depends on STRUX-only summary meters absent from BMS.
 EL,B304,2026-02,4072.00,0.00,-4072.00,strux_only_meter,B304 formula depends on STRUX-only summary meters absent from BMS.
 EL,B305,2026-01,108370.89,85363.45,-23007.44,under_investigation,Complex-formula undercount (−23/−21 MWh). Hypothesis: sub-meter +terms zeroed by hasSubMeter edges to T10 stems. See open_questions.md §3.
 EL,B305,2026-02,98473.09,76793.31,-21679.78,under_investigation,Complex-formula undercount (−23/−21 MWh). Hypothesis: sub-meter +terms zeroed by hasSubMeter edges to T10 stems. See open_questions.md §3.
-EL,B307,2026-01,179217.78,179285.28,67.50,match,within floating-point / day-boundary rounding noise.
-EL,B307,2026-02,170738.25,170740.25,1.99,match,within floating-point / day-boundary rounding noise.
-EL,B308,2026-01,243145.15,243141.50,-3.64,match,within floating-point / day-boundary rounding noise.
-EL,B308,2026-02,218089.95,218102.91,12.95,match,within floating-point / day-boundary rounding noise.
-EL,B309,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B309,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B307,2026-01,179217.78,179285.28,67.50,match,
+EL,B307,2026-02,170738.25,170740.25,1.99,match,
+EL,B308,2026-01,243145.15,243141.50,-3.64,match,
+EL,B308,2026-02,218089.95,218102.91,12.95,match,
+EL,B309,2026-01,0.00,0.00,0.00,match,
+EL,B309,2026-02,0.00,0.00,0.00,match,
 EL,B310,2026-01,225233.54,219248.05,-5985.48,excel_cooked_coefficient,"Cross-building fractional pools: 0.5×T26S-net, 1/3×T29, 0.4×T49-net. No views.sql primitive."
 EL,B310,2026-02,206224.71,200265.20,-5959.51,excel_cooked_coefficient,"Cross-building fractional pools: 0.5×T26S-net, 1/3×T29, 0.4×T49-net. No views.sql primitive."
 EL,B311,2026-01,334462.56,328485.88,-5976.67,excel_cooked_coefficient,"Cross-building fractional pools: 0.5×T26S-net, 2/3×T29. No views.sql primitive."
 EL,B311,2026-02,311271.33,305301.25,-5970.08,excel_cooked_coefficient,"Cross-building fractional pools: 0.5×T26S-net, 2/3×T29. No views.sql primitive."
-EL,B312,2026-01,12938.97,12938.71,-0.26,match,within floating-point / day-boundary rounding noise.
-EL,B312,2026-02,12287.34,12287.64,0.30,match,within floating-point / day-boundary rounding noise.
-EL,B313,2026-01,14400.10,14401.12,1.02,match,within floating-point / day-boundary rounding noise.
-EL,B313,2026-02,13564.03,13563.25,-0.78,match,within floating-point / day-boundary rounding noise.
-EL,B314,2026-01,13693.35,13693.21,-0.14,match,within floating-point / day-boundary rounding noise.
-EL,B314,2026-02,12531.52,12531.01,-0.51,match,within floating-point / day-boundary rounding noise.
-EL,B315,2026-01,2774.35,2774.82,0.47,match,within floating-point / day-boundary rounding noise.
-EL,B315,2026-02,2610.19,2609.64,-0.54,match,within floating-point / day-boundary rounding noise.
-EL,B316,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B316,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B317,2026-01,62941.47,62946.70,5.23,match,within floating-point / day-boundary rounding noise.
+EL,B312,2026-01,12938.97,12938.71,-0.26,match,
+EL,B312,2026-02,12287.34,12287.64,0.30,match,
+EL,B313,2026-01,14400.10,14401.12,1.02,match,
+EL,B313,2026-02,13564.03,13563.25,-0.78,match,
+EL,B314,2026-01,13693.35,13693.21,-0.14,match,
+EL,B314,2026-02,12531.52,12531.01,-0.51,match,
+EL,B315,2026-01,2774.35,2774.82,0.47,match,
+EL,B315,2026-02,2610.19,2609.64,-0.54,match,
+EL,B316,2026-01,0.00,0.00,0.00,match,
+EL,B316,2026-02,0.00,0.00,0.00,match,
+EL,B317,2026-01,62941.47,62946.70,5.23,match,
 EL,B317,2026-02,134117.52,58642.60,-75474.93,excel_cooked_coefficient,Cross-building fractional pool: 0.5×T49-net. No views.sql primitive.
 EL,B318,2026-01,124906.27,122565.86,-2340.40,ontology_drift,Consistent −2.2 MWh drift both months (~1.9%). Cause not yet diagnosed.
 EL,B318,2026-02,115770.06,113561.74,-2208.32,ontology_drift,Consistent −2.2 MWh drift both months (~1.9%). Cause not yet diagnosed.
-EL,B319,2026-01,9536.52,9538.91,2.40,match,within floating-point / day-boundary rounding noise.
-EL,B319,2026-02,8909.10,8907.07,-2.04,match,within floating-point / day-boundary rounding noise.
-EL,B320,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B320,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B322,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B322,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B323,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B323,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B324,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B324,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B325,2026-01,217592.07,217648.26,56.19,match,within floating-point / day-boundary rounding noise.
-EL,B325,2026-02,192645.57,192629.57,-16.00,match,within floating-point / day-boundary rounding noise.
-EL,B326,2026-01,84369.38,84402.73,33.35,match,within floating-point / day-boundary rounding noise.
-EL,B326,2026-02,83143.51,83172.52,29.01,match,within floating-point / day-boundary rounding noise.
-EL,B327,2026-01,51178.16,51180.85,2.70,match,within floating-point / day-boundary rounding noise.
-EL,B327,2026-02,46596.75,46594.47,-2.28,match,within floating-point / day-boundary rounding noise.
-EL,B328,2026-01,1190.92,1190.94,0.02,match,within floating-point / day-boundary rounding noise.
-EL,B328,2026-02,1149.14,1149.11,-0.03,match,within floating-point / day-boundary rounding noise.
+EL,B319,2026-01,9536.52,9538.91,2.40,match,
+EL,B319,2026-02,8909.10,8907.07,-2.04,match,
+EL,B320,2026-01,0.00,0.00,0.00,match,
+EL,B320,2026-02,0.00,0.00,0.00,match,
+EL,B322,2026-01,0.00,0.00,0.00,match,
+EL,B322,2026-02,0.00,0.00,0.00,match,
+EL,B323,2026-01,0.00,0.00,0.00,match,
+EL,B323,2026-02,0.00,0.00,0.00,match,
+EL,B324,2026-01,0.00,0.00,0.00,match,
+EL,B324,2026-02,0.00,0.00,0.00,match,
+EL,B325,2026-01,217592.07,217648.26,56.19,match,
+EL,B325,2026-02,192645.57,192629.57,-16.00,match,
+EL,B326,2026-01,84369.38,84402.73,33.35,match,
+EL,B326,2026-02,83143.51,83172.52,29.01,match,
+EL,B327,2026-01,51178.16,51180.85,2.70,match,
+EL,B327,2026-02,46596.75,46594.47,-2.28,match,
+EL,B328,2026-01,1190.92,1190.94,0.02,match,
+EL,B328,2026-02,1149.14,1149.11,-0.03,match,
 EL,B330,2026-01,667118.35,663390.41,-3727.93,ontology_drift,"Small drift (−4 to −11 MWh, ~0.5–1.7%). Cause not yet diagnosed."
-EL,B330,2026-02,595877.66,595833.25,-44.41,match,within floating-point / day-boundary rounding noise.
-EL,B331,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B331,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B334,2026-01,439468.82,439498.49,29.67,match,within floating-point / day-boundary rounding noise.
-EL,B334,2026-02,410101.36,410132.99,31.63,match,within floating-point / day-boundary rounding noise.
+EL,B330,2026-02,595877.66,595833.25,-44.41,match,
+EL,B331,2026-01,0.00,0.00,0.00,match,
+EL,B331,2026-02,0.00,0.00,0.00,match,
+EL,B334,2026-01,439468.82,439498.49,29.67,match,
+EL,B334,2026-02,410101.36,410132.99,31.63,match,
 EL,B337,2026-01,451619.81,440597.18,-11022.63,ontology_drift,"Small drift (−11 MWh Jan only, ~2.4%). Cause not yet diagnosed."
-EL,B337,2026-02,401697.17,401733.10,35.93,match,within floating-point / day-boundary rounding noise.
-EL,B339,2026-01,287204.00,287195.53,-8.47,match,within floating-point / day-boundary rounding noise.
-EL,B339,2026-02,236328.73,236222.32,-106.41,match,within floating-point / day-boundary rounding noise.
-EL,B339 Kolfilter,2026-01,16775.73,16773.97,-1.76,match,within floating-point / day-boundary rounding noise.
-EL,B339 Kolfilter,2026-02,17181.48,17183.19,1.70,match,within floating-point / day-boundary rounding noise.
-EL,B341,2026-01,224854.62,224859.12,4.50,match,within floating-point / day-boundary rounding noise.
-EL,B341,2026-02,209131.00,209134.00,3.00,match,within floating-point / day-boundary rounding noise.
+EL,B337,2026-02,401697.17,401733.10,35.93,match,
+EL,B339,2026-01,287204.00,287195.53,-8.47,match,
+EL,B339,2026-02,236328.73,236222.32,-106.41,match,
+EL,B339 Kolfilter,2026-01,16775.73,16773.97,-1.76,match,
+EL,B339 Kolfilter,2026-02,17181.48,17183.19,1.70,match,
+EL,B341,2026-01,224854.62,224859.12,4.50,match,
+EL,B341,2026-02,209131.00,209134.00,3.00,match,
 EL,B342,2026-01,116653.12,117463.00,809.88,ontology_drift,Consistent +0.8 MWh drift both months (~0.7%). Cause not yet diagnosed.
 EL,B342,2026-02,118049.25,118875.26,826.01,ontology_drift,Consistent +0.8 MWh drift both months (~0.7%). Cause not yet diagnosed.
-EL,B343,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B343,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B343,2026-01,0.00,0.00,0.00,match,
+EL,B343,2026-02,0.00,0.00,0.00,match,
 EL,B344,2026-01,54466.44,52119.59,-2346.86,under_investigation,"−8.6% drift; both + terms (T57-4-7, T21-6-2-A) also appear as hasSubMeter children of their naming parents. See open_questions.md §6."
 EL,B344,2026-02,55967.20,53731.54,-2235.66,under_investigation,"−8.6% drift; both + terms (T57-4-7, T21-6-2-A) also appear as hasSubMeter children of their naming parents. See open_questions.md §6."
-EL,B345,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B345,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B346,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B346,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B348,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B348,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B349,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B351,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B351,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B352,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B352,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B353,2026-01,10484.07,10480.16,-3.90,match,within floating-point / day-boundary rounding noise.
-EL,B353,2026-02,11018.74,11020.47,1.74,match,within floating-point / day-boundary rounding noise.
-EL,B354,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B354,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B357,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B357,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B358,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B358,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B359,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B359,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B360,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B360,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B361,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B361,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B381,2026-01,7299.27,7299.17,-0.09,match,within floating-point / day-boundary rounding noise.
-EL,B381,2026-02,6533.76,6533.40,-0.36,match,within floating-point / day-boundary rounding noise.
-EL,B382,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B382,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B385,2026-01,2061.56,2061.46,-0.10,match,within floating-point / day-boundary rounding noise.
-EL,B385,2026-02,1816.24,1816.48,0.24,match,within floating-point / day-boundary rounding noise.
-EL,B386,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B386,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B387,2026-01,0.22,0.22,0.00,match,within floating-point / day-boundary rounding noise.
-EL,B387,2026-02,0.00,0.00,-0.00,match,within floating-point / day-boundary rounding noise.
-EL,B390,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B390,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B345,2026-01,0.00,0.00,0.00,match,
+EL,B345,2026-02,0.00,0.00,0.00,match,
+EL,B346,2026-01,0.00,0.00,0.00,match,
+EL,B346,2026-02,0.00,0.00,0.00,match,
+EL,B348,2026-01,0.00,0.00,0.00,match,
+EL,B348,2026-02,0.00,0.00,0.00,match,
+EL,B349,2026-01,0.00,0.00,0.00,match,
+EL,B351,2026-01,0.00,0.00,0.00,match,
+EL,B351,2026-02,0.00,0.00,0.00,match,
+EL,B352,2026-01,0.00,0.00,0.00,match,
+EL,B352,2026-02,0.00,0.00,0.00,match,
+EL,B353,2026-01,10484.07,10480.16,-3.90,match,
+EL,B353,2026-02,11018.74,11020.47,1.74,match,
+EL,B354,2026-01,0.00,0.00,0.00,match,
+EL,B354,2026-02,0.00,0.00,0.00,match,
+EL,B357,2026-01,0.00,0.00,0.00,match,
+EL,B357,2026-02,0.00,0.00,0.00,match,
+EL,B358,2026-01,0.00,0.00,0.00,match,
+EL,B358,2026-02,0.00,0.00,0.00,match,
+EL,B359,2026-01,0.00,0.00,0.00,match,
+EL,B359,2026-02,0.00,0.00,0.00,match,
+EL,B360,2026-01,0.00,0.00,0.00,match,
+EL,B360,2026-02,0.00,0.00,0.00,match,
+EL,B361,2026-01,0.00,0.00,0.00,match,
+EL,B361,2026-02,0.00,0.00,0.00,match,
+EL,B381,2026-01,7299.27,7299.17,-0.09,match,
+EL,B381,2026-02,6533.76,6533.40,-0.36,match,
+EL,B382,2026-01,0.00,0.00,0.00,match,
+EL,B382,2026-02,0.00,0.00,0.00,match,
+EL,B385,2026-01,2061.56,2061.46,-0.10,match,
+EL,B385,2026-02,1816.24,1816.48,0.24,match,
+EL,B386,2026-01,0.00,0.00,0.00,match,
+EL,B386,2026-02,0.00,0.00,0.00,match,
+EL,B387,2026-01,0.22,0.22,0.00,match,
+EL,B387,2026-02,0.00,0.00,-0.00,match,
+EL,B390,2026-01,0.00,0.00,0.00,match,
+EL,B390,2026-02,0.00,0.00,0.00,match,
 EL,B392,2026-01,54802.52,31797.15,-23005.37,under_investigation,"Complex-formula undercount (−23/−21 MWh) — same magnitude as B305, likely same root cause (helper-row sub-meters zeroed by hasSubMeter edges). See open_questions.md §3."
 EL,B392,2026-02,51515.04,29837.90,-21677.14,under_investigation,"Complex-formula undercount (−23/−21 MWh) — same magnitude as B305, likely same root cause (helper-row sub-meters zeroed by hasSubMeter edges). See open_questions.md §3."
-EL,B393,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B393,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B403,2026-01,24466.35,24466.70,0.35,match,within floating-point / day-boundary rounding noise.
-EL,B403,2026-02,29906.29,29904.80,-1.50,match,within floating-point / day-boundary rounding noise.
-EL,B420,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-EL,B420,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+EL,B393,2026-01,0.00,0.00,0.00,match,
+EL,B393,2026-02,0.00,0.00,0.00,match,
+EL,B403,2026-01,24466.35,24466.70,0.35,match,
+EL,B403,2026-02,29906.29,29904.80,-1.50,match,
+EL,B420,2026-01,0.00,0.00,0.00,match,
+EL,B420,2026-02,0.00,0.00,0.00,match,

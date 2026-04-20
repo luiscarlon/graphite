@@ -155,12 +155,14 @@ def classify(bldg: str, month: str, excel: float, onto: float, curated: dict):
     pct = abs(diff / excel * 100) if excel else 0.0
     # Noise-level first — even curated "problem buildings" match for months where they're actually fine.
     # When excel > 0, use percent; when excel == 0, any non-trivial onto is a real gap (not noise).
+    # Noise-level matches — `reason='match'` alone conveys the meaning;
+    # the boilerplate explanation just clutters the app view.
     if excel == 0 and onto == 0:
-        return ('match', 'no consumption on either side (empty building row).')
+        return ('match', '')
     if excel > 0 and pct < 0.1:
-        return ('match', 'within floating-point / day-boundary rounding noise.')
-    if excel == 0 and absd < 10:  # native-unit: < 10 kWh / 10 MWh / 10 m³ — rounding only
-        return ('match', 'trivial residual against empty Excel row.')
+        return ('match', '')
+    if excel == 0 and absd < 10:  # native-unit: < 10 kWh / 10 MWh / 10 m³
+        return ('match', '')
     # Month-specific curated override
     if (bldg, month) in curated:
         return curated[(bldg, month)]

@@ -1,99 +1,99 @@
 media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
-KALLVATTEN,B600,2026-01,21393.34,21393.34,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B600,2026-02,21072.64,21072.64,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B602,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B602,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B604,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B611,2026-01,1154.34,1154.34,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B611,2026-02,1337.69,1337.69,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B612,2026-01,990.89,990.89,-0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B612,2026-02,1005.33,1005.33,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B613,2026-01,19.52,19.52,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B613,2026-02,19.10,19.10,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B614,2026-01,2925.27,2925.27,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B614,2026-02,3177.37,3177.37,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B615,2026-01,45.62,45.62,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B615,2026-02,21.09,21.09,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B616,2026-01,3377.06,3377.06,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B616,2026-02,3776.98,3776.98,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B621,2026-01,1202.33,1202.33,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B621,2026-02,1379.63,1379.63,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B622,2026-01,1316.03,1316.03,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B622,2026-02,1187.89,1187.89,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B623,2026-01,36.34,36.34,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B623,2026-02,23.88,23.88,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B625,2026-01,619.33,619.33,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B625,2026-02,1850.95,1850.95,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B626,2026-01,65.31,65.31,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B626,2026-02,52.17,52.17,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B631,2026-01,167.93,167.93,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B631,2026-02,225.45,225.45,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B634,2026-01,242.18,242.18,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B634,2026-02,266.51,266.51,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B637,2026-01,17.31,17.31,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B637,2026-02,18.93,18.93,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B638,2026-01,20.18,20.18,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B638,2026-02,25.23,25.23,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B641,2026-01,8.19,8.19,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B641,2026-02,7.95,7.95,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B642,2026-01,56.58,56.58,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B642,2026-02,59.17,59.17,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B643,2026-01,184.13,184.13,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B643,2026-02,181.44,181.44,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B649,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B649,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B650,2026-01,1207.23,1207.23,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B650,2026-02,1110.41,1110.41,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B651,2026-01,171.19,171.19,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B651,2026-02,21.15,21.15,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B652,2026-01,15.95,15.95,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B652,2026-02,17.43,17.43,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B653,2026-01,495.34,495.34,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B653,2026-02,926.44,926.44,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B654,2026-01,8.62,8.62,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B654,2026-02,2.20,2.20,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B655,2026-01,12.30,12.30,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B655,2026-02,16.11,16.11,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B658,2026-01,54.23,54.23,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B658,2026-02,55.17,55.17,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B659,2026-01,0.02,0.02,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B659,2026-02,0.03,0.03,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B660,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B660,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B661,2026-01,389.53,389.53,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B661,2026-02,607.11,607.11,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B664,2026-01,3.65,3.65,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B664,2026-02,1.74,1.74,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B665,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B665,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B674,2026-01,251.56,251.56,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B674,2026-02,259.17,259.17,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B684,2026-01,5.72,5.72,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B684,2026-02,7.44,7.44,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B821,2026-01,27.88,27.88,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B821,2026-02,29.56,29.56,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B833,2026-01,3357.53,3357.53,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B833,2026-02,1531.50,1531.50,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B834,2026-01,44.88,44.88,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B834,2026-02,47.22,47.22,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B841,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B841,2026-02,0.00,0.00,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B850,2026-02,2.88,2.88,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B869,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B869,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KALLVATTEN,B921,2026-01,1927.48,1927.48,0.00,match,within floating-point / day-boundary rounding noise.
-KALLVATTEN,B921,2026-02,1965.51,1965.51,0.00,match,within floating-point / day-boundary rounding noise.
+KALLVATTEN,B600,2026-01,21393.34,21393.34,0.00,match,
+KALLVATTEN,B600,2026-02,21072.64,21072.64,0.00,match,
+KALLVATTEN,B602,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B602,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B603,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B603,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B604,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B604,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B611,2026-01,1154.34,1154.34,0.00,match,
+KALLVATTEN,B611,2026-02,1337.69,1337.69,0.00,match,
+KALLVATTEN,B612,2026-01,990.89,990.89,-0.00,match,
+KALLVATTEN,B612,2026-02,1005.33,1005.33,0.00,match,
+KALLVATTEN,B613,2026-01,19.52,19.52,0.00,match,
+KALLVATTEN,B613,2026-02,19.10,19.10,0.00,match,
+KALLVATTEN,B614,2026-01,2925.27,2925.27,0.00,match,
+KALLVATTEN,B614,2026-02,3177.37,3177.37,-0.00,match,
+KALLVATTEN,B615,2026-01,45.62,45.62,0.00,match,
+KALLVATTEN,B615,2026-02,21.09,21.09,0.00,match,
+KALLVATTEN,B616,2026-01,3377.06,3377.06,0.00,match,
+KALLVATTEN,B616,2026-02,3776.98,3776.98,0.00,match,
+KALLVATTEN,B620,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B620,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B621,2026-01,1202.33,1202.33,0.00,match,
+KALLVATTEN,B621,2026-02,1379.63,1379.63,0.00,match,
+KALLVATTEN,B622,2026-01,1316.03,1316.03,0.00,match,
+KALLVATTEN,B622,2026-02,1187.89,1187.89,0.00,match,
+KALLVATTEN,B623,2026-01,36.34,36.34,0.00,match,
+KALLVATTEN,B623,2026-02,23.88,23.88,0.00,match,
+KALLVATTEN,B625,2026-01,619.33,619.33,0.00,match,
+KALLVATTEN,B625,2026-02,1850.95,1850.95,0.00,match,
+KALLVATTEN,B626,2026-01,65.31,65.31,0.00,match,
+KALLVATTEN,B626,2026-02,52.17,52.17,0.00,match,
+KALLVATTEN,B631,2026-01,167.93,167.93,0.00,match,
+KALLVATTEN,B631,2026-02,225.45,225.45,0.00,match,
+KALLVATTEN,B634,2026-01,242.18,242.18,0.00,match,
+KALLVATTEN,B634,2026-02,266.51,266.51,0.00,match,
+KALLVATTEN,B637,2026-01,17.31,17.31,0.00,match,
+KALLVATTEN,B637,2026-02,18.93,18.93,0.00,match,
+KALLVATTEN,B638,2026-01,20.18,20.18,0.00,match,
+KALLVATTEN,B638,2026-02,25.23,25.23,0.00,match,
+KALLVATTEN,B641,2026-01,8.19,8.19,0.00,match,
+KALLVATTEN,B641,2026-02,7.95,7.95,0.00,match,
+KALLVATTEN,B642,2026-01,56.58,56.58,0.00,match,
+KALLVATTEN,B642,2026-02,59.17,59.17,0.00,match,
+KALLVATTEN,B643,2026-01,184.13,184.13,0.00,match,
+KALLVATTEN,B643,2026-02,181.44,181.44,0.00,match,
+KALLVATTEN,B649,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B649,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B650,2026-01,1207.23,1207.23,0.00,match,
+KALLVATTEN,B650,2026-02,1110.41,1110.41,0.00,match,
+KALLVATTEN,B651,2026-01,171.19,171.19,0.00,match,
+KALLVATTEN,B651,2026-02,21.15,21.15,0.00,match,
+KALLVATTEN,B652,2026-01,15.95,15.95,0.00,match,
+KALLVATTEN,B652,2026-02,17.43,17.43,0.00,match,
+KALLVATTEN,B653,2026-01,495.34,495.34,0.00,match,
+KALLVATTEN,B653,2026-02,926.44,926.44,0.00,match,
+KALLVATTEN,B654,2026-01,8.62,8.62,0.00,match,
+KALLVATTEN,B654,2026-02,2.20,2.20,0.00,match,
+KALLVATTEN,B655,2026-01,12.30,12.30,0.00,match,
+KALLVATTEN,B655,2026-02,16.11,16.11,0.00,match,
+KALLVATTEN,B656,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B656,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B658,2026-01,54.23,54.23,0.00,match,
+KALLVATTEN,B658,2026-02,55.17,55.17,0.00,match,
+KALLVATTEN,B659,2026-01,0.02,0.02,0.00,match,
+KALLVATTEN,B659,2026-02,0.03,0.03,0.00,match,
+KALLVATTEN,B660,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B660,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B661,2026-01,389.53,389.53,0.00,match,
+KALLVATTEN,B661,2026-02,607.11,607.11,0.00,match,
+KALLVATTEN,B662,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B662,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B663,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B663,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B664,2026-01,3.65,3.65,0.00,match,
+KALLVATTEN,B664,2026-02,1.74,1.74,0.00,match,
+KALLVATTEN,B665,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B665,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B674,2026-01,251.56,251.56,0.00,match,
+KALLVATTEN,B674,2026-02,259.17,259.17,0.00,match,
+KALLVATTEN,B684,2026-01,5.72,5.72,0.00,match,
+KALLVATTEN,B684,2026-02,7.44,7.44,0.00,match,
+KALLVATTEN,B821,2026-01,27.88,27.88,0.00,match,
+KALLVATTEN,B821,2026-02,29.56,29.56,0.00,match,
+KALLVATTEN,B833,2026-01,3357.53,3357.53,0.00,match,
+KALLVATTEN,B833,2026-02,1531.50,1531.50,0.00,match,
+KALLVATTEN,B834,2026-01,44.88,44.88,0.00,match,
+KALLVATTEN,B834,2026-02,47.22,47.22,0.00,match,
+KALLVATTEN,B841,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B841,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B842,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B842,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B850,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B850,2026-02,2.88,2.88,0.00,match,
+KALLVATTEN,B869,2026-01,0.00,0.00,0.00,match,
+KALLVATTEN,B869,2026-02,0.00,0.00,0.00,match,
+KALLVATTEN,B921,2026-01,1927.48,1927.48,0.00,match,
+KALLVATTEN,B921,2026-02,1965.51,1965.51,0.00,match,

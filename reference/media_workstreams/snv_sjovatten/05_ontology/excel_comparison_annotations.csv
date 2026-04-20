@@ -1,29 +1,29 @@
 media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
-SJOVATTEN,B201,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B201,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B202,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B202,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B203,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B203,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B204,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B204,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B205,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B205,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B207,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B207,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B209,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B212,2026-01,1305.00,1305.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B212,2026-02,1063.00,1063.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B216,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B216,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B217,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B217,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B228,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B228,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B229,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B229,2026-02,2.00,2.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B230,2026-01,624.00,624.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B230,2026-02,578.00,578.00,0.00,match,within floating-point / day-boundary rounding noise.
+SJOVATTEN,B201,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B201,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B202,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B202,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B203,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B203,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B204,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B204,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B205,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B205,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B207,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B207,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B209,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B212,2026-01,1305.00,1305.00,0.00,match,
+SJOVATTEN,B212,2026-02,1063.00,1063.00,0.00,match,
+SJOVATTEN,B216,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B216,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B217,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B217,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B228,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B228,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B229,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B229,2026-02,2.00,2.00,0.00,match,
+SJOVATTEN,B230,2026-01,624.00,624.00,0.00,match,
+SJOVATTEN,B230,2026-02,578.00,578.00,0.00,match,
 SJOVATTEN,B301,2026-01,540.27,0.00,-540.27,excel_cooked_coefficient,B301 = 0.09 × BPS_V2. BPS_V2 is a sheet-level residual (B342 inlets − 15 direct consumers) with monthly-variable R factors; not mirrored in the ontology. See open_questions.md.
 SJOVATTEN,B301,2026-02,2684.58,0.00,-2684.58,excel_cooked_coefficient,B301 = 0.09 × BPS_V2. BPS_V2 is a sheet-level residual (B342 inlets − 15 direct consumers) with monthly-variable R factors; not mirrored in the ontology. See open_questions.md.
 SJOVATTEN,B302,2026-01,1080.55,0.00,-1080.55,excel_cooked_coefficient,B302 = 0.18 × BPS_V2. Same BPS fractional split — see B301.
@@ -32,115 +32,115 @@ SJOVATTEN,B303,2026-01,1080.55,0.00,-1080.55,excel_cooked_coefficient,B303 = 0.1
 SJOVATTEN,B303,2026-02,5369.17,0.00,-5369.17,excel_cooked_coefficient,B303 = 0.18 × BPS_V2. Same BPS fractional split — see B301.
 SJOVATTEN,B304,2026-01,29639.90,0.00,-29639.90,strux_only_meter,B304-52-V2-AW026 is a manually-read STRUX meter; no BMS data. Excel cached values come from manual STRUX entry.
 SJOVATTEN,B304,2026-02,43483.40,0.00,-43483.40,strux_only_meter,B304-52-V2-AW026 is a manually-read STRUX meter; no BMS data. Excel cached values come from manual STRUX entry.
-SJOVATTEN,B305,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B305,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+SJOVATTEN,B305,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B305,2026-02,0.00,0.00,0.00,match,
 SJOVATTEN,B307,2026-01,2761.41,0.00,-2761.41,excel_cooked_coefficient,B307 = 0.46 × BPS_V2 (largest share). Same BPS fractional split — see B301.
 SJOVATTEN,B307,2026-02,13721.20,0.00,-13721.20,excel_cooked_coefficient,B307 = 0.46 × BPS_V2 (largest share). Same BPS fractional split — see B301.
-SJOVATTEN,B308,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B308,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B309,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B309,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B310,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B310,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B311,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B311,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B312,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B312,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B313,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B313,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B314,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B314,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B315,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B315,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B316,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B316,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B317,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B317,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B318,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B318,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B319,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B319,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B320,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B322,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B322,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B323,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B323,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B324,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B324,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B325,2026-01,2800.00,2800.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B325,2026-02,2500.00,2500.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B326,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B326,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B327,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B327,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B328,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B328,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B330,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B330,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B331,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B331,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B334,2026-01,8191.66,8191.66,-0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B334,2026-02,3298.93,3298.93,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B337,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B337,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B339,2026-01,196462.00,196462.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B339,2026-02,225871.00,225871.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B341,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B341,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B342,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B342,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B343,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B343,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+SJOVATTEN,B308,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B308,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B309,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B309,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B310,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B310,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B311,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B311,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B312,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B312,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B313,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B313,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B314,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B314,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B315,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B315,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B316,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B316,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B317,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B317,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B318,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B318,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B319,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B319,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B320,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B322,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B322,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B323,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B323,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B324,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B324,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B325,2026-01,2800.00,2800.00,0.00,match,
+SJOVATTEN,B325,2026-02,2500.00,2500.00,0.00,match,
+SJOVATTEN,B326,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B326,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B327,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B327,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B328,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B328,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B330,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B330,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B331,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B331,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B334,2026-01,8191.66,8191.66,-0.00,match,
+SJOVATTEN,B334,2026-02,3298.93,3298.93,0.00,match,
+SJOVATTEN,B337,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B337,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B339,2026-01,196462.00,196462.00,0.00,match,
+SJOVATTEN,B339,2026-02,225871.00,225871.00,0.00,match,
+SJOVATTEN,B341,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B341,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B342,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B342,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B343,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B343,2026-02,0.00,0.00,0.00,match,
 SJOVATTEN,B344,2026-01,540.27,0.00,-540.27,excel_cooked_coefficient,B344 = 0.09 × BPS_V2. Same BPS fractional split — see B301.
 SJOVATTEN,B344,2026-02,2684.58,0.00,-2684.58,excel_cooked_coefficient,B344 = 0.09 × BPS_V2. Same BPS fractional split — see B301.
-SJOVATTEN,B345,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B345,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B346,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B346,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B348,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B348,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B349,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B349,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B351,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B351,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B352,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B352,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B353,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B353,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B354,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B354,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B357,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B357,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B358,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B358,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B359,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B359,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B360,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B360,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B361,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B361,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B381,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B381,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B382,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B382,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B385,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B385,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B386,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B386,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B387,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B387,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B390,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B390,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B392,2026-01,271.55,271.55,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B392,2026-02,308.32,308.32,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B393,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B393,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B403,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B403,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B409,2026-01,70184.00,70184.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B409,2026-02,54780.00,54780.00,0.00,match,within floating-point / day-boundary rounding noise.
-SJOVATTEN,B420,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-SJOVATTEN,B420,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+SJOVATTEN,B345,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B345,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B346,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B346,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B348,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B348,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B349,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B349,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B351,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B351,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B352,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B352,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B353,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B353,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B354,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B354,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B357,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B357,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B358,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B358,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B359,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B359,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B360,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B360,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B361,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B361,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B381,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B381,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B382,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B382,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B385,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B385,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B386,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B386,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B387,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B387,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B390,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B390,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B392,2026-01,271.55,271.55,0.00,match,
+SJOVATTEN,B392,2026-02,308.32,308.32,0.00,match,
+SJOVATTEN,B393,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B393,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B403,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B403,2026-02,0.00,0.00,0.00,match,
+SJOVATTEN,B409,2026-01,70184.00,70184.00,0.00,match,
+SJOVATTEN,B409,2026-02,54780.00,54780.00,0.00,match,
+SJOVATTEN,B420,2026-01,0.00,0.00,0.00,match,
+SJOVATTEN,B420,2026-02,0.00,0.00,0.00,match,
 SJOVATTEN,BKringlan,2026-01,25483.00,0.00,-25483.00,strux_only_meter,TE-52-V2-GF4:1 Kringlan is a manually-read external-consumer meter (Telge Nät); no BMS data.
 SJOVATTEN,BKringlan,2026-02,21275.00,0.00,-21275.00,strux_only_meter,TE-52-V2-GF4:1 Kringlan is a manually-read external-consumer meter (Telge Nät); no BMS data.
 SJOVATTEN,BScania,2026-01,143658.08,0.00,-143658.08,strux_only_meter,TE-52-V2-SCANIA is a manually-read external-consumer meter (Telge Nät / Scania); no BMS data.

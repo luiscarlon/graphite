@@ -1,91 +1,91 @@
 media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
-KYLTORNSVATTEN,B602,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B602,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B611,2026-01,24161.00,24161.00,0.00,match,within floating-point / day-boundary rounding noise.
-KYLTORNSVATTEN,B611,2026-02,15831.00,15831.00,0.00,match,within floating-point / day-boundary rounding noise.
-KYLTORNSVATTEN,B612,2026-01,2144.00,2144.00,0.00,match,within floating-point / day-boundary rounding noise.
-KYLTORNSVATTEN,B612,2026-02,1606.00,1606.00,0.00,match,within floating-point / day-boundary rounding noise.
-KYLTORNSVATTEN,B613,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B613,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B614,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B614,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B615,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B615,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B616,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B616,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B620,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B620,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B621,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B621,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B622,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B622,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B623,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B623,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B625,2026-01,3648.86,3648.86,0.00,match,within floating-point / day-boundary rounding noise.
-KYLTORNSVATTEN,B625,2026-02,3030.94,3030.94,0.00,match,within floating-point / day-boundary rounding noise.
-KYLTORNSVATTEN,B631,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B631,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B634,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B634,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B637,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B637,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B638,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B638,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B641,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B641,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B642,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B642,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B643,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B643,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B649,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B649,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B650,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B650,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B651,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B651,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B652,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B652,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B653,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B653,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B654,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B655,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B655,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B656,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B656,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B658,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B658,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B659,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B660,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B660,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B661,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B662,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B662,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B663,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B663,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B664,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B664,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B665,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B665,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B674,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B674,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B682,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B682,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B821,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B821,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B833,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B833,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B834,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B834,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B841,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B841,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B842,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B842,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B850,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B850,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B869,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B869,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B921,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLTORNSVATTEN,B921,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLTORNSVATTEN,B602,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B602,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B603,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B603,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B604,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B611,2026-01,24161.00,24161.00,0.00,match,
+KYLTORNSVATTEN,B611,2026-02,15831.00,15831.00,0.00,match,
+KYLTORNSVATTEN,B612,2026-01,2144.00,2144.00,0.00,match,
+KYLTORNSVATTEN,B612,2026-02,1606.00,1606.00,0.00,match,
+KYLTORNSVATTEN,B613,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B613,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B614,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B614,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B615,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B615,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B616,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B616,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B620,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B620,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B621,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B621,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B622,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B622,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B623,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B623,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B625,2026-01,3648.86,3648.86,0.00,match,
+KYLTORNSVATTEN,B625,2026-02,3030.94,3030.94,0.00,match,
+KYLTORNSVATTEN,B631,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B631,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B634,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B634,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B637,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B637,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B638,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B638,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B641,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B641,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B642,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B642,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B643,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B643,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B649,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B649,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B650,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B650,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B651,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B651,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B652,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B652,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B653,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B653,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B654,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B655,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B655,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B656,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B656,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B658,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B658,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B659,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B660,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B660,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B661,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B662,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B662,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B663,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B663,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B664,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B664,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B665,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B665,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B674,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B674,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B682,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B682,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B821,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B821,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B833,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B833,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B834,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B834,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B841,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B841,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B842,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B842,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B850,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B850,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B869,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B869,2026-02,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B921,2026-01,0.00,0.00,0.00,match,
+KYLTORNSVATTEN,B921,2026-02,0.00,0.00,0.00,match,

@@ -1,140 +1,140 @@
 media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
-KYLA,B201,2026-01,0.20,0.20,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B201,2026-02,0.20,0.20,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B202,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B202,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B203,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B203,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B204,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B204,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B205,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B207,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B207,2026-02,0.10,0.10,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B209,2026-01,12.07,12.07,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B209,2026-02,10.42,10.42,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B212,2026-01,110.27,110.27,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B212,2026-02,101.36,101.36,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B216,2026-01,19.70,19.70,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B216,2026-02,18.40,18.40,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B217,2026-01,18.90,18.90,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B217,2026-02,15.40,15.40,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B228,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B228,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B301,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B301,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B302,2026-01,5.75,5.75,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B302,2026-02,4.75,4.75,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B303,2026-01,5.75,5.75,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B303,2026-02,4.75,4.75,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B304,2026-01,0.60,0.60,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B304,2026-02,0.40,0.40,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B305,2026-01,6.60,6.60,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B305,2026-02,3.85,3.85,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B307,2026-01,81.17,81.17,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B307,2026-02,87.52,87.52,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B308,2026-01,31.10,31.10,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B308,2026-02,27.20,27.20,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B309,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B309,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B310,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B310,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B311,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B311,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B312,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B312,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B313,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B313,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B314,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B314,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B315,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B315,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B316,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B316,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B317,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B317,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B318,2026-01,1.60,1.60,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B318,2026-02,0.80,0.80,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B319,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B319,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B320,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B320,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B322,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B322,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B323,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B323,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B324,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B324,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B325,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B325,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B326,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B326,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B327,2026-01,29.20,29.20,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B327,2026-02,26.60,26.60,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B328,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B328,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B330,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B330,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B331,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B331,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B334,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B334,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B336,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B336,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B337,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B337,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B339,2026-01,112.90,112.90,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B339,2026-02,103.40,103.40,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B341,2026-01,69.70,69.70,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B341,2026-02,63.70,63.70,0.00,match,within floating-point / day-boundary rounding noise.
-KYLA,B342,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B342,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B343,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B343,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B344,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B344,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B345,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B345,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B346,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B346,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B348,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B348,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B349,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B349,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B351,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B351,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B352,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B352,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B353,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B353,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B354,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B354,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B357,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B357,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B358,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B358,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B359,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B359,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B360,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B360,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B361,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B361,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B381,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B381,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B382,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B382,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B385,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B385,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B386,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B386,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B387,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B387,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B390,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B390,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B392,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B392,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B393,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B393,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B403,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B403,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B420,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-KYLA,B420,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+KYLA,B201,2026-01,0.20,0.20,0.00,match,
+KYLA,B201,2026-02,0.20,0.20,0.00,match,
+KYLA,B202,2026-01,0.00,0.00,0.00,match,
+KYLA,B202,2026-02,0.00,0.00,0.00,match,
+KYLA,B203,2026-01,0.00,0.00,0.00,match,
+KYLA,B203,2026-02,0.00,0.00,0.00,match,
+KYLA,B204,2026-01,0.00,0.00,0.00,match,
+KYLA,B204,2026-02,0.00,0.00,0.00,match,
+KYLA,B205,2026-01,0.00,0.00,0.00,match,
+KYLA,B207,2026-01,0.00,0.00,0.00,match,
+KYLA,B207,2026-02,0.10,0.10,0.00,match,
+KYLA,B209,2026-01,12.07,12.07,0.00,match,
+KYLA,B209,2026-02,10.42,10.42,0.00,match,
+KYLA,B212,2026-01,110.27,110.27,0.00,match,
+KYLA,B212,2026-02,101.36,101.36,0.00,match,
+KYLA,B216,2026-01,19.70,19.70,0.00,match,
+KYLA,B216,2026-02,18.40,18.40,0.00,match,
+KYLA,B217,2026-01,18.90,18.90,0.00,match,
+KYLA,B217,2026-02,15.40,15.40,0.00,match,
+KYLA,B228,2026-01,0.00,0.00,0.00,match,
+KYLA,B228,2026-02,0.00,0.00,0.00,match,
+KYLA,B301,2026-01,0.00,0.00,0.00,match,
+KYLA,B301,2026-02,0.00,0.00,0.00,match,
+KYLA,B302,2026-01,5.75,5.75,0.00,match,
+KYLA,B302,2026-02,4.75,4.75,0.00,match,
+KYLA,B303,2026-01,5.75,5.75,0.00,match,
+KYLA,B303,2026-02,4.75,4.75,0.00,match,
+KYLA,B304,2026-01,0.60,0.60,0.00,match,
+KYLA,B304,2026-02,0.40,0.40,0.00,match,
+KYLA,B305,2026-01,6.60,6.60,0.00,match,
+KYLA,B305,2026-02,3.85,3.85,0.00,match,
+KYLA,B307,2026-01,81.17,81.17,0.00,match,
+KYLA,B307,2026-02,87.52,87.52,0.00,match,
+KYLA,B308,2026-01,31.10,31.10,0.00,match,
+KYLA,B308,2026-02,27.20,27.20,0.00,match,
+KYLA,B309,2026-01,0.00,0.00,0.00,match,
+KYLA,B309,2026-02,0.00,0.00,0.00,match,
+KYLA,B310,2026-01,0.00,0.00,0.00,match,
+KYLA,B310,2026-02,0.00,0.00,0.00,match,
+KYLA,B311,2026-01,0.00,0.00,0.00,match,
+KYLA,B311,2026-02,0.00,0.00,0.00,match,
+KYLA,B312,2026-01,0.00,0.00,0.00,match,
+KYLA,B312,2026-02,0.00,0.00,0.00,match,
+KYLA,B313,2026-01,0.00,0.00,0.00,match,
+KYLA,B313,2026-02,0.00,0.00,0.00,match,
+KYLA,B314,2026-01,0.00,0.00,0.00,match,
+KYLA,B314,2026-02,0.00,0.00,0.00,match,
+KYLA,B315,2026-01,0.00,0.00,0.00,match,
+KYLA,B315,2026-02,0.00,0.00,0.00,match,
+KYLA,B316,2026-01,0.00,0.00,0.00,match,
+KYLA,B316,2026-02,0.00,0.00,0.00,match,
+KYLA,B317,2026-01,0.00,0.00,0.00,match,
+KYLA,B317,2026-02,0.00,0.00,0.00,match,
+KYLA,B318,2026-01,1.60,1.60,0.00,match,
+KYLA,B318,2026-02,0.80,0.80,0.00,match,
+KYLA,B319,2026-01,0.00,0.00,0.00,match,
+KYLA,B319,2026-02,0.00,0.00,0.00,match,
+KYLA,B320,2026-01,0.00,0.00,0.00,match,
+KYLA,B320,2026-02,0.00,0.00,0.00,match,
+KYLA,B322,2026-01,0.00,0.00,0.00,match,
+KYLA,B322,2026-02,0.00,0.00,0.00,match,
+KYLA,B323,2026-01,0.00,0.00,0.00,match,
+KYLA,B323,2026-02,0.00,0.00,0.00,match,
+KYLA,B324,2026-01,0.00,0.00,0.00,match,
+KYLA,B324,2026-02,0.00,0.00,0.00,match,
+KYLA,B325,2026-01,0.00,0.00,0.00,match,
+KYLA,B325,2026-02,0.00,0.00,0.00,match,
+KYLA,B326,2026-01,0.00,0.00,0.00,match,
+KYLA,B326,2026-02,0.00,0.00,0.00,match,
+KYLA,B327,2026-01,29.20,29.20,0.00,match,
+KYLA,B327,2026-02,26.60,26.60,0.00,match,
+KYLA,B328,2026-01,0.00,0.00,0.00,match,
+KYLA,B328,2026-02,0.00,0.00,0.00,match,
+KYLA,B330,2026-01,0.00,0.00,0.00,match,
+KYLA,B330,2026-02,0.00,0.00,0.00,match,
+KYLA,B331,2026-01,0.00,0.00,0.00,match,
+KYLA,B331,2026-02,0.00,0.00,0.00,match,
+KYLA,B334,2026-01,0.00,0.00,0.00,match,
+KYLA,B334,2026-02,0.00,0.00,0.00,match,
+KYLA,B336,2026-01,0.00,0.00,0.00,match,
+KYLA,B336,2026-02,0.00,0.00,0.00,match,
+KYLA,B337,2026-01,0.00,0.00,0.00,match,
+KYLA,B337,2026-02,0.00,0.00,0.00,match,
+KYLA,B339,2026-01,112.90,112.90,0.00,match,
+KYLA,B339,2026-02,103.40,103.40,0.00,match,
+KYLA,B341,2026-01,69.70,69.70,0.00,match,
+KYLA,B341,2026-02,63.70,63.70,0.00,match,
+KYLA,B342,2026-01,0.00,0.00,0.00,match,
+KYLA,B342,2026-02,0.00,0.00,0.00,match,
+KYLA,B343,2026-01,0.00,0.00,0.00,match,
+KYLA,B343,2026-02,0.00,0.00,0.00,match,
+KYLA,B344,2026-01,0.00,0.00,0.00,match,
+KYLA,B344,2026-02,0.00,0.00,0.00,match,
+KYLA,B345,2026-01,0.00,0.00,0.00,match,
+KYLA,B345,2026-02,0.00,0.00,0.00,match,
+KYLA,B346,2026-01,0.00,0.00,0.00,match,
+KYLA,B346,2026-02,0.00,0.00,0.00,match,
+KYLA,B348,2026-01,0.00,0.00,0.00,match,
+KYLA,B348,2026-02,0.00,0.00,0.00,match,
+KYLA,B349,2026-01,0.00,0.00,0.00,match,
+KYLA,B349,2026-02,0.00,0.00,0.00,match,
+KYLA,B351,2026-01,0.00,0.00,0.00,match,
+KYLA,B351,2026-02,0.00,0.00,0.00,match,
+KYLA,B352,2026-01,0.00,0.00,0.00,match,
+KYLA,B352,2026-02,0.00,0.00,0.00,match,
+KYLA,B353,2026-01,0.00,0.00,0.00,match,
+KYLA,B353,2026-02,0.00,0.00,0.00,match,
+KYLA,B354,2026-01,0.00,0.00,0.00,match,
+KYLA,B354,2026-02,0.00,0.00,0.00,match,
+KYLA,B357,2026-01,0.00,0.00,0.00,match,
+KYLA,B357,2026-02,0.00,0.00,0.00,match,
+KYLA,B358,2026-01,0.00,0.00,0.00,match,
+KYLA,B358,2026-02,0.00,0.00,0.00,match,
+KYLA,B359,2026-01,0.00,0.00,0.00,match,
+KYLA,B359,2026-02,0.00,0.00,0.00,match,
+KYLA,B360,2026-01,0.00,0.00,0.00,match,
+KYLA,B360,2026-02,0.00,0.00,0.00,match,
+KYLA,B361,2026-01,0.00,0.00,0.00,match,
+KYLA,B361,2026-02,0.00,0.00,0.00,match,
+KYLA,B381,2026-01,0.00,0.00,0.00,match,
+KYLA,B381,2026-02,0.00,0.00,0.00,match,
+KYLA,B382,2026-01,0.00,0.00,0.00,match,
+KYLA,B382,2026-02,0.00,0.00,0.00,match,
+KYLA,B385,2026-01,0.00,0.00,0.00,match,
+KYLA,B385,2026-02,0.00,0.00,0.00,match,
+KYLA,B386,2026-01,0.00,0.00,0.00,match,
+KYLA,B386,2026-02,0.00,0.00,0.00,match,
+KYLA,B387,2026-01,0.00,0.00,0.00,match,
+KYLA,B387,2026-02,0.00,0.00,0.00,match,
+KYLA,B390,2026-01,0.00,0.00,0.00,match,
+KYLA,B390,2026-02,0.00,0.00,0.00,match,
+KYLA,B392,2026-01,0.00,0.00,0.00,match,
+KYLA,B392,2026-02,0.00,0.00,0.00,match,
+KYLA,B393,2026-01,0.00,0.00,0.00,match,
+KYLA,B393,2026-02,0.00,0.00,0.00,match,
+KYLA,B403,2026-01,0.00,0.00,0.00,match,
+KYLA,B403,2026-02,0.00,0.00,0.00,match,
+KYLA,B420,2026-01,0.00,0.00,0.00,match,
+KYLA,B420,2026-02,0.00,0.00,0.00,match,
