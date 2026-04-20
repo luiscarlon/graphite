@@ -793,7 +793,11 @@ def _excel_comparison_section(ds: Dataset, site_dir: Path) -> None:
         col_order += [f"excel_{m}", f"onto_{m}", f"diff%_{m}",
                        f"reason_{m}", f"explanation_{m}"]
     col_order += ["|Δ|_total"]
-    cdf = pd.DataFrame(sorted(rows, key=lambda r: r["building"]))[col_order]
+    # Sort by absolute total diff descending so biggest discrepancies are
+    # on top; break ties by building id.
+    cdf = pd.DataFrame(
+        sorted(rows, key=lambda r: (-float(r["|Δ|_total"]), r["building"]))
+    )[col_order]
 
     unit = _unit_label(ds)
     st.caption(
