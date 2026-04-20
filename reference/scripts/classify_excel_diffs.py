@@ -37,6 +37,11 @@ WORKSTREAMS = [
     ('gtn_kyltornsvatten', 'gartuna', 'KYLTORNSVATTEN'),
     ('gtn_el', 'gartuna', 'EL'),
     ('snv_el', 'snackviken', 'EL'),
+    ('snv_anga', 'snackviken', 'ANGA'),
+    ('snv_varme', 'snackviken', 'VARME'),
+    ('snv_kyla', 'snackviken', 'KYLA'),
+    ('snv_kallvatten', 'snackviken', 'KALLVATTEN'),
+    ('snv_sjovatten', 'snackviken', 'SJOVATTEN'),
 ]
 
 # Per-workstream curated overrides.
@@ -89,6 +94,45 @@ CURATED: dict[str, list] = {
         ('B339', 'under_investigation', 'Complex-formula overcount (+45% to +50%). Same pattern as B307. See open_questions.md §4.'),
         ('B344', 'under_investigation', '−8.6% drift; both + terms (T57-4-7, T21-6-2-A) also appear as hasSubMeter children of their naming parents. See open_questions.md §6.'),
         ('B341', 'excel_cooked_coefficient', 'B341 formula W-column literal "Reservkraft pl7" (not a meter ID). Accidentally evaluates to zero; matches within 0.002%.'),
+    ],
+    'snv_sjovatten': [
+        ('B301', 'excel_cooked_coefficient', 'B301 = 0.09 × BPS_V2. BPS_V2 is a sheet-level residual (B342 inlets − 15 direct consumers) with monthly-variable R factors; not mirrored in the ontology. See open_questions.md.'),
+        ('B302', 'excel_cooked_coefficient', 'B302 = 0.18 × BPS_V2. Same BPS fractional split — see B301.'),
+        ('B303', 'excel_cooked_coefficient', 'B303 = 0.18 × BPS_V2. Same BPS fractional split — see B301.'),
+        ('B307', 'excel_cooked_coefficient', 'B307 = 0.46 × BPS_V2 (largest share). Same BPS fractional split — see B301.'),
+        ('B344', 'excel_cooked_coefficient', 'B344 = 0.09 × BPS_V2. Same BPS fractional split — see B301.'),
+        ('B304', 'strux_only_meter', 'B304-52-V2-AW026 is a manually-read STRUX meter; no BMS data. Excel cached values come from manual STRUX entry.'),
+        ('BKringlan', 'strux_only_meter', 'TE-52-V2-GF4:1 Kringlan is a manually-read external-consumer meter (Telge Nät); no BMS data.'),
+        ('BScania', 'strux_only_meter', 'TE-52-V2-SCANIA is a manually-read external-consumer meter (Telge Nät / Scania); no BMS data.'),
+    ],
+    'snv_kallvatten': [
+        ('B310', 'excel_bug', 'Row 26 subtracts B313.KV1_VMM22_V which is also subtracted by row 30 (B314). Meter can have only one hasSubMeter parent — attached to B314.KV1_VMM21_V per shorter-formula-wins rule. B310 over-counts by Δ(B313.KV1_VMM22_V) ≈ 120 MWh/month.'),
+        ('B311', 'excel_bug', 'Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.'),
+        ('B314', 'excel_bug', 'Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack.'),
+        ('B202', 'match', 'Negative Excel value (row 10 — B202 subtracts both B201 and B203 meters and under-counts by design). Ontology mirrors Excel exactly (diff = 0).'),
+    ],
+    'snv_kyla': [
+        # All 140 building-months currently match; these curated entries
+        # preserve context for buildings where the match is "Excel=0 and
+        # ontology=0" rather than a live comparison.
+        ('B202', 'strux_only_meter', 'B202.VENT is STRUX-only; neither Excel nor ontology report kyla for Jan/Feb 2026.'),
+        ('B330', 'strux_only_meter', 'B331.KB1_VM51_E (row 44 + term) is STRUX-only; not in BMS.'),
+        ('B336', 'strux_only_meter', 'B336.KB1 is STRUX-only; not in BMS.'),
+        ('B392', 'strux_only_meter', 'B392.KB1_VM51_E exists in Snowflake only as Water Volume (m^3), not as energy; crosswalk cleared to prevent unit-mismatched attribution.'),
+        ('B302', 'excel_cooked_coefficient', '0.5 × B304.KB2 tenant split (row 19). Ontology uses a feeds edge with k=0.5 — matches exactly within noise.'),
+        ('B303', 'excel_cooked_coefficient', '0.5 × B304.KB2 tenant split (row 20). Ontology uses a feeds edge with k=0.5 — matches exactly within noise.'),
+        ('B305', 'excel_cooked_coefficient', 'B305.KB1 + 0.5 × B307.KB1 (row 22). Both routed via feeds to B305.KYLA_VIRT.'),
+        ('B307', 'excel_cooked_coefficient', 'B307.KB1_VM52_E + 0.5 × B307.KB1 (row 23). Routed via feeds to B307.KYLA_VIRT.'),
+    ],
+    'snv_varme': [
+        ('B327', 'excel_bug', 'Excel row 38 double-counts B326.VS1_VMM61 (already + term in row 37 for B326). Meter can have only one building attribution; assigned to B326 per decisions.md. B327 under-counts by Δ(B326.VS1_VMM61) ≈ 17 MWh/month.'),
+        ('B310', 'match', 'Negative Excel value (−155 MWh Feb) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).'),
+    ],
+    'snv_anga': [
+        ('B216', 'meter_outage', 'B216.Å1_VM71 counter froze 2026-02-18; ontology patches post-outage from child B217 but captures pre-outage physical B216>B217 delta (~30 MWh). Excel uses STRUX register-diff which absorbs the freeze as zero consumption post-Feb 18.'),
+        ('B307', 'excel_bug', 'Excel row 23 subtracts both B330.Å1_VMM71 (by B307) and the same meter (by B337 row 46). Double-subtraction cannot be mirrored in the ontology (one parent per meter); B330 attached to B337 per decisions.md 2026-04-20. B307 over-counts by Δ(B330) ≈ 0.9 MWh/month.'),
+        ('B308', 'meter_outage', 'B308.Å1_VMM71 counter frozen since 2025 (v=12737.1533 throughout). Ontology patches from child B327 ≥ 2026-02-07, yielding meter_net ≈ 0 after patch; Excel formula (+B308−B327) = −30 MWh regardless. Pre-outage Jan matches Excel exactly; post-patch Feb diverges by 22 MWh.'),
+        ('B310', 'match', 'Negative Excel value (−152 MWh Jan, −12 MWh Feb) from B310 being a pool accounting building. Ontology mirrors Excel exactly.'),
     ],
 }
 

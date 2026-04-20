@@ -277,13 +277,20 @@ def main() -> int:
             cursor = ""  # start of current segment
             for ev in meter_events:
                 if ev["event_type"] == "swap":
-                    segments.append((cursor, ev["swap_date"]))
+                    # If the meter was offline, the swap just brings it back
+                    # online — don't emit an empty (None, swap_date) segment,
+                    # which would be written as blank valid_from and overlap
+                    # prior segments. Start a fresh segment from swap_date.
+                    if cursor is not None:
+                        segments.append((cursor, ev["swap_date"]))
                     cursor = ev["swap_date"]
                 elif ev["event_type"] == "glitch":
-                    segments.append((cursor, ev["swap_date"]))
+                    if cursor is not None:
+                        segments.append((cursor, ev["swap_date"]))
                     cursor = ev.get("glitch_end", ev["swap_date"])
                 elif ev["event_type"] == "offline":
-                    segments.append((cursor, ev["swap_date"]))
+                    if cursor is not None:
+                        segments.append((cursor, ev["swap_date"]))
                     cursor = None
             if cursor is not None:
                 segments.append((cursor, ""))

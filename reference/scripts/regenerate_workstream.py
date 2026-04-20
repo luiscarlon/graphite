@@ -120,6 +120,59 @@ CONFIGS: dict[str, Config] = {
         unit="KiloW-HR",
         has_pdf=False,
     ),
+    "snv_kallvatten": Config(
+        name="snv_kallvatten",
+        site="SNV",
+        media="Kallvatten",
+        media_slug="KALLVATTEN",
+        pdf_sources=[],  # fill in after first parse_flow_schema run
+        primary_role="KV1",
+        quantity="Water Volume (m^3)",
+        unit="M3",
+    ),
+    "snv_sjovatten": Config(
+        name="snv_sjovatten",
+        site="SNV",
+        media="Sjövatten",
+        media_slug="SJOVATTEN",
+        pdf_sources=[],
+        primary_role="SV1",
+        quantity="Water Volume (m^3)",
+        unit="M3",
+        has_pdf=False,
+    ),
+    "snv_kyla": Config(
+        name="snv_kyla",
+        site="SNV",
+        media="Kyla",
+        media_slug="KYLA",
+        pdf_sources=[],
+        primary_role="KB1",
+        quantity="Active Energy Delivered(Mega)",
+        has_pdf=False,
+    ),
+    "snv_varme": Config(
+        name="snv_varme",
+        site="SNV",
+        media="Värme",
+        media_slug="VARME",
+        # Provisional root; revisit after first parse_flow_schema run.
+        pdf_sources=["B310.VP2_VMM61", "B310.VP1_VMM61"],
+        primary_role="VP1",
+        quantity="Active Energy Delivered(Mega)",
+    ),
+    "snv_anga": Config(
+        name="snv_anga",
+        site="SNV",
+        media="Ånga",
+        media_slug="ANGA",
+        # PDF root is B200.Å1_VMM70 (south distribution main). The steam
+        # plant (B325.Panna2/Panna3) is upstream of the flödesschema and
+        # does not appear in its pipe graph.
+        pdf_sources=["B200.Å1_VMM70"],
+        primary_role="Å1",
+        quantity="Active Energy Delivered(Mega)",  # steam reported as energy on Snowflake
+    ),
 }
 
 

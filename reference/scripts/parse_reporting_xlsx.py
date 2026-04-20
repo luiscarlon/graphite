@@ -119,13 +119,20 @@ def parse_formula_terms(
     text = formula_text.lstrip("=").strip()
     spans = _find_xlookup_spans(text)
 
-    # Substitute absolute cell refs with their numeric values
+    # Substitute absolute cell refs with their numeric values.
+    # Use regex with word boundaries so "$B$23" doesn't also match "B23"
+    # inside larger cell refs like "AB23" (which would wipe the latter's
+    # XLOOKUP call). The accepted forms are "$C$5", "C5", "$C5", "C$5".
     resolved = text
     for ref, val in cell_values.items():
-        resolved_ref = ref
-        # Accept both "$F$5" and "F5" for convenience
-        resolved = resolved.replace(resolved_ref, f"({val})")
-        resolved = resolved.replace(resolved_ref.replace("$", ""), f"({val})")
+        bare = ref.replace("$", "")
+        # Escape for regex and allow optional "$" before each of letters/digits
+        mcell = re.match(r"\$?([A-Z]+)\$?(\d+)", ref)
+        if not mcell:
+            continue
+        col, rownum = mcell.group(1), mcell.group(2)
+        pattern = re.compile(rf"(?<![A-Z0-9])\$?{col}\$?{rownum}(?![0-9])")
+        resolved = pattern.sub(f"({val})", resolved)
 
     # Re-find spans in the resolved text (offsets shift)
     resolved_spans = _find_xlookup_spans(resolved)
@@ -225,6 +232,17 @@ def extract_building_formulas(ws, ws_values=None) -> list[dict]:
         if not col_terms:
             continue
 
+        # Per-term coefficients are authoritative if ANY term has a non-unit
+        # factor — meaning the formula uses inline coefficients (per-term
+        # `$R{n}*` prefixes or literal `0.9*`). In that case, using the
+        # col-R factor_cell as a fallback for the other terms would wrongly
+        # propagate `$R{n}` to all terms. Only fall back to factor_cell for
+        # rows where every per-term coefficient is 1.0 (legacy rows where
+        # col R encoded a row-wide factor).
+        any_non_unit = any(
+            abs(info["faktor"] - 1.0) > 1e-9 for info in col_terms.values()
+        )
+
         for col_letter, info in sorted(col_terms.items(), key=lambda kv: _column_letter_to_index(kv[0])):
             v = ws[f"{col_letter}{row}"].value
             if v is None or v == "":
@@ -232,10 +250,8 @@ def extract_building_formulas(ws, ws_values=None) -> list[dict]:
             sign = info["sign"]
             role = "add" if sign == "+" else "sub"
             per_term_faktor = info["faktor"]
-            # Prefer per-term factor when non-unit; fall back to the per-row
-            # factor cell (col R) for sheets that still use that convention.
-            if abs(per_term_faktor - 1.0) > 1e-9:
-                emitted_faktor = per_term_faktor
+            if any_non_unit:
+                emitted_faktor = per_term_faktor if abs(per_term_faktor - 1.0) > 1e-9 else ""
             elif factor_cell is not None and factor_cell != "":
                 try:
                     emitted_faktor = float(factor_cell)
@@ -490,6 +506,18 @@ def extract_building_totals(ws_values, *, sheet_factor: float = 1.0) -> list[dic
         building = ws_values.cell(row=row, column=2).value
         if building is None:
             continue
+        # Skip summary rows. snv.xlsx Kallvatten row 8 uses col A =
+        # "Total från \"under\"-mätare" with col B = string "B390"
+        # (pre-prefixed label, not a real per-building formula). GTN's
+        # "Total Gärtuna" on row 8 uses col B = integer 600 for a real
+        # B600 intake row, which must be kept. Rule: skip when col A is
+        # "Total*"/"Summa*" AND col B is already a string with "B" prefix.
+        label = ws_values.cell(row=row, column=1).value
+        if isinstance(label, str):
+            lower = label.strip().lower()
+            if (lower.startswith("total") or lower.startswith("summa")) \
+                    and isinstance(building, str) and building.strip().upper().startswith("B"):
+                continue
         bid = _normalize_building_id(building)
         if bid is None:
             continue
@@ -553,15 +581,23 @@ def main() -> int:
     if "$F$5" in sheet_scalars and 0 < sheet_scalars["$F$5"] < 1:
         sheet_factor = sheet_scalars["$F$5"]
     else:
+        # Only infer a sheet-wide factor when EVERY term carries the same
+        # numeric factor (legacy EL-style rows). If some rows have empty
+        # faktor (unit coefficient), then the factor on the remaining
+        # rows is per-term, not sheet-wide, and must not be applied to
+        # building totals. Missing this check caused SNV kyla totals to
+        # double because only the 4 cooked rows had faktor=0.5.
         numeric_factors = set()
+        n_with_factor = 0
         for r in records:
             f = r.get("faktor", "")
             if f != "" and f is not None:
                 try:
                     numeric_factors.add(float(f))
+                    n_with_factor += 1
                 except (TypeError, ValueError):
                     pass
-        if len(numeric_factors) == 1:
+        if len(numeric_factors) == 1 and n_with_factor == len(records):
             sheet_factor = numeric_factors.pop()
     building_totals = extract_building_totals(ws_values, sheet_factor=sheet_factor)
     if building_totals:

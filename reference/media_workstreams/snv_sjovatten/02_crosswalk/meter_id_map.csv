@@ -1,0 +1,23 @@
+facit_id,snowflake_id,strux_id,excel_used,confidence,evidence
+B212.V2_VMM51,B212.V2_VM51,B212.V2_VM51,yes,high,snowflake 'B212.V2_VM51' (STRUX exact); STRUX 'B212.V2_VM51'; excel Sjövatten roles=add|sub buildings=212|339 kylmaskiner
+B229.V2_VMM51,B229.V2_VM51,B229.V2_VM51,yes,high,snowflake 'B229.V2_VM51' (STRUX exact); STRUX 'B229.V2_VM51'; excel Sjövatten roles=add|sub buildings=229|339 kylmaskiner
+B230.V2_VMM51,B230.V2_VM51,B230.V2_VM51,yes,high,snowflake 'B230.V2_VM51' (STRUX exact); STRUX 'B230.V2_VM51'; excel Sjövatten roles=add|sub buildings=230|339 kylmaskiner
+B304-52-V2-AW026,,B304-52-V2-AW026,yes,low,snowflake: no match; STRUX 'B304-52-V2-AW026'; excel Sjövatten roles=add buildings=304
+B305.V2_VMM21,B305.V2_VM21,B305.V2_VM21,yes,high,snowflake 'B305.V2_VM21' (STRUX exact); STRUX 'B305.V2_VM21'; excel Sjövatten roles=add buildings=305
+B308.V2_VM21-V,B308.V2_VM21_V,B308.V2_VM21-V,yes,high,snowflake 'B308.V2_VM21_V' (normalized→B308.V2_VM21_V); STRUX 'B308.V2_VM21-V'; excel Sjövatten roles=add buildings=308
+B310.V2_GF4_1,,B310.V2_GF4_1,yes,low,snowflake: no match; STRUX 'B310.V2_GF4_1'; excel Sjövatten roles=add buildings=310|311
+B325.V2_GF4_1,B325.V2_GF4_1,B325.V2_GF4_1,yes,high,snowflake 'B325.V2_GF4_1' (STRUX exact); STRUX 'B325.V2_GF4_1'; excel Sjövatten roles=add buildings=325
+B330.V2_GF4_1,,B330.V2_GF4_1,yes,low,snowflake: no match; STRUX 'B330.V2_GF4_1'; excel Sjövatten roles=add buildings=330|331
+B334.V2_VM90_V,B334.V2_VM90_V,B334.V2_VM90_V,yes,high,snowflake 'B334.V2_VM90_V' (STRUX exact); STRUX 'B334.V2_VM90_V'; excel Sjövatten roles=add buildings=334
+B336.V2_GF4,,B336.V2_GF4,no,low,snowflake: no match; STRUX 'B336.V2_GF4'
+B337.V2_GF4_1,,B337.V2_GF4_1,yes,low,snowflake: no match; STRUX 'B337.V2_GF4_1'; excel Sjövatten roles=add buildings=337
+B339.V2_GF3_3,B339.V2_GF3_3,B339.V2_GF3_3,yes,high,snowflake 'B339.V2_GF3_3' (STRUX exact); STRUX 'B339.V2_GF3_3'; excel Sjövatten roles=add buildings=339 kylmaskiner
+B339.V2_GF3_4,B339.V2_GF3_4,B339.V2_GF3_4,yes,high,snowflake 'B339.V2_GF3_4' (STRUX exact); STRUX 'B339.V2_GF3_4'; excel Sjövatten roles=add buildings=339 kylmaskiner
+B339.V2_GF4,B339.V2_GF4,B339.V2_GF4,yes,high,snowflake 'B339.V2_GF4' (STRUX exact); STRUX 'B339.V2_GF4'; excel Sjövatten roles=add buildings=339 kylmaskiner
+B339.V2_GF4_1,B339.V2_GF4_1,B339.V2_GF4_1,yes,high,snowflake 'B339.V2_GF4_1' (STRUX exact); STRUX 'B339.V2_GF4_1'; excel Sjövatten roles=add|sub buildings=339 Kolfilter|339 kylmaskiner
+B342.V2_VM90_V,B342.V2_VM90_V,B342.V2_VM90_V,no,high,snowflake 'B342.V2_VM90_V' (STRUX exact); STRUX 'B342.V2_VM90_V'
+B342.V2_VM91_V,B342.V2_VM91_V,B342.V2_VM91_V,no,high,snowflake 'B342.V2_VM91_V' (STRUX exact); STRUX 'B342.V2_VM91_V'
+B392.V2_VM21_V,B392.V2_VM21_V,B392.V2_VM21_V,yes,high,snowflake 'B392.V2_VM21_V' (STRUX exact); STRUX 'B392.V2_VM21_V'; excel Sjövatten roles=add buildings=392
+B409.V2_GF4,B409.V2_GF4,B409.V2_GF4,yes,high,snowflake 'B409.V2_GF4' (STRUX exact); STRUX 'B409.V2_GF4'; excel Sjövatten roles=add buildings=409 Kylcentral
+TE-52-V2-GF4:1 Kringlan,,TE-52-V2-GF4:1 Kringlan,yes,low,snowflake: no match; STRUX 'TE-52-V2-GF4:1 Kringlan'; excel Sjövatten roles=add buildings=Kringlan
+TE-52-V2-SCANIA,,TE-52-V2-SCANIA,yes,low,snowflake: no match; STRUX 'TE-52-V2-SCANIA'; excel Sjövatten roles=add buildings=Scania

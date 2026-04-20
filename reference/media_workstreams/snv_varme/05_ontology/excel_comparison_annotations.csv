@@ -1,0 +1,128 @@
+media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
+VARME,B201,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B201,2026-02,1.71,1.71,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B203,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B203,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B207,2026-01,92.80,92.80,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B207,2026-02,91.20,91.20,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B216,2026-01,103.50,103.50,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B216,2026-02,104.31,104.31,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B217,2026-01,163.53,163.53,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B217,2026-02,154.59,154.59,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B228,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B228,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B301,2026-01,65.82,65.82,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B301,2026-02,57.87,57.87,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B302,2026-01,201.20,201.20,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B302,2026-02,202.36,202.36,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B303,2026-01,96.99,96.99,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B303,2026-02,95.36,95.36,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B304,2026-01,36.89,36.89,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B304,2026-02,34.36,34.36,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B305,2026-01,172.69,172.69,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B305,2026-02,145.98,145.98,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B307,2026-01,231.40,231.40,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B307,2026-02,240.60,240.60,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B308,2026-01,592.84,592.84,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B308,2026-02,587.86,587.86,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B309,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B309,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B310,2026-01,952.07,952.07,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B310,2026-02,-154.72,-154.72,0.00,match,Negative Excel value (−155 MWh Feb) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).
+VARME,B311,2026-01,512.94,512.94,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B311,2026-02,520.29,520.29,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B312,2026-01,9.93,9.93,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B312,2026-02,12.77,12.77,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B313,2026-01,399.66,399.66,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B313,2026-02,68.25,68.25,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B314,2026-01,86.25,86.25,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B314,2026-02,89.44,89.44,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B315,2026-01,25.79,25.79,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B315,2026-02,24.39,24.39,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B316,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B316,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B317,2026-01,163.89,163.89,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B317,2026-02,174.01,174.01,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B318,2026-01,123.25,123.25,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B318,2026-02,121.71,121.71,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B319,2026-01,14.22,14.22,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B319,2026-02,14.72,14.72,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B320,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B320,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B322,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B322,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B323,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B323,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B324,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B324,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B325,2026-01,43.61,43.61,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B325,2026-02,41.14,41.14,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B326,2026-01,17.55,17.55,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B326,2026-02,15.16,15.16,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B327,2026-01,215.35,197.80,-17.55,excel_bug,Excel row 38 double-counts B326.VS1_VMM61 (already + term in row 37 for B326). Meter can have only one building attribution; assigned to B326 per decisions.md. B327 under-counts by Δ(B326.VS1_VMM61) ≈ 17 MWh/month.
+VARME,B327,2026-02,213.36,198.20,-15.16,excel_bug,Excel row 38 double-counts B326.VS1_VMM61 (already + term in row 37 for B326). Meter can have only one building attribution; assigned to B326 per decisions.md. B327 under-counts by Δ(B326.VS1_VMM61) ≈ 17 MWh/month.
+VARME,B328,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B328,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B330,2026-01,784.66,784.66,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B330,2026-02,811.73,811.73,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B334,2026-01,504.02,504.02,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B334,2026-02,569.32,569.32,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B337,2026-01,368.85,368.85,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B337,2026-02,384.88,384.88,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B339,2026-01,135.35,135.35,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B339,2026-02,119.79,119.79,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B339 Kolfilter,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B339 Kolfilter,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B341,2026-01,690.43,690.43,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B341,2026-02,689.04,689.04,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B342,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B342,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B343,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B343,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B344,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B344,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B345,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B345,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B346,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B346,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B348,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B348,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B349,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B349,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B351,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B351,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B352,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B352,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B353,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B353,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B354,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B354,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B357,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B357,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B358,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B358,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B359,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B359,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B360,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B360,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B361,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B361,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B381,2026-01,4.27,4.27,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B381,2026-02,4.41,4.41,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B382,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B382,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B385,2026-01,1.89,1.89,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B385,2026-02,1.39,1.39,0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B386,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B386,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B387,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B387,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B390,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B390,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B392,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B393,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B393,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B403,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B403,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B420,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
+VARME,B420,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).

@@ -1,0 +1,7 @@
+from_meter,to_meter,relation_type,coefficient,derived_from
+B304.KB2,B302.KYLA_VIRT,feeds,0.5,excel_Kyla_r19
+B304.KB2,B303.KYLA_VIRT,feeds,0.5,excel_Kyla_r20
+B305.KB1,B305.KYLA_VIRT,feeds,1.0,excel_Kyla_r22
+B307.KB1,B305.KYLA_VIRT,feeds,0.5,excel_Kyla_r22
+B307.KB1,B307.KYLA_VIRT,feeds,0.5,excel_Kyla_r23
+B307.KB1_VMM52,B307.KYLA_VIRT,feeds,1.0,excel_Kyla_r23

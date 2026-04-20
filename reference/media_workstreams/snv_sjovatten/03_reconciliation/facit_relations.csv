@@ -1,0 +1,9 @@
+from_meter,to_meter,relation_type,coefficient,derived_from
+B339.V2_GF3_3,B212.V2_VMM51,hasSubMeter,1.0,excel_formula_B339
+B339.V2_GF3_3,B229.V2_VMM51,hasSubMeter,1.0,excel_formula_B339
+B339.V2_GF3_3,B230.V2_VMM51,hasSubMeter,1.0,excel_formula_B339
+B339.V2_GF3_3,B339.V2_GF4_1,hasSubMeter,1.0,excel_formula_B339
+B310.V2_GF4_1,B310.SJOVATTEN_VIRT,feeds,0.5,excel_Sjovatten_r27
+B310.V2_GF4_1,B311.SJOVATTEN_VIRT,feeds,0.5,excel_Sjovatten_r28
+B330.V2_GF4_1,B330.SJOVATTEN_VIRT,feeds,0.5,excel_Sjovatten_r45
+B330.V2_GF4_1,B331.SJOVATTEN_VIRT,feeds,0.5,excel_Sjovatten_r46

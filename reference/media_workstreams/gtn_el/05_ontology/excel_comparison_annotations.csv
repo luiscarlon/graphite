@@ -49,7 +49,7 @@ EL,B651,2026-01,25575.17,25566.91,-8.26,match,within floating-point / day-bounda
 EL,B651,2026-02,31536.22,31540.47,4.25,match,within floating-point / day-boundary rounding noise.
 EL,B652,2026-01,21179.03,21782.53,603.50,excel_bug,Residual from the B612 T8-A3-A14-112 double-subtraction mirror edge; ~0.6 MWh redistribution is approximate.
 EL,B652,2026-02,20500.01,21144.23,644.22,excel_bug,Residual from the B612 T8-A3-A14-112 double-subtraction mirror edge; ~0.6 MWh redistribution is approximate.
-EL,B653,2026-01,362349.55,362358.68,9.13,match,within floating-point / day-boundary rounding noise.
+EL,B653,2026-01,362349.55,362358.68,9.12,match,within floating-point / day-boundary rounding noise.
 EL,B653,2026-02,370006.70,370008.45,1.75,match,within floating-point / day-boundary rounding noise.
 EL,B654,2026-01,288836.75,288830.75,-6.00,match,within floating-point / day-boundary rounding noise.
 EL,B654,2026-02,115446.75,115231.25,-215.50,ontology_drift,Drift of -216 (0.2%). Cause not yet classified.

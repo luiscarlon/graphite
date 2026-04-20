@@ -1,0 +1,45 @@
+facit_id,snowflake_id,strux_id,excel_used,confidence,evidence
+B200.Å1_VMM70,,,no,low,snowflake: no match; not used in Excel Ånga sheet (flow-schema-only meter)
+B216.Å1_VMM71,B216.Å1_VM71,B216.Å1_VM71,yes,high,snowflake 'B216.Å1_VM71' (suffix toggle (tried B216.Å1_VM71)); STRUX 'B216.Å1_VM71'; excel Ånga row(s) for building(s) 216|307 roles=add|sub
+B216.Å1_VMM72,B216.Å1_VMM72_E,B216.Å1_VMM72_E,yes,high,snowflake 'B216.Å1_VMM72_E' (suffix toggle (tried B216.Å1_VMM72_E)); STRUX 'B216.Å1_VMM72_E'; excel Ånga row(s) for building(s) 216 roles=add
+B217.Å1_VMM71,B217.Å1_VM71,B217.Å1_VM71,yes,high,snowflake 'B217.Å1_VM71' (suffix toggle (tried B217.Å1_VM71)); STRUX 'B217.Å1_VM71'; excel Ånga row(s) for building(s) 216|217 roles=add|sub
+B301.Å1_VMM71,B301.Å1_VMM71_E,B301.Å1_VMM71_E,yes,high,snowflake 'B301.Å1_VMM71_E' (suffix toggle (tried B301.Å1_VMM71_E)); STRUX 'B301.Å1_VMM71_E'; excel Ånga row(s) for building(s) 301|302 roles=add|sub
+B302.Å1_VMM71,B302.Å1_VMM71_E,B302.Å1_VMM71_E,yes,high,snowflake 'B302.Å1_VMM71_E' (suffix toggle (tried B302.Å1_VMM71_E)); STRUX 'B302.Å1_VMM71_E'; excel Ånga row(s) for building(s) 302 roles=add
+B302.Å1_VMM72,B302.Å1_VMM72_E,B302.Å1_VMM72_E,yes,high,snowflake 'B302.Å1_VMM72_E' (suffix toggle (tried B302.Å1_VMM72_E)); STRUX 'B302.Å1_VMM72_E'; excel Ånga row(s) for building(s) 302 roles=sub
+B302.Å1_VMM73,B302.Å1_VMM73_E,B302.Å1_VMM73_E,yes,high,snowflake 'B302.Å1_VMM73_E' (suffix toggle (tried B302.Å1_VMM73_E)); STRUX 'B302.Å1_VMM73_E'; excel Ånga row(s) for building(s) 302|307 roles=add|sub
+B303.Å1_VMM70,B303.Å1_VMM70_E,B303.Å1_VMM70_E,yes,high,snowflake 'B303.Å1_VMM70_E' (suffix toggle (tried B303.Å1_VMM70_E)); STRUX 'B303.Å1_VMM70_E'; excel Ånga row(s) for building(s) 303 roles=add
+B304.Å1_VMM70,,,no,low,snowflake: no match; not used in Excel Ånga sheet (flow-schema-only meter)
+B304.Å1_VMM71,B304.Å1_VMM71_E,B304.Å1_VMM71_E,yes,high,snowflake 'B304.Å1_VMM71_E' (suffix toggle (tried B304.Å1_VMM71_E)); STRUX 'B304.Å1_VMM71_E'; excel Ånga row(s) for building(s) 304|307 roles=add|sub
+B305.Å1_VMM71,B305.Å1_VMM71_E,B305.Å1_VMM71_E,yes,high,snowflake 'B305.Å1_VMM71_E' (suffix toggle (tried B305.Å1_VMM71_E)); STRUX 'B305.Å1_VMM71_E'; excel Ånga row(s) for building(s) 305 roles=add
+B307.Å1_VMM71,B307.Å1_VMM71_E,B307.Å1_VMM71_E,yes,high,snowflake 'B307.Å1_VMM71_E' (suffix toggle (tried B307.Å1_VMM71_E)); STRUX 'B307.Å1_VMM71_E'; excel Ånga row(s) for building(s) 307 roles=add
+B307.Å1_VMM72,B307.Å1_VMM72_E,B307.Å1_VMM72_E,yes,high,snowflake 'B307.Å1_VMM72_E' (suffix toggle (tried B307.Å1_VMM72_E)); STRUX 'B307.Å1_VMM72_E'; excel Ånga row(s) for building(s) 307 roles=add
+B308.Å1_VMM70,B308.Å1_VMM70_E,,no,medium,snowflake 'B308.Å1_VMM70_E' (suffix toggle (tried B308.Å1_VMM70_E)); not used in Excel Ånga sheet (flow-schema-only meter)
+B308.Å1_VMM71,B308.Å1_VMM71_E,B308.Å1_VMM71_E,yes,high,snowflake 'B308.Å1_VMM71_E' (suffix toggle (tried B308.Å1_VMM71_E)); STRUX 'B308.Å1_VMM71_E'; excel Ånga row(s) for building(s) 308 roles=add
+B310.Å1_VMM70,B310.Å1_VMM70_E,B310.Å1_VMM70_E,yes,high,snowflake 'B310.Å1_VMM70_E' (suffix toggle (tried B310.Å1_VMM70_E)); STRUX 'B310.Å1_VMM70_E'; excel Ånga row(s) for building(s) 310 roles=add
+B310.Å1_VMM71,B310.Å1_VMM71_E,,no,medium,snowflake 'B310.Å1_VMM71_E' (suffix toggle (tried B310.Å1_VMM71_E)); not used in Excel Ånga sheet (flow-schema-only meter)
+B310.Å1_VMM72,B310.Å1_VMM72_E,,no,medium,snowflake 'B310.Å1_VMM72_E' (suffix toggle (tried B310.Å1_VMM72_E)); not used in Excel Ånga sheet (flow-schema-only meter)
+B310.Å1_VMM73,B310.Å1_VMM73_E,,no,medium,snowflake 'B310.Å1_VMM73_E' (suffix toggle (tried B310.Å1_VMM73_E)); not used in Excel Ånga sheet (flow-schema-only meter)
+B310.Å1_VMM74,B310.Å1_VMM74_E,,no,medium,snowflake 'B310.Å1_VMM74_E' (suffix toggle (tried B310.Å1_VMM74_E)); not used in Excel Ånga sheet (flow-schema-only meter)
+B311.Å1_VMM70,B311.Å1_VMM70,,no,medium,snowflake 'B311.Å1_VMM70' (exact match); not used in Excel Ånga sheet (flow-schema-only meter)
+B311.Å1_VMM71,B311.Å1_VMM71_E,B311.Å1_VMM71_E,yes,high,snowflake 'B311.Å1_VMM71_E' (suffix toggle (tried B311.Å1_VMM71_E)); STRUX 'B311.Å1_VMM71_E'; excel Ånga row(s) for building(s) 307|311 roles=add|sub
+B311.Å1_VMM72,B311.Å1_VMM72_E,B311.Å1_VMM72_E,yes,high,snowflake 'B311.Å1_VMM72_E' (suffix toggle (tried B311.Å1_VMM72_E)); STRUX 'B311.Å1_VMM72_E'; excel Ånga row(s) for building(s) 310|311 roles=add|sub
+B313.Å1_VMM71,B313.Å1_VM71,B313.Å1_VM71,yes,high,snowflake 'B313.Å1_VM71' (suffix toggle (tried B313.Å1_VM71)); STRUX 'B313.Å1_VM71'; excel Ånga row(s) for building(s) 310|313 roles=add|sub
+B313.Å1_VMM72,B313.Å1_VMM72_E,B313.Å1_VMM72_E,yes,high,snowflake 'B313.Å1_VMM72_E' (suffix toggle (tried B313.Å1_VMM72_E)); STRUX 'B313.Å1_VMM72_E'; excel Ånga row(s) for building(s) 310|313 roles=add|sub
+B315.Å1_VMM71,B315.Å1_VMM71_E,B315.Å1_VMM71_E,yes,high,snowflake 'B315.Å1_VMM71_E' (suffix toggle (tried B315.Å1_VMM71_E)); STRUX 'B315.Å1_VMM71_E'; excel Ånga row(s) for building(s) 315 roles=add
+B317.Å1_VMM71,B317.Å1_VMM71_E,B317.Å1_VMM71_E,yes,high,snowflake 'B317.Å1_VMM71_E' (suffix toggle (tried B317.Å1_VMM71_E)); STRUX 'B317.Å1_VMM71_E'; excel Ånga row(s) for building(s) 310|317 roles=add|sub
+B317.Å1_VMM72,B317.Å1_VMM72_E,B317.Å1_VMM72_E,yes,high,snowflake 'B317.Å1_VMM72_E' (suffix toggle (tried B317.Å1_VMM72_E)); STRUX 'B317.Å1_VMM72_E'; excel Ånga row(s) for building(s) 310|317 roles=add|sub
+B325.Panna2_MWH,B325.Panna2_MWH,B325.Panna2_MWH,yes,high,snowflake 'B325.Panna2_MWH' (exact match); STRUX 'B325.Panna2_MWH'; excel Ånga row(s) for building(s) 325 roles=add
+B325.Panna3_MWH,B325.Panna3_MWH,B325.Panna3_MWH,yes,high,snowflake 'B325.Panna3_MWH' (exact match); STRUX 'B325.Panna3_MWH'; excel Ånga row(s) for building(s) 325 roles=add
+B327.Å1_VMM70,,,no,low,snowflake: no match; not used in Excel Ånga sheet (flow-schema-only meter)
+B327.Å1_VMM71,B327.Å1_VMM71_E,B327.Å1_VMM71_E,yes,high,snowflake 'B327.Å1_VMM71_E' (suffix toggle (tried B327.Å1_VMM71_E)); STRUX 'B327.Å1_VMM71_E'; excel Ånga row(s) for building(s) 308|327 roles=add|sub
+B330.Å1_VMM71,B330.Å1_VMM71_E,B330.Å1_VMM71_E,yes,high,snowflake 'B330.Å1_VMM71_E' (suffix toggle (tried B330.Å1_VMM71_E)); STRUX 'B330.Å1_VMM71_E'; excel Ånga row(s) for building(s) 307|330/331|337 roles=add|sub
+B330.Å1_VMM72,B330.Å1_VMM72_E,B330.Å1_VMM72_E,yes,high,snowflake 'B330.Å1_VMM72_E' (suffix toggle (tried B330.Å1_VMM72_E)); STRUX 'B330.Å1_VMM72_E'; excel Ånga row(s) for building(s) 330/331 roles=add
+B330.Å1_VMM73,B330.Å1_VMM73_E,B330.Å1_VMM73_E,yes,high,snowflake 'B330.Å1_VMM73_E' (suffix toggle (tried B330.Å1_VMM73_E)); STRUX 'B330.Å1_VMM73_E'; excel Ånga row(s) for building(s) 330/331 roles=add
+B334.Å1_VMM71,B334.Å1_VMM71_E,B334.Å1_VMM71_E,yes,high,snowflake 'B334.Å1_VMM71_E' (suffix toggle (tried B334.Å1_VMM71_E)); STRUX 'B334.Å1_VMM71_E'; excel Ånga row(s) for building(s) 307|334 roles=add|sub
+B337.Å1_VMM71,B337.Å1_VMM71_E,B337.Å1_VMM71_E,yes,high,snowflake 'B337.Å1_VMM71_E' (suffix toggle (tried B337.Å1_VMM71_E)); STRUX 'B337.Å1_VMM71_E'; excel Ånga row(s) for building(s) 307|337 roles=add|sub
+B337.Å1_VMM72,B337.Å1_VMM72_E,,no,medium,snowflake 'B337.Å1_VMM72_E' (suffix toggle (tried B337.Å1_VMM72_E)); not used in Excel Ånga sheet (flow-schema-only meter)
+B339.Å1_VMM70,B339.Å1_VMM70_E,B339.Å1_VMM70_E,yes,high,snowflake 'B339.Å1_VMM70_E' (suffix toggle (tried B339.Å1_VMM70_E)); STRUX 'B339.Å1_VMM70_E'; excel Ånga row(s) for building(s) 307|339 Kolfilter roles=add|sub
+B341.Å1_VMM71,B341.Å1_VMM71,B341.Å1_VMM71,yes,high,snowflake 'B341.Å1_VMM71' (exact match); STRUX 'B341.Å1_VMM71'; excel Ånga row(s) for building(s) 341 roles=add
+B385.Å1_VMM71,B385.Å1_VMM71_E,B385.Å1_VMM71_E,yes,high,snowflake 'B385.Å1_VMM71_E' (suffix toggle (tried B385.Å1_VMM71_E)); STRUX 'B385.Å1_VMM71_E'; excel Ånga row(s) for building(s) 385 roles=add
+B390.Å1_VMM70,B390.Å1_VMM70_E,B390.Å1_VMM70_E,yes,high,snowflake 'B390.Å1_VMM70_E' (suffix toggle (tried B390.Å1_VMM70_E)); STRUX 'B390.Å1_VMM70_E'; excel Ånga row(s) for building(s) 325|390 roles=add|sub
+B392.Å1_VMM71,B392.Å1_VMM71_E,B392.Å1_VMM71_E,yes,high,snowflake 'B392.Å1_VMM71_E' (suffix toggle (tried B392.Å1_VMM71_E)); STRUX 'B392.Å1_VMM71_E'; excel Ånga row(s) for building(s) 392 roles=add

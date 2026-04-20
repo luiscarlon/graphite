@@ -7,7 +7,7 @@ VARME,B603,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty bui
 VARME,B603,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
 VARME,B604,2026-01,0.00,0.00,0.00,match,no consumption on either side (empty building row).
 VARME,B604,2026-02,0.00,0.00,0.00,match,no consumption on either side (empty building row).
-VARME,B611,2026-01,830.61,830.61,-0.00,match,within floating-point / day-boundary rounding noise.
+VARME,B611,2026-01,830.61,830.61,0.00,match,within floating-point / day-boundary rounding noise.
 VARME,B611,2026-02,951.59,951.59,0.00,match,within floating-point / day-boundary rounding noise.
 VARME,B612,2026-01,144.79,144.79,-0.00,match,within floating-point / day-boundary rounding noise.
 VARME,B612,2026-02,252.52,252.52,-0.00,match,within floating-point / day-boundary rounding noise.

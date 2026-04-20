@@ -1,0 +1,34 @@
+facit_id,snowflake_id,strux_id,excel_used,confidence,evidence
+B201.KB1_Elogg,B201.KB1_Elogg,B201.KB1_Elogg,yes,high,snowflake 'B201.KB1_Elogg' (STRUX exact: B201.KB1_Elogg); STRUX 'B201.KB1_Elogg'; excel Kyla roles=add buildings=201
+B202.VENT,,B202.VENT,yes,low,snowflake: no match; STRUX 'B202.VENT'; excel Kyla roles=add buildings=202
+B203.KB1,B203.KB1,B203.KB1,yes,high,snowflake 'B203.KB1' (STRUX exact: B203.KB1); STRUX 'B203.KB1'; excel Kyla roles=add buildings=203
+B203.KB5-Intverk,B203.KB5-Intverk,B203.KB5-Intverk,yes,high,snowflake 'B203.KB5-Intverk' (STRUX exact: B203.KB5-Intverk); STRUX 'B203.KB5-Intverk'; excel Kyla roles=add buildings=203
+B207.VENT,B207.VENT,B207.VENT,yes,high,snowflake 'B207.VENT' (STRUX exact: B207.VENT); STRUX 'B207.VENT'; excel Kyla roles=add buildings=207
+B209.KB1,B209.KB1,B209.KB1,yes,high,snowflake 'B209.KB1' (STRUX exact: B209.KB1); STRUX 'B209.KB1'; excel Kyla roles=add buildings=209
+B209.KB4_VMM51,B209.KB4_VMM51,B209.KB4_VMM51,yes,high,snowflake 'B209.KB4_VMM51' (STRUX exact: B209.KB4_VMM51); STRUX 'B209.KB4_VMM51'; excel Kyla roles=add buildings=209
+B209.KB6,,B209.KB6,no,low,snowflake: no match; STRUX 'B209.KB6'; not used in Excel Kyla
+B209.KB6_VMM51,B209.KB6_VMM51,B209.KB6_VMM51,yes,high,snowflake 'B209.KB6_VMM51' (STRUX exact: B209.KB6_VMM51); STRUX 'B209.KB6_VMM51'; excel Kyla roles=add buildings=209
+B212.KB5,B212.KB5,B212.KB5,yes,high,snowflake 'B212.KB5' (STRUX exact: B212.KB5); STRUX 'B212.KB5'; excel Kyla roles=add buildings=212
+B216.KB1,B216.KB1,B216.KB1,yes,high,snowflake 'B216.KB1' (STRUX exact: B216.KB1); STRUX 'B216.KB1'; excel Kyla roles=add buildings=216
+B216.VENT,B216.VENT,B216.VENT,yes,high,snowflake 'B216.VENT' (STRUX exact: B216.VENT); STRUX 'B216.VENT'; excel Kyla roles=add buildings=216
+B217.KB1,B217.KB1,B217.KB1,yes,high,snowflake 'B217.KB1' (STRUX exact: B217.KB1); STRUX 'B217.KB1'; excel Kyla roles=add buildings=217
+B304.KB1,B304.KB1,B304.KB1,yes,high,snowflake 'B304.KB1' (STRUX exact: B304.KB1); STRUX 'B304.KB1'; excel Kyla roles=add buildings=304
+B304.KB2,B304.KB2,B304.KB2,yes,high,snowflake 'B304.KB2' (STRUX exact: B304.KB2); STRUX 'B304.KB2'; excel Kyla roles=add buildings=302|303
+B305.KB1,B305.KB1,B305.KB1,yes,high,snowflake 'B305.KB1' (STRUX exact: B305.KB1); STRUX 'B305.KB1'; excel Kyla roles=add buildings=305
+B305.KB1_VMM52,B305.KB1_VM52_E,B305.KB1_VM52_E,no,high,snowflake 'B305.KB1_VM52_E' (STRUX exact: B305.KB1_VM52_E); STRUX 'B305.KB1_VM52_E'; not used in Excel Kyla
+B307.KB1,B307.KB1,B307.KB1,yes,high,snowflake 'B307.KB1' (STRUX exact: B307.KB1); STRUX 'B307.KB1'; excel Kyla roles=add buildings=305|307
+B307.KB1_VMM52,B307.KB1_VM52_E,B307.KB1_VM52_E,yes,high,snowflake 'B307.KB1_VM52_E' (STRUX exact: B307.KB1_VM52_E); STRUX 'B307.KB1_VM52_E'; excel Kyla roles=add buildings=307
+B308.KB1,B308.KB1,B308.KB1,yes,high,snowflake 'B308.KB1' (STRUX exact: B308.KB1); STRUX 'B308.KB1'; excel Kyla roles=add buildings=308
+B312.KB1,B312.KB1,B312.KB1,yes,high,snowflake 'B312.KB1' (STRUX exact: B312.KB1); STRUX 'B312.KB1'; excel Kyla roles=add buildings=312
+B313.KB1_VMM51,B313.KB1_VM51_E,B313.KB1_VM51_E,no,high,snowflake 'B313.KB1_VM51_E' (STRUX exact: B313.KB1_VM51_E); STRUX 'B313.KB1_VM51_E'; not used in Excel Kyla
+B318.KB1,B318.KB1,B318.KB1,yes,high,snowflake 'B318.KB1' (STRUX exact: B318.KB1); STRUX 'B318.KB1'; excel Kyla roles=add buildings=318
+B318.KB3_INTVERK1,B318.KB3_INTVERK1_E,B318.KB3_INTVERK1_E,no,high,snowflake 'B318.KB3_INTVERK1_E' (STRUX exact: B318.KB3_INTVERK1_E); STRUX 'B318.KB3_INTVERK1_E'; not used in Excel Kyla
+B318.KB3_INTVERK2,B318.KB3_INTVERK2_E,B318.KB3_INTVERK2_E,no,high,snowflake 'B318.KB3_INTVERK2_E' (STRUX exact: B318.KB3_INTVERK2_E); STRUX 'B318.KB3_INTVERK2_E'; not used in Excel Kyla
+B327.KB1,B327.KB1,B327.KB1,yes,high,snowflake 'B327.KB1' (STRUX exact: B327.KB1); STRUX 'B327.KB1'; excel Kyla roles=add buildings=327
+B331.KB1_VMM51,,B331.KB1_VM51_E,yes,low,snowflake: no match; STRUX 'B331.KB1_VM51_E'; excel Kyla roles=add buildings=330
+B336.KB1,,B336.KB1,yes,low,snowflake: no match; STRUX 'B336.KB1'; excel Kyla roles=add buildings=336
+B339.KB1_INT_VERK1,B339.KB1_INT_VERK1,B339.KB1_INT_VERK1,yes,high,snowflake 'B339.KB1_INT_VERK1' (STRUX exact: B339.KB1_INT_VERK1); STRUX 'B339.KB1_INT_VERK1'; excel Kyla roles=add buildings=339
+B339.KB1_KOLF,B339.KB1_KOLF,B339.KB1_KOLF,yes,high,snowflake 'B339.KB1_KOLF' (STRUX exact: B339.KB1_KOLF); STRUX 'B339.KB1_KOLF'; excel Kyla roles=add buildings=339 Kolfilter
+B339.KB1_VVS,B339.KB1_VVS,B339.KB1_VVS,yes,high,snowflake 'B339.KB1_VVS' (STRUX exact: B339.KB1_VVS); STRUX 'B339.KB1_VVS'; excel Kyla roles=add buildings=339
+B341.KB1,B341.KB1,B341.KB1,yes,high,snowflake 'B341.KB1' (STRUX exact: B341.KB1); STRUX 'B341.KB1'; excel Kyla roles=add buildings=341
+B392.KB1_VMM51,,B392.KB1_VM51_E,yes,low,"Snowflake has B392.KB1_VM51_E only as Water Volume (m^3), not energy; treated as strux_only for kyla"
