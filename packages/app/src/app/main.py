@@ -144,12 +144,16 @@ def _readings_section(
     with cols[1]:
         df_b = df[df["building_id"].isin(sel_buildings)]
         meter_ids = sorted(df_b["meter_id"].unique())
+        # Default: all meters in the selected buildings. Annotation hints
+        # override this (e.g. the "Isolate" toggle on an annotation); if
+        # the intersection with the current view is empty, fall back to
+        # all meters rather than a partial selection.
         if ann_hints and ann_hints["meters"]:
             default_meters = sorted(m for m in ann_hints["meters"] if m in meter_ids)
+            if not default_meters:
+                default_meters = meter_ids
         else:
-            default_meters = meter_ids[: min(3, len(meter_ids))]
-        if not default_meters:
-            default_meters = meter_ids[: min(3, len(meter_ids))]
+            default_meters = meter_ids
         sel_meters = st.multiselect("Meter", meter_ids, default=default_meters)
     with cols[2]:
         tmin = df["timestamp"].min().date()
