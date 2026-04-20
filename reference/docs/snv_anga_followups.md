@@ -9,35 +9,63 @@ fix it, and the pipeline work required to execute the patch.
 
 ---
 
-## 1. B217 — bracket replaces A|B|C|D segment split  ✓ **APPLIED**
+## 1. B217 — bracket upgrade attempted, reverted. Meter remains broken.
 
-The 4-segment raw split (:d.A|:d.B|:d.C|:d.D) has been replaced with
-- `:d.raw` — single full-period raw ref (non-preferred)
-- `:d.clip` — `bracket` derived ref scoped to the corruption window
-  (2025-07-15 → 2025-10-10)
-- `:d` — preferred `rolling_sum` stitching :d.raw with :d.clip
+The `bracket` restructure (full-period raw + bracket clip + preferred
+rolling_sum overlay) was written, applied, and reverted after the
+regenerated Snäckviken readings showed the stitched `:d` producing
+garbage — including negative values at the raw→clip→raw transitions
+inside the corruption window.
 
-See `reference/media_workstreams/snv_anga/quality_patches.yaml` for
-the exact `delete` + `refs` blocks. The `apply_quality_patches.py`
-script was extended with deletion support to make this possible.
+**Why it didn't work at daily resolution:**  
+At daily V_LAST aggregation, most corruption-window days have V_LAST
+landing on an artifact register (either the near-zero or the stuck-
+high). Of 87 corruption-window days, only ~5 days have V_LAST in the
+real-register band. `bracket` correctly keeps those 5 samples but
+`rolling_sum`'s concat-with-anchor-offset stitch semantics can't
+compose a bracket-overlay with a full-period raw source: it sorts all
+source readings by timestamp and switches anchor/offset on each
+source change, producing artefacts when the stream alternates between
+5 in-band clip samples and 82 out-of-band raw samples.
 
-**Outcome:** bracket filters the multi-register artifacts (< 100 and
-> 100k) from the corruption window while preserving days whose daily
-V_LAST landed on the real counter register. Days where V_LAST landed
-on an artifact drop out as gaps; downstream LAG-diff views treat them
-as cross-gap accumulation (total is conserved).
+**Current state (reverted):**  
+`build_ontology.py` auto-generates 14 raw segments (`:d.A` through
+`:d.N`) from the 14 `is_reset=1` days the detector finds in B217's
+daily extract. `rolling_sum` stitches them. The resulting `:d`
+accumulates through artifact-level deltas across the corruption
+window — the 2026-02-28 stitched value is on the order of 4 million,
+when the real meter is in the ~8 thousand band. This was ALSO broken
+before the bracket attempt (pre-work 2026-02-28 committed value was
+~804 thousand — different shape, same class of garbage), so the
+revert returns the meter to its pre-existing broken state, not a
+regression.
 
-**Not yet applied:** `interpolate` sub-gap patches. At daily V_LAST
-aggregation we don't know a priori which days will have artifact
-V_LAST values, so we can't pre-author per-stretch interpolate refs.
-Revisit if the Jul–Oct 2025 monthly residuals prove meaningful once
-the production pipeline re-runs with the new structure.
+**To actually fix B217 we need one of:**
 
-**Raw-data evidence:**  
-`reference/snowflake_meter_readings/B217.Å1_VM71.csv` — 5830 hourly
-rows, tri-modal value histogram (<100 / 1k–10k / ~800k) with zero
-overlap between bands. At hourly resolution, 53 of 87 corruption-
-window days have ≥1 real-register sample.
+1. **Hourly source data.** The raw CSV at
+   `reference/snowflake_meter_readings/B217.Å1_VM71.csv` (5830 rows,
+   tri-modal <100 / 1k–10k / ~800k with zero band overlap) has
+   53 of 87 corruption-window days with ≥1 real-register sample.
+   Ingesting hourly readings into the pipeline (replacing daily
+   V_LAST with hourly) would make `bracket` keep ~53 days' worth of
+   clean counter samples — enough density for `rolling_sum` to
+   stitch correctly. Requires adding hourly extraction + changing the
+   ontology's `aggregate` field.
+
+2. **A new `overlay` aggregation kind** that picks the most-restrictive-
+   validity source at each timestamp, and emits nothing (gap) if the
+   most-restrictive source has no reading there. This lets `:d.clip`
+   shadow `:d.raw` inside its validity — clip wins when present, gap
+   elsewhere — without mixing source values the way `rolling_sum`
+   does. Scope: ~50 lines in `assemble_site.py` plus validation
+   rule, plus tests.
+
+3. **Accept the broken state** and document every downstream
+   consumer (Excel comparison, annual totals) that B217's Jul–Oct
+   2025 is un-reconstructable at daily resolution and should be
+   pulled from Excel's cached STRUX value rather than topology.
+
+None are applied here.
 
 ---
 
