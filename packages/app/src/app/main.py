@@ -760,10 +760,13 @@ def _excel_comparison_section(ds: Dataset, site_dir: Path) -> None:
     rows: list[dict[str, object]] = []
     for bid, grp in merged.groupby("building"):
         row: dict[str, object] = {"building": bid}
+        has_activity = False
         for m in compare_months:
             sel = grp[grp["month"] == m]
             ex_val = float(sel["excel"].sum())
             on_val = float(sel["onto"].sum())
+            if ex_val != 0.0 or on_val != 0.0:
+                has_activity = True
             row[f"excel_{m}"] = round(ex_val, 2)
             row[f"onto_{m}"] = round(on_val, 2)
             row[f"diff_{m}"] = round(on_val - ex_val, 2)
@@ -773,7 +776,11 @@ def _excel_comparison_section(ds: Dataset, site_dir: Path) -> None:
             ann = ann_lookup.get((bid, str(m)), {})
             row[f"reason_{m}"] = ann.get("reason", "")
             row[f"explanation_{m}"] = ann.get("explanation", "")
-        rows.append(row)
+        # Drop buildings that have zero on BOTH sides across every compare
+        # month — they're in the Excel roster but don't consume this media.
+        # Keeps the table focused on rows that actually compare something.
+        if has_activity:
+            rows.append(row)
     cdf = pd.DataFrame(sorted(rows, key=lambda r: r["building"]))
 
     unit = _unit_label(ds)
