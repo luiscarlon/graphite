@@ -347,6 +347,15 @@ def pipeline(ws: Path, cfg: Config, *, skip_ontology: bool) -> None:
             print(f"\n=========== {cfg.name}: outage patches ===========")
             run([py, str(SCRIPTS / "generate_outage_patches.py"), str(ws)], optional=True)
 
+        # Phase 7: hand-authored quality patches (bracket, interpolate,
+        # extra children-sum, manual segmenting). Read from
+        # `quality_patches.yaml` at the workstream root; merged into
+        # 05_ontology/{annotations,timeseries_refs}.csv.
+        patches_file = ws / "quality_patches.yaml"
+        if patches_file.exists():
+            print(f"\n=========== {cfg.name}: quality patches ===========")
+            run([py, str(SCRIPTS / "apply_quality_patches.py"), str(ws)], optional=True)
+
     print(f"\n=========== {cfg.name}: done ===========\n")
     print("  NOTE: Annotations are curated by the analyst, not auto-generated.")
     print("  Review meter_swaps.csv, conservation, and source_conflicts manually.")
