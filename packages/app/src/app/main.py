@@ -749,39 +749,51 @@ def _excel_comparison_section(ds: Dataset, site_dir: Path) -> None:
     ann_path = site_dir / "excel_comparison_annotations.csv"
     ann_lookup: dict[tuple[str, str], dict[str, str]] = {}
     if ann_path.exists():
-        ann_df = pd.read_csv(ann_path)
+        # keep_default_na=False so empty cells read as "" not NaN; otherwise
+        # str(NaN) == "nan" leaks into the rendered table.
+        ann_df = pd.read_csv(ann_path, keep_default_na=False, na_filter=False)
         ann_df = ann_df[ann_df["media"] == media]
         for _, ar in ann_df.iterrows():
             ann_lookup[(str(ar["building_id"]), str(ar["month"]))] = {
-                "reason": str(ar.get("reason", "") or ""),
-                "explanation": str(ar.get("explanation", "") or ""),
+                "reason": str(ar.get("reason", "")),
+                "explanation": str(ar.get("explanation", "")),
             }
 
     rows: list[dict[str, object]] = []
     for bid, grp in merged.groupby("building"):
         row: dict[str, object] = {"building": bid}
         has_activity = False
+        abs_diff_total = 0.0
         for m in compare_months:
             sel = grp[grp["month"] == m]
             ex_val = float(sel["excel"].sum())
             on_val = float(sel["onto"].sum())
             if ex_val != 0.0 or on_val != 0.0:
                 has_activity = True
+            diff = on_val - ex_val
+            abs_diff_total += abs(diff)
             row[f"excel_{m}"] = round(ex_val, 2)
             row[f"onto_{m}"] = round(on_val, 2)
-            row[f"diff_{m}"] = round(on_val - ex_val, 2)
-            row[f"diff%_{m}"] = (
-                round((on_val - ex_val) / ex_val * 100, 1) if ex_val != 0 else None
-            )
+            if ex_val != 0:
+                row[f"diff%_{m}"] = f"{(diff / ex_val * 100):.1f}%"
+            else:
+                row[f"diff%_{m}"] = ""
             ann = ann_lookup.get((bid, str(m)), {})
-            row[f"reason_{m}"] = ann.get("reason", "")
-            row[f"explanation_{m}"] = ann.get("explanation", "")
-        # Drop buildings that have zero on BOTH sides across every compare
-        # month — they're in the Excel roster but don't consume this media.
-        # Keeps the table focused on rows that actually compare something.
+            row[f"reason_{m}"] = ann.get("reason", "") or ""
+            row[f"explanation_{m}"] = ann.get("explanation", "") or ""
+        # Combined |diff| across both months — sortable column for spotting
+        # big discrepancies (signed-diff sums can cancel +/- across months).
+        row["|Δ|_total"] = round(abs_diff_total, 2)
         if has_activity:
             rows.append(row)
-    cdf = pd.DataFrame(sorted(rows, key=lambda r: r["building"]))
+    # Column order: building, per-month (excel, onto, diff%, reason, explanation),
+    # then the absolute-diff total last so the sort handle is rightmost.
+    col_order = ["building"]
+    for m in compare_months:
+        col_order += [f"excel_{m}", f"onto_{m}", f"diff%_{m}",
+                       f"reason_{m}", f"explanation_{m}"]
+    col_order += ["|Δ|_total"]
+    cdf = pd.DataFrame(sorted(rows, key=lambda r: r["building"]))[col_order]
 
     unit = _unit_label(ds)
     st.caption(
