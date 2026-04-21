@@ -170,6 +170,7 @@ def _readings_section(
     view = st.radio(
         "Counter view",
         ["cumulative (index)", f"rate ({rate_label})"],
+        index=1,
         horizontal=True,
         help="Counters store the cumulative meter index. 'Rate' takes the per-step difference.",
     )

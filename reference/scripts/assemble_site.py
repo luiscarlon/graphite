@@ -268,25 +268,62 @@ def main() -> int:
                     })
 
         # Materialize derived refs.
+        #   slice       — time-window passthrough of a single raw source
         #   sum         — children-sum patch (source = other real meter refs)
         #   bracket     — monotone value-range clip (parameter-free)
         #   interpolate — linear counter fill between source-derived endpoints
         #   rolling_sum — stitch raw + patch segments, preserving the offset
         #
-        # Order matters: sum/bracket/interpolate produce readings that
-        # rolling_sum may consume; all three run before rolling_sum.
+        # Order matters: slice/sum/bracket/interpolate produce readings that
+        # rolling_sum may consume; all four run before rolling_sum.
         readings_by_ts: dict[str, list[dict]] = {}
         for r in readings:
             readings_by_ts.setdefault(r["timeseries_id"], []).append(r)
 
-        _AGG_ORDER = {"sum": 0, "bracket": 1, "interpolate": 2, "rolling_sum": 3}
+        _AGG_ORDER = {"slice": 0, "sum": 0, "bracket": 1, "interpolate": 2, "rolling_sum": 3}
         for dr in sorted(derived_refs, key=lambda d: _AGG_ORDER.get(d.get("aggregation", ""), 99)):
             source_ids = [s for s in (dr.get("sources", "") or "").split("|") if s]
             if not source_ids:
                 continue
             agg = dr.get("aggregation", "")
 
-            if agg == "sum":
+            if agg == "slice":
+                # Time-window passthrough. Emits the source's readings
+                # filtered to this ref's [valid_from, valid_to) window. The
+                # source must be a single raw ref (or another derived
+                # series); values are not modified. Typical use: segment a
+                # single raw stream around a rollover or reset where the
+                # source is continuous (same external_id) but the counter
+                # semantics change at a known instant. Keeps raw refs
+                # untouched and makes the segmentation an explicit
+                # derivation rather than a validity window on the raw ref.
+                if len(source_ids) != 1:
+                    print(f"  WARN: slice ref {dr['timeseries_id']} expects "
+                          f"1 source, got {len(source_ids)} — skipping",
+                          file=sys.stderr)
+                    continue
+                vf = dr.get("valid_from", "")
+                vt = dr.get("valid_to", "")
+                src = sorted(
+                    readings_by_ts.get(source_ids[0], []),
+                    key=lambda r: r["timestamp"],
+                )
+                new_readings = []
+                for sr in src:
+                    if vf and sr["timestamp"] < vf:
+                        continue
+                    if vt and sr["timestamp"] >= vt:
+                        continue
+                    new_readings.append({
+                        "timeseries_id": dr["timeseries_id"],
+                        "timestamp": sr["timestamp"],
+                        "value": sr["value"],
+                        "recorded_at": sr.get("recorded_at", ""),
+                    })
+                readings.extend(new_readings)
+                readings_by_ts[dr["timeseries_id"]] = new_readings
+
+            elif agg == "sum":
                 # Patch: build synthetic counter = cumulative sum of children's deltas.
                 # Only from valid_from onwards (before that, the raw ref covers).
                 vf = dr.get("valid_from", "")

@@ -282,7 +282,7 @@ def check_orphan_meters(ds: Dataset) -> list[Violation]:
     ]
 
 
-ALLOWED_AGGREGATIONS = {"sum", "rolling_sum", "bracket", "interpolate"}
+ALLOWED_AGGREGATIONS = {"sum", "rolling_sum", "bracket", "interpolate", "slice"}
 
 
 def check_ref_shape(ds: Dataset) -> list[Violation]:

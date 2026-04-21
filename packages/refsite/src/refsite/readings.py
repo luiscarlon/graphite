@@ -468,7 +468,7 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
     # Order matters: sum feeds rolling_sum; bracket feeds interpolate; both
     # clean outputs can feed rolling_sum. Unknown aggregations sort last
     # so the dispatch below can raise a clear error.
-    _AGG_ORDER = {"sum": 0, "bracket": 1, "interpolate": 2, "rolling_sum": 3}
+    _AGG_ORDER = {"slice": 0, "sum": 0, "bracket": 1, "interpolate": 2, "rolling_sum": 3}
     derived_refs = [r for r in ds.timeseries_refs if r.kind == "derived"]
     derived_refs.sort(key=lambda r: _AGG_ORDER.get(r.aggregation or "", 99))
 
@@ -478,7 +478,37 @@ def generate_readings(ds: Dataset, seed: int = 42) -> list[Reading]:
             continue
         meter_flow = recorded_flow[ref_mid]
 
-        if ref.aggregation == "sum":
+        if ref.aggregation == "slice":
+            # Time-window passthrough. Single-source derived ref that emits
+            # the source's readings filtered to this ref's [valid_from,
+            # valid_to) window. Values are unchanged. Use case: segment a
+            # single raw stream around a rollover/reset so the raw ref
+            # stays untouched and segmentation is an explicit derivation.
+            if len(ref.sources) != 1:
+                raise ValueError(
+                    f"slice ref {ref.timeseries_id} expects 1 source, "
+                    f"got {len(ref.sources)}"
+                )
+            src_id = ref.sources[0]
+            window = _validity_mask(ts, ref.valid_from, ref.valid_to)
+            src_values = values_by_ref.get(src_id, {})
+            new_rows: list[Reading] = []
+            for i, t in enumerate(ts):
+                if not window[i]:
+                    continue
+                ts_dt = cast(datetime, t.astype("datetime64[s]").astype(object))
+                if ts_dt in src_values:
+                    new_rows.append(Reading(
+                        timeseries_id=ref.timeseries_id,
+                        timestamp=ts_dt,
+                        value=src_values[ts_dt],
+                    ))
+            readings.extend(new_rows)
+            values_by_ref.setdefault(ref.timeseries_id, {}).update(
+                {r.timestamp: r.value for r in new_rows}
+            )
+
+        elif ref.aggregation == "sum":
             window = _validity_mask(ts, ref.valid_from, ref.valid_to)
             total_delta = np.zeros(len(ts))
             for src_id in ref.sources:

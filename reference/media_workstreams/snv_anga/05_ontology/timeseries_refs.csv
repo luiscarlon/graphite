@@ -39,7 +39,7 @@ B330.Å1_VMM73:d,B330.Å1_VMM73.energy,daily,counter,raw,True,,,ion_sweden_bms,O
 B341.Å1_VMM71:d,B341.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B341.Å1_VMM71,,,
 B385.Å1_VMM71:d,B385.Å1_VMM71.energy,daily,counter,raw,True,,2025-11-26,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B385.Å1_VMM71_E,,,
 B392.Å1_VMM71:d,B392.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B392.Å1_VMM71_E,,,
-B216.Å1_VMM71:d.patch,B216.Å1_VMM71.energy,daily,counter,derived,False,2026-02-19,,,,,,B217.Å1_VMM71:d.D,sum
+B216.Å1_VMM71:d.patch,B216.Å1_VMM71.energy,daily,counter,derived,False,2026-02-19,,,,,,B217.Å1_VMM71:d,sum
 B216.Å1_VMM71:d,B216.Å1_VMM71.energy,daily,counter,derived,True,,,,,,,B216.Å1_VMM71:d.raw|B216.Å1_VMM71:d.patch,rolling_sum
 B308.Å1_VMM71:d.patch,B308.Å1_VMM71.energy,daily,counter,derived,False,2026-02-07,,,,,,B327.Å1_VMM71:d,sum
 B308.Å1_VMM71:d,B308.Å1_VMM71.energy,daily,counter,derived,True,,,,,,,B308.Å1_VMM71:d.raw|B308.Å1_VMM71:d.patch,rolling_sum

@@ -173,7 +173,7 @@ class TimeseriesRef(BaseModel):
 
     # --- derived-only: declaration for the DW to materialize ---
     sources: list[str] = Field(default_factory=list)
-    aggregation: str | None = None   # sum | rolling_sum | bracket | interpolate
+    aggregation: str | None = None   # sum | rolling_sum | bracket | interpolate | slice
 
     @field_validator("sources", mode="before")
     @classmethod
