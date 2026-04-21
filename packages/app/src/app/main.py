@@ -47,14 +47,21 @@ def _annotation_layer(
 ) -> alt.Chart | None:
     rows = []
     for a in ds.annotations:
-        if a.valid_from is None and a.valid_to is None:
+        if a.valid_from is None or a.valid_to is None:
+            # Annotation CSVs now always carry dates (1900-01-01 /
+            # 9999-01-01 sentinels for open-ended windows). Anything
+            # still None here is malformed data; skip defensively.
             continue
         if meter_ids is not None and a.target_kind == "meter" and a.target_id not in meter_ids:
             continue
         if building_ids is not None and a.target_kind == "building" and a.target_id not in building_ids:
             continue
-        start = pd.Timestamp(a.valid_from) if a.valid_from else pd.Timestamp("2024-01-01")
-        end = pd.Timestamp(a.valid_to) if a.valid_to else pd.Timestamp("2027-01-01")
+        start = pd.Timestamp(a.valid_from)
+        end = pd.Timestamp(a.valid_to)
+        # Widen single-date events (e.g. rollovers) to 1 day so the
+        # rect has visible width.
+        if end == start:
+            end = start + pd.Timedelta(days=1)
         if date_range:
             if end.date() < date_range[0] or start.date() > date_range[1]:
                 continue
@@ -679,11 +686,22 @@ def _annotations_picker(ds: Dataset) -> tuple[pd.DataFrame | None, dict | None]:
     sel_annotations = [ds.annotations[i] for i in selected.index]
     rows = []
     for a in sel_annotations:
-        if a.valid_from is None:
+        # Annotation CSVs store sentinels (1900-01-01 / 9999-01-01)
+        # for open-ended windows, so valid_from/valid_to are never None
+        # by convention — but guard defensively.
+        if a.valid_from is None or a.valid_to is None:
             continue
+        start = pd.Timestamp(a.valid_from)
+        end = pd.Timestamp(a.valid_to)
+        # Single-date annotations (start == end, e.g. rollover events)
+        # would otherwise render as a single zero-width rule that's
+        # easy to miss. Widen to a 1-day band so both start and end
+        # rules are drawn and the event is visible.
+        if end == start:
+            end = start + pd.Timedelta(days=1)
         rows.append({
-            "start": pd.Timestamp(a.valid_from),
-            "end": pd.Timestamp(a.valid_to) if a.valid_to else pd.Timestamp("2026-03-01"),
+            "start": start,
+            "end": end,
             "label": a.annotation_id,
             "description": a.description,
             "category": a.category,
