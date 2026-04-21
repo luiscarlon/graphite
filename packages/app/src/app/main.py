@@ -36,6 +36,7 @@ _ANNOTATION_COLORS = {
     "unknown": "#bab0ac",
     "calibration": "#72b7b2",
     "patch": "#54a24b",
+    "rollover": "#b279a2",
 }
 
 
