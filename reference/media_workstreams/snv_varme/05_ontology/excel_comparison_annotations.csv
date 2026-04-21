@@ -27,13 +27,13 @@ VARME,B308,2026-01,592.84,592.84,0.00,match,
 VARME,B308,2026-02,587.86,587.86,0.00,match,
 VARME,B309,2026-01,0.00,0.00,0.00,match,
 VARME,B309,2026-02,0.00,0.00,0.00,match,
-VARME,B310,2026-01,952.07,952.07,-0.00,match,
+VARME,B310,2026-01,952.07,-401.19,-1353.26,meter_outage,"B310.VP2_VMM61 ~117-day offline 2025-09-20 → 2026-01-13 with full catch-up on 2026-01-14. Interpolate patch redistributes the 1986 kWh flush backward across the offline window, so Jan 2026 ontology drops ~1700 kWh vs Excel (which absorbed the full flush in Jan). See ann-snv-varme-b310-vp2-offline-fall. Annual total preserved; only monthly attribution shifted."
 VARME,B310,2026-02,-154.72,-154.72,-0.00,match,Negative Excel value (−155 MWh Feb) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).
-VARME,B311,2026-01,512.94,512.94,-0.00,match,
+VARME,B311,2026-01,512.94,472.81,-40.13,meter_outage,B311.VP1_VMM64 ~117-day offline with catch-up on 2026-01-14. Interpolate patch redistributes ~46 kWh backward. See ann-snv-varme-b311-vmm64-offline-fall.
 VARME,B311,2026-02,520.29,520.29,-0.00,match,
 VARME,B312,2026-01,9.93,9.93,0.00,match,
 VARME,B312,2026-02,12.77,12.77,0.00,match,
-VARME,B313,2026-01,399.66,399.66,0.00,match,
+VARME,B313,2026-01,399.66,44.16,-355.50,meter_outage,B313.VP1_VMM62 ~114-day offline with catch-up on 2026-01-14. Interpolate patch redistributes ~405 kWh backward across the offline window. See ann-snv-varme-b313-vmm62-offline-fall.
 VARME,B313,2026-02,68.25,68.25,0.00,match,
 VARME,B314,2026-01,86.25,86.25,0.00,match,
 VARME,B314,2026-02,89.44,89.44,0.00,match,

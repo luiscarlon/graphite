@@ -5,9 +5,12 @@ from __future__ import annotations
 from datetime import date, timedelta
 from pathlib import Path
 
+import json
+
 import altair as alt
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 import yaml
 
 import calc
@@ -196,6 +199,7 @@ def _readings_section(
         else:
             y_title = "Counter index"
 
+        pick = alt.selection_point(fields=["timeseries_id"], name="picked", on="click")
         line = (
             alt.Chart(counters)
             .mark_line()
@@ -203,8 +207,10 @@ def _readings_section(
                 x=alt.X("timestamp:T", title=None),
                 y=alt.Y("value:Q", title=y_title),
                 color=alt.Color("timeseries_id:N", title="Series"),
+                opacity=alt.condition(pick, alt.value(1.0), alt.value(0.15)),
                 tooltip=["timeseries_id", "timestamp", "value"],
             )
+            .add_params(pick)
             .properties(height=320)
         )
 
@@ -227,8 +233,19 @@ def _readings_section(
 
         dr = (pd.Timestamp(date_range[0]), pd.Timestamp(date_range[1]))
         filtered_bands = _filter_ann_bands(ann_bands, data_range=dr, meter_ids=set(sel_meters), ds=ds)
-        chart = _inject_ann_bands(chart, filtered_bands)
-        st.altair_chart(chart, width="stretch")
+        chart = _inject_ann_bands(chart, filtered_bands).interactive()
+        event = st.altair_chart(
+            chart, width="stretch", on_select="rerun",
+            selection_mode=["picked"], key="counter_chart",
+        )
+        picked_ts: list[str] = []
+        if event and event.selection:
+            for row in event.selection.get("picked", []):
+                if ts := row.get("timeseries_id"):
+                    picked_ts.append(ts)
+        if picked_ts:
+            st.caption(f"Filtered to: {', '.join(picked_ts)}")
+            deltas = deltas[deltas["timeseries_id"].isin(picked_ts)]
 
     if not deltas.empty:
         st.caption("Delta readings")
@@ -243,6 +260,7 @@ def _readings_section(
                 tooltip=["timeseries_id", "timestamp", "value"],
             )
             .properties(height=200)
+            .interactive()
         )
         st.altair_chart(bars, width="stretch")
 
@@ -364,6 +382,49 @@ def _validity_bands(
     return pd.DataFrame(rows)
 
 
+def _topology_chart(dot: str, height: int = 640) -> None:
+    """Render a DOT graph with mouse-wheel zoom and drag-to-pan.
+
+    Uses d3-graphviz in the browser (same WASM renderer Streamlit's
+    built-in graphviz_chart uses) with d3-zoom layered on top.
+    """
+    dot_json = json.dumps(dot)
+    html = f"""
+<!doctype html>
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hpcc-js/wasm@2.22.4/dist/graphviz.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-graphviz@5.6.0/build/d3-graphviz.js"></script>
+<style>
+  html, body {{ margin: 0; padding: 0; height: 100%; background: #fff; }}
+  #graph {{ width: 100%; height: {height}px; cursor: grab; }}
+  #graph:active {{ cursor: grabbing; }}
+  #graph svg {{ width: 100%; height: 100%; }}
+  #reset {{
+    position: absolute; top: 8px; right: 8px; z-index: 10;
+    padding: 4px 10px; font: 12px Helvetica, sans-serif;
+    background: #fff; border: 1px solid #ccc; border-radius: 4px;
+    cursor: pointer;
+  }}
+  #reset:hover {{ background: #f0f0f0; }}
+</style>
+</head>
+<body>
+<button id="reset" title="Reset view">reset</button>
+<div id="graph"></div>
+<script>
+  const dot = {dot_json};
+  const gv = d3.select("#graph").graphviz().zoom(true).fit(true);
+  gv.renderDot(dot);
+  document.getElementById("reset").onclick = () => gv.resetZoom();
+</script>
+</body>
+</html>
+"""
+    components.html(html, height=height + 20, scrolling=False)
+
+
 def main() -> None:
     st.set_page_config(page_title="graphite", layout="wide")
     st.title("graphite")
@@ -411,7 +472,7 @@ def main() -> None:
             st.dataframe([v.model_dump() for v in violations], width="stretch")
 
     st.subheader("Topology")
-    st.graphviz_chart(to_dot(ds), width="stretch")
+    _topology_chart(to_dot(ds))
 
     ann_bands = None
     ann_hints = None
@@ -470,8 +531,7 @@ def _consumption_section(
 
     levels = sorted(df["level"].unique()) if not df.empty else []
     all_levels = ["series"] + levels
-    default_idx = all_levels.index("building") if "building" in all_levels else 0
-    level = st.radio("Group by", all_levels, index=default_idx, horizontal=True)
+    level = st.radio("Group by", all_levels, index=0, horizontal=True)
 
     # Apply filters from Readings section
     if selection is not None:
@@ -533,30 +593,49 @@ def _consumption_section(
         y_title = f"Net {rate_label}"
 
     cols = st.columns([1, 3])
+    field = "meter_id" if level == "series" else "target_id"
+    pick = alt.selection_point(fields=[field], name="picked", on="click")
+    chart = (
+        alt.Chart(scoped)
+        .mark_line()
+        .encode(
+            x=alt.X("timestamp:T", title=None),
+            y=alt.Y(chart_y, title=y_title),
+            color=alt.Color(chart_color, title=level),
+            opacity=alt.condition(pick, alt.value(1.0), alt.value(0.15)),
+            tooltip=chart_tooltip,
+        )
+        .add_params(pick)
+        .properties(height=360)
+    )
+    cons_dr = (scoped["timestamp"].min(), scoped["timestamp"].max()) if not scoped.empty else None
+    filtered_bands = _filter_ann_bands(ann_bands, data_range=cons_dr)
+    chart = _inject_ann_bands(chart, filtered_bands).interactive()
+
+    with cols[1]:
+        event = st.altair_chart(
+            chart, width="stretch", on_select="rerun",
+            selection_mode=["picked"], key="consumption_chart",
+        )
+
+    picked_ids: list[str] = []
+    if event and event.selection:
+        for row in event.selection.get("picked", []):
+            if v := row.get(field):
+                picked_ids.append(v)
+
+    totals_view = totals[totals["target_id"].isin(picked_ids)] if picked_ids else totals
+
     with cols[0]:
         st.caption(f"Total ({unit}, selected period)")
+        if picked_ids:
+            st.caption(f"Filtered: {', '.join(picked_ids)}")
         st.dataframe(
-            totals.assign(net_kwh=totals["net_kwh"].round(0)),
+            totals_view.assign(net_kwh=totals_view["net_kwh"].round(0)),
             hide_index=True,
             width="stretch",
-            height=min(36 * (len(totals) + 1) + 2, 400),
+            height=min(36 * (len(totals_view) + 1) + 2, 400),
         )
-    with cols[1]:
-        chart = (
-            alt.Chart(scoped)
-            .mark_line()
-            .encode(
-                x=alt.X("timestamp:T", title=None),
-                y=alt.Y(chart_y, title=y_title),
-                color=alt.Color(chart_color, title=level),
-                tooltip=chart_tooltip,
-            )
-            .properties(height=360)
-        )
-        cons_dr = (scoped["timestamp"].min(), scoped["timestamp"].max()) if not scoped.empty else None
-        filtered_bands = _filter_ann_bands(ann_bands, data_range=cons_dr)
-        chart = _inject_ann_bands(chart, filtered_bands)
-        st.altair_chart(chart, width="stretch")
 
 
 def _annotations_picker(ds: Dataset) -> tuple[pd.DataFrame | None, dict | None]:

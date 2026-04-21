@@ -12,7 +12,11 @@ B614.Å1_VMM72:d,B614.Å1_VMM72.energy,daily,counter,raw,True,,,ion_sweden_bms,O
 B616.Å1_VMM71:d.A,B616.Å1_VMM71.energy,daily,counter,raw,False,,2025-11-05,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B616.Å1_VMM71_E,,,
 B616.Å1_VMM71:d.B,B616.Å1_VMM71.energy,daily,counter,raw,False,2025-11-05,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B616.Å1_VMM71_E,,,
 B616.Å1_VMM71:d,B616.Å1_VMM71.energy,daily,counter,derived,True,,,,,,,B616.Å1_VMM71:d.A|B616.Å1_VMM71:d.B,rolling_sum
-B621.Å1_VMM70:d,B621.Å1_VMM70.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B621.Å1_VM70,,,
+B621.Å1_VMM70:d.raw,B621.Å1_VMM70.energy,daily,counter,raw,False,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B621.Å1_VM70,,,
+B621.Å1_VMM70:d.A,B621.Å1_VMM70.energy,daily,counter,derived,False,,2025-03-10,,,,,B621.Å1_VMM70:d.raw,slice
+B621.Å1_VMM70:d.patch,B621.Å1_VMM70.energy,daily,counter,derived,False,2025-03-10,2025-03-25,,,,,B621.Å1_VMM70:d.raw,interpolate
+B621.Å1_VMM70:d.B,B621.Å1_VMM70.energy,daily,counter,derived,False,2025-03-25,,,,,,B621.Å1_VMM70:d.raw,slice
+B621.Å1_VMM70:d,B621.Å1_VMM70.energy,daily,counter,derived,True,,,,,,,B621.Å1_VMM70:d.A|B621.Å1_VMM70:d.patch|B621.Å1_VMM70:d.B,rolling_sum
 B622.Å1_VMM72:d,B622.Å1_VMM72.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B622.Å1_VM72,,,
 B641.Å1_VMM71:d,B641.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B641.Å1_VM71,,,
 B642.Å1_VMM71:d,B642.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B642.Å1_VM71,,,

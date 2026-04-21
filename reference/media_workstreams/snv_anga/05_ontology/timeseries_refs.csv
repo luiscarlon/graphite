@@ -1,7 +1,7 @@
 timeseries_id,sensor_id,aggregate,reading_type,kind,preferred,valid_from,valid_to,database_id,path,external_id,device_id,sources,aggregation
 B216.Å1_VMM71:d.raw,B216.Å1_VMM71.energy,daily,counter,raw,False,,2026-02-19,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B216.Å1_VM71,,,
 B216.Å1_VMM72:d,B216.Å1_VMM72.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B216.Å1_VMM72_E,,,
-B217.Å1_VMM71:d,B217.Å1_VMM71.energy,daily,counter,derived,True,,,,,,,B217.Å1_VMM71:d.raw|B217.Å1_VMM71:d.clip,rolling_sum
+B217.Å1_VMM71:d,B217.Å1_VMM71.energy,daily,counter,derived,True,,,,,,,B217.Å1_VMM71:d.A|B217.Å1_VMM71:d.patch|B217.Å1_VMM71:d.B,rolling_sum
 B301.Å1_VMM71:d,B301.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B301.Å1_VMM71_E,,,
 B302.Å1_VMM71:d,B302.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B302.Å1_VMM71_E,,,
 B302.Å1_VMM73:d,B302.Å1_VMM73.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B302.Å1_VMM73_E,,,
@@ -24,7 +24,11 @@ B308.Å1_VMM71:d.raw,B308.Å1_VMM71.energy,daily,counter,raw,False,,2026-02-07,i
 B327.Å1_VMM71:d,B327.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B327.Å1_VMM71_E,,,
 B310.Å1_VMM70:d,B310.Å1_VMM70.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B310.Å1_VMM70_E,,,
 B311.Å1_VMM72:d,B311.Å1_VMM72.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B311.Å1_VMM72_E,,,
-B317.Å1_VMM72:d,B317.Å1_VMM72.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B317.Å1_VMM72_E,,,
+B317.Å1_VMM72:d.raw,B317.Å1_VMM72.energy,daily,counter,raw,False,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B317.Å1_VMM72_E,,,
+B317.Å1_VMM72:d.A,B317.Å1_VMM72.energy,daily,counter,derived,False,,2025-09-21,,,,,B317.Å1_VMM72:d.raw,slice
+B317.Å1_VMM72:d.patch,B317.Å1_VMM72.energy,daily,counter,derived,False,2025-09-21,2026-01-14,,,,,B317.Å1_VMM72:d.raw,interpolate
+B317.Å1_VMM72:d.B,B317.Å1_VMM72.energy,daily,counter,derived,False,2026-01-14,,,,,,B317.Å1_VMM72:d.raw,slice
+B317.Å1_VMM72:d,B317.Å1_VMM72.energy,daily,counter,derived,True,,,,,,,B317.Å1_VMM72:d.A|B317.Å1_VMM72:d.patch|B317.Å1_VMM72:d.B,rolling_sum
 B313.Å1_VMM71:d,B313.Å1_VMM71.energy,daily,counter,raw,True,,2025-07-25,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B313.Å1_VM71,,,
 B317.Å1_VMM71:d,B317.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B317.Å1_VMM71_E,,,
 B313.Å1_VMM72:d,B313.Å1_VMM72.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B313.Å1_VMM72_E,,,
@@ -39,9 +43,11 @@ B330.Å1_VMM73:d,B330.Å1_VMM73.energy,daily,counter,raw,True,,,ion_sweden_bms,O
 B341.Å1_VMM71:d,B341.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B341.Å1_VMM71,,,
 B385.Å1_VMM71:d,B385.Å1_VMM71.energy,daily,counter,raw,True,,2025-11-26,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B385.Å1_VMM71_E,,,
 B392.Å1_VMM71:d,B392.Å1_VMM71.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B392.Å1_VMM71_E,,,
-B216.Å1_VMM71:d.patch,B216.Å1_VMM71.energy,daily,counter,derived,False,2026-02-19,,,,,,B217.Å1_VMM71:d,sum
+B216.Å1_VMM71:d.patch,B216.Å1_VMM71.energy,daily,counter,derived,False,2026-02-19,,,,,,B217.Å1_VMM71:d.raw,sum
 B216.Å1_VMM71:d,B216.Å1_VMM71.energy,daily,counter,derived,True,,,,,,,B216.Å1_VMM71:d.raw|B216.Å1_VMM71:d.patch,rolling_sum
 B308.Å1_VMM71:d.patch,B308.Å1_VMM71.energy,daily,counter,derived,False,2026-02-07,,,,,,B327.Å1_VMM71:d,sum
 B308.Å1_VMM71:d,B308.Å1_VMM71.energy,daily,counter,derived,True,,,,,,,B308.Å1_VMM71:d.raw|B308.Å1_VMM71:d.patch,rolling_sum
 B217.Å1_VMM71:d.raw,B217.Å1_VMM71.energy,daily,counter,raw,False,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B217.Å1_VM71,,,
-B217.Å1_VMM71:d.clip,B217.Å1_VMM71.energy,daily,counter,derived,False,2025-07-15,2025-10-10,,,,,B217.Å1_VMM71:d.raw,bracket
+B217.Å1_VMM71:d.A,B217.Å1_VMM71.energy,daily,counter,derived,False,,2025-07-15,,,,,B217.Å1_VMM71:d.raw,slice
+B217.Å1_VMM71:d.patch,B217.Å1_VMM71.energy,daily,counter,derived,False,2025-07-15,2025-10-09,,,,,B217.Å1_VMM71:d.raw,interpolate
+B217.Å1_VMM71:d.B,B217.Å1_VMM71.energy,daily,counter,derived,False,2025-10-09,,,,,,B217.Å1_VMM71:d.raw,slice

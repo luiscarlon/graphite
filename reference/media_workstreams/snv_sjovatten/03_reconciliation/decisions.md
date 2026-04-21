@@ -93,3 +93,33 @@ Sjövatten meters use variable patterns: `B###.V2_VM##`,
 external. Shared canonicalisation (strip `_E`, normalise `_VM##`→
 `_VMM##`) applied; dashed forms preserved verbatim since they don't
 follow the standard pattern.
+
+## 2026-04-21 — BPS_V2 virtual-pool revisit (still deferred)
+
+Attempted to materialise the BPS_V2 virtual (5 building-share virtuals, 15
+hasSubMeter drains, inlets aggregated via a `sum`-aggregation timeseries_ref
+to avoid the multi-feeds double-count issue in `views.sql::meter_flow`'s
+recursive CTE). The topology math and SQL wired up correctly: residual at
+BPS_V2_VIRT was a clean per-timestamp value, 5 shares summed back to 100%
+at the configured R-factors (0.09/0.18/0.18/0.46/0.09 sum=1.0).
+
+**Blocker**: 8 of the 15 direct-consumer meters have no Snowflake counter
+data — 6 are STRUX-only (B304-52-V2-AW026, B310.V2_GF4_1, B330.V2_GF4_1,
+B337.V2_GF4_1, TE-52-V2-GF4:1 Kringlan, TE-52-V2-SCANIA) and 2 went
+offline pre-2026-01 (B305.V2_VMM21, B339.V2_GF4). These 8 account for
+~198k m³/month of real drain that the ontology can't see, so the computed
+BPS residual is ~34× Excel's (~204k vs ~6k m³, Jan 2026). Building shares
+become ~34× too large, worse than the prior zero-attribution.
+
+**Revert.** Revisit once the 8 STRUX-only/offline meters get Snowflake
+counter data. Until then, `excel_cooked_coefficient` remains the correct
+reconciliation reason for B301/B302/B303/B307/B344 sjövatten.
+
+Architectural take-away — preserved in memory (feedback_bps_v2_pool_revisit.md):
+
+- `meter_flow`'s recursive CTE double-counts hasSubMeter subtractions when
+  a virtual has ≥2 incoming `feeds` paths. Workaround is to aggregate
+  upstream via a `sum`-aggregation timeseries_ref before the `feeds` hop.
+- A fractional-pool attribution via virtuals only works when the drain
+  side is complete in Snowflake. Incomplete drains inflate the residual
+  and make the pattern worse than zero-attribution.

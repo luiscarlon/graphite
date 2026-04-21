@@ -516,14 +516,32 @@ def main() -> int:
                 # above it.
                 RESET_THRESHOLD = 100_000.0
 
+                # Continuous-boundary tolerance: a new segment whose first
+                # value lands within this fraction of prev_val sits on the
+                # same underlying counter (slice/interpolate of the same
+                # raw stream). Don't re-anchor — avoids the one-day gap the
+                # swap branch deliberately introduces for real device
+                # swaps. A real swap virtually never lands this close.
+                CONTINUOUS_TOLERANCE = 0.01
+
+                # A genuine operator/utility reset takes the counter to near
+                # zero. A device swap with a non-trivial starting value (new
+                # counter pre-loaded, commissioned with some offset) should be
+                # treated as "swap" — anchor to the new raw so cumulative stays
+                # flat across the boundary rather than incorrectly adding the
+                # new counter's baseline as one-day consumption.
+                RESET_NEW_CEILING = 1000.0
+
                 def _classify_boundary(prev_val: float, new_val: float):
-                    """Return ('rollover', ceiling) | 'reset' | 'swap'."""
+                    """Return ('rollover', ceiling) | 'reset' | 'swap' | 'continuous'."""
+                    if prev_val > 0 and abs(new_val - prev_val) <= CONTINUOUS_TOLERANCE * prev_val:
+                        return "continuous"
                     if new_val >= prev_val * 0.5:
                         return "swap"  # no meaningful drop
                     for C in ROLLOVER_CEILINGS:
                         if (1.0 - ROLLOVER_TOLERANCE) * C <= prev_val <= C:
                             return ("rollover", C)
-                    if prev_val > RESET_THRESHOLD:
+                    if prev_val > RESET_THRESHOLD and new_val < RESET_NEW_CEILING:
                         return "reset"
                     return "swap"
 
@@ -557,6 +575,12 @@ def main() -> int:
                             # but new raw is consumption-since-reset.
                             offset = prev_stitched
                             anchor = 0.0
+                        elif kind == "continuous":
+                            # Same underlying counter — segments produced
+                            # by slice / interpolate of one raw stream.
+                            # Keep offset/anchor so cumulative passes
+                            # through without the one-day gap swap adds.
+                            pass
                         else:  # "swap"
                             # Device replacement with arbitrary offset:
                             # anchor on the new raw so stitched stays

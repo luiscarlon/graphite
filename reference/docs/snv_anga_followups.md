@@ -9,7 +9,11 @@ fix it, and the pipeline work required to execute the patch.
 
 ---
 
-## 1. B217 — bracket upgrade attempted, reverted. Meter remains broken.
+## 1. B217 — RESOLVED 2026-04-21 via slice+interpolate+slice pattern.
+
+Superseded by the fix described in `annotations.csv::ann-snv-anga-b217-register-corruption`. interpolate across the corruption window doesn't depend on any in-window samples — only the two outside-window endpoints — so it sidesteps the bracket/rolling_sum composition problem entirely. Stitched `:d` is now monotone with cumulative preserved at both endpoints and ~5.56 MWh/day linear fill across the 86-day gap. Original design notes below preserved for historical context.
+
+---
 
 The `bracket` restructure (full-period raw + bracket clip + preferred
 rolling_sum overlay) was written, applied, and reverted after the

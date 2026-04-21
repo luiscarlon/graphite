@@ -7,8 +7,8 @@ EL,B604,2026-01,0.00,0.00,0.00,match,
 EL,B604,2026-02,0.00,0.00,0.00,match,
 EL,B611,2026-01,934585.67,980677.37,46091.70,strux_only_meter,"B611.T4 trunk in BMS includes T4-A3/C1/C4 flow; Excel subtracts those via STRUX, ontology cannot."
 EL,B611,2026-02,811288.92,855111.59,43822.67,strux_only_meter,"B611.T4 trunk in BMS includes T4-A3/C1/C4 flow; Excel subtracts those via STRUX, ontology cannot."
-EL,B612,2026-01,493402.99,493356.78,-46.21,match,
-EL,B612,2026-02,447699.95,447687.20,-12.75,match,
+EL,B612,2026-01,493402.99,515139.31,21736.32,excel_bug,Excel row 12 col AA subtracts B652.T8-A3-A14-112 on top of its parent B641.T8-A3 at col Z — double-count of ~21 MWh/month (~4%). Ontology no longer mirrors the bug (mirror edge removed 2026-04-21). See annotation B612_T8_suspected_excel_bug.
+EL,B612,2026-02,447699.95,468831.43,21131.48,excel_bug,Excel row 12 col AA subtracts B652.T8-A3-A14-112 on top of its parent B641.T8-A3 at col Z — double-count of ~21 MWh/month (~4%). Ontology no longer mirrors the bug (mirror edge removed 2026-04-21). See annotation B612_T8_suspected_excel_bug.
 EL,B613,2026-01,11407.24,0.00,-11407.24,strux_only_meter,B613.T4-C1 is STRUX-only (no BMS data). Ontology has nothing to attribute.
 EL,B613,2026-02,10233.32,0.00,-10233.32,strux_only_meter,B613.T4-C1 is STRUX-only (no BMS data). Ontology has nothing to attribute.
 EL,B614,2026-01,642223.84,642259.59,35.75,match,
@@ -19,7 +19,7 @@ EL,B616,2026-01,555788.83,555803.62,14.79,match,
 EL,B616,2026-02,602851.05,602831.20,-19.85,match,
 EL,B620,2026-01,0.00,0.00,0.00,match,
 EL,B620,2026-02,0.00,0.00,0.00,match,
-EL,B621,2026-01,734004.75,734152.93,148.18,match,
+EL,B621,2026-01,734004.75,734152.93,148.18,ontology_drift,Jan +148 kWh on 734k total (0.02%). Residual from cross-building meter aggregation; no specific reset event but multiple meters contribute rolling_sum boundary-day noise.
 EL,B621,2026-02,685726.83,685688.43,-38.40,match,
 EL,B622,2026-01,41144.56,41148.32,3.76,match,
 EL,B622,2026-02,37521.72,37518.32,-3.40,match,
@@ -47,8 +47,8 @@ EL,B650,2026-01,150368.69,150456.87,88.18,match,
 EL,B650,2026-02,162330.04,162321.45,-8.59,match,
 EL,B651,2026-01,25575.17,25566.91,-8.26,match,
 EL,B651,2026-02,31536.22,31540.47,4.25,match,
-EL,B652,2026-01,21179.03,21782.53,603.50,excel_bug,Residual from the B612 T8-A3-A14-112 double-subtraction mirror edge; ~0.6 MWh redistribution is approximate.
-EL,B652,2026-02,20500.01,21144.23,644.22,excel_bug,Residual from the B612 T8-A3-A14-112 double-subtraction mirror edge; ~0.6 MWh redistribution is approximate.
+EL,B652,2026-01,21179.03,21782.53,603.50,ontology_drift,B652.T14-B3-J reads at building B602 (per building_id attribution) but Excel formula subtracts it from B652 at row 33 col T and adds it to B602. Net campus total matches; attribution differs by ~604 kWh/month.
+EL,B652,2026-02,20500.01,21144.23,644.22,ontology_drift,B652.T14-B3-J reads at building B602 (per building_id attribution) but Excel formula subtracts it from B652 at row 33 col T and adds it to B602. Net campus total matches; attribution differs by ~644 kWh/month.
 EL,B653,2026-01,362349.55,362358.68,9.12,match,
 EL,B653,2026-02,370006.70,370008.45,1.75,match,
 EL,B654,2026-01,288836.75,288830.75,-6.00,match,
@@ -61,7 +61,7 @@ EL,B658,2026-01,27619.51,27619.21,-0.30,match,
 EL,B658,2026-02,24576.77,24575.83,-0.94,match,
 EL,B659,2026-01,142804.39,142812.65,8.25,match,
 EL,B659,2026-02,119431.03,119409.37,-21.66,match,
-EL,B660,2026-01,7016098.56,7016707.94,609.38,match,
+EL,B660,2026-01,7016098.56,7016707.94,609.38,ontology_drift,"Jan +609 kWh on 7 GWh total (0.009%). Boundary-day consumption loss across multiple H23-1/H3-1 counter resets (see B660_H23_resets + B660_H3_resets annotations, 10 resets total on 14 months)."
 EL,B660,2026-02,6455431.55,6314411.62,-141019.93,under_investigation,"Jan matches within 609 kWh, Feb drifts -141 MWh (-2.2%). Root cause not yet diagnosed."
 EL,B661,2026-01,79741.38,79742.94,1.56,match,
 EL,B661,2026-02,139002.75,139143.06,140.31,ontology_drift,Drift of 140 (0.1%). Cause not yet classified.
