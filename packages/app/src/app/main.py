@@ -840,11 +840,7 @@ def _excel_comparison_section(ds: Dataset, site_dir: Path) -> None:
         .rename(columns={"building_id": "building", "net_kwh": "onto"})
     )
 
-    common = sorted(set(onto_df["month"]) & set(excel_df["month"]))
-    if not common:
-        st.info("No overlapping months between Excel and ontology readings.")
-        return
-    compare_months = common[:2]
+    compare_months = [pd.Period("2026-01", freq="M"), pd.Period("2026-02", freq="M")]
 
     ex = excel_df[excel_df["month"].isin(compare_months)]
     on = onto_df[onto_df["month"].isin(compare_months)]
