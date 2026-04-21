@@ -92,6 +92,8 @@ OWN_BASELINE_KWH_H: dict[str, float] = {
     "M16": 10.0,  # B14 frozen counter
     "R1": 25.0,   # B15 parallel root A
     "R2": 20.0,   # B16 parallel root B
+    "F1": 12.0,   # flip meter A (campus-level, parent until FLIP_DATE)
+    "F2": 9.0,    # flip meter B (campus-level, parent after FLIP_DATE)
     "M17": 15.0,  # campus-level, BMS register corruption analog
     # Virtuals holding unmetered-building consumption
     "V1": 35.0,   # B3
@@ -151,6 +153,8 @@ SHAPE: dict[str, dict[str, float]] = {
     "M16": {"daily": 0.20, "weekly": 0.10, "monthly": 0.30, "noise": 0.08, "phase": 1.0},
     "R1":  {"daily": 0.35, "weekly": 0.20, "monthly": 0.15, "noise": 0.06, "phase": 0.0},
     "R2":  {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.07, "phase": 0.5},
+    "F1":  {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.06, "phase": 0.0},
+    "F2":  {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.06, "phase": 0.5},
     "M17": {"daily": 0.30, "weekly": 0.15, "monthly": 0.20, "noise": 0.06, "phase": 0.5},
     # Virtuals — synthesized as warehouse-like flat profiles so the
     # downstream buildings have plausible consumption curves.

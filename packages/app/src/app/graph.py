@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from datetime import date
 
-from ontology import Dataset, Meter, Zone
+from ontology import Dataset, Meter, MeterRelation, Zone
 
 COLOR_SUB = "#586e75"
 COLOR_FEEDS = "#b58900"
@@ -25,8 +26,35 @@ def _meter_node(m: Meter) -> str:
     return f'  "{m.meter_id}" [label="{m.meter_id}", {style}];'
 
 
-def to_dot(ds: Dataset) -> str:
-    """Build a DOT topology diagram grouped by building."""
+def _active(valid_from: date | None, valid_to: date | None, as_of: date) -> bool:
+    """Schema semantics: [valid_from, valid_to) with NULLs unbounded."""
+    if valid_from is not None and valid_from > as_of:
+        return False
+    if valid_to is not None and valid_to <= as_of:
+        return False
+    return True
+
+
+def to_dot(ds: Dataset, as_of: date | None = None) -> str:
+    """Build a DOT topology diagram grouped by building.
+
+    When `as_of` is provided, meters and relations outside their
+    [valid_from, valid_to) window are excluded — letting the viewer
+    inspect how the topology looked at a specific date (e.g. before or
+    after a re-parenting event). `as_of=None` keeps every edge so
+    non-app callers see the full history.
+    """
+    meters: list[Meter] = list(ds.meters)
+    relations: list[MeterRelation] = list(ds.relations)
+    if as_of is not None:
+        meters = [m for m in meters if _active(m.valid_from, m.valid_to, as_of)]
+        active_ids = {m.meter_id for m in meters}
+        relations = [
+            r for r in relations
+            if _active(r.valid_from, r.valid_to, as_of)
+            and r.parent_meter_id in active_ids
+            and r.child_meter_id in active_ids
+        ]
     lines: list[str] = [
         "digraph G {",
         "  rankdir=TB;",
@@ -36,7 +64,7 @@ def to_dot(ds: Dataset) -> str:
     ]
 
     # Campus-level meters (no building) sit outside any cluster.
-    for m in ds.meters:
+    for m in meters:
         if m.building_id is None:
             lines.append(_meter_node(m))
 
@@ -54,7 +82,7 @@ def to_dot(ds: Dataset) -> str:
 
     # Group meters by (building, zone). Unzoned meters get key None.
     by_bz: dict[str, dict[str | None, list[Meter]]] = defaultdict(lambda: defaultdict(list))
-    for m in ds.meters:
+    for m in meters:
         if m.building_id is None:
             continue
         by_bz[m.building_id][meter_to_zone.get(m.meter_id)].append(m)
@@ -98,7 +126,7 @@ def to_dot(ds: Dataset) -> str:
         lines.append("  }")
 
     # Edges. flow_coefficient lives on the feeds relation.
-    for r in ds.relations:
+    for r in relations:
         if r.relation_type == "feeds":
             label = (
                 f', label="k={r.flow_coefficient}"'

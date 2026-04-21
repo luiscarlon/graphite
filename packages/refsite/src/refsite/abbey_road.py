@@ -139,6 +139,11 @@ M17_SUBGAP_START = date(2026, 1, 27)
 M17_SUBGAP_END = date(2026, 1, 30)       # exclusive
 M17_HIGH_STUCK_VALUE = 805175.296
 M17_LOW_ARTIFACT_VALUE = 0.2
+# F1/F2 direction flip: physical re-wiring on 2026-02-01.
+# Before this date F2 is a sub-meter of F1 (F1 reads F1_own + F2_own);
+# after it the wiring is reversed and F1 becomes a sub-meter of F2.
+# Exists to exercise temporal `meter_relations` validity in the calc.
+FLIP_DATE = date(2026, 2, 1)
 
 
 SUMMARY = (
@@ -266,6 +271,12 @@ FEATURES: list[tuple[str, str]] = [
         "Annotations (outage, swap, data_quality, patch, calibration, unknown)",
         "Reference annotations covering every category, attached to "
         "meters and timeseries refs.",
+    ),
+    (
+        "Topology direction flip (F1↔F2 on 2026-02-01)",
+        "Two meters whose parent/child relation reverses mid-period — "
+        "mirrors the GTN B614/B642 ÅNGA case. Exercises temporal "
+        "`meter_relations.valid_from/valid_to` in the calc layer.",
     ),
 ]
 
@@ -426,6 +437,9 @@ def build() -> Dataset:
         Meter(meter_id="M16", name="Frozen counter", building_id="B14", media_type_id="EL"),
         Meter(meter_id="R1", name="Parallel root A", building_id=None, media_type_id="EL"),
         Meter(meter_id="R2", name="Parallel root B", building_id=None, media_type_id="EL"),
+        # F1/F2 direction flip: parent/child reverses on FLIP_DATE.
+        Meter(meter_id="F1", name="Flip meter A", building_id=None, media_type_id="EL"),
+        Meter(meter_id="F2", name="Flip meter B", building_id=None, media_type_id="EL"),
         # M17 stands in for the B217 steam-meter pattern: a single
         # campus-level counter whose upstream source is corrupted inside
         # a known window by a multi-register BMS misconfig. Raw samples
@@ -508,6 +522,22 @@ def build() -> Dataset:
         MeterRelation(parent_meter_id="M13", child_meter_id="M14", relation_type="hasSubMeter"),
         MeterRelation(parent_meter_id="M14", child_meter_id="M15", relation_type="hasSubMeter"),
         MeterRelation(parent_meter_id="M13", child_meter_id="M16", relation_type="hasSubMeter"),
+        # Direction flip: F1 is the parent until FLIP_DATE, F2 after.
+        # A correct calc requires BOTH edges to be filtered by the event
+        # date; otherwise each sub_total pair cancels the other's flow
+        # and one meter's net goes wildly negative in each half.
+        MeterRelation(
+            parent_meter_id="F1",
+            child_meter_id="F2",
+            relation_type="hasSubMeter",
+            valid_to=FLIP_DATE,
+        ),
+        MeterRelation(
+            parent_meter_id="F2",
+            child_meter_id="F1",
+            relation_type="hasSubMeter",
+            valid_from=FLIP_DATE,
+        ),
     ]
 
     # `brick:meters` - what each meter measures. Campus-level meters
@@ -549,6 +579,8 @@ def build() -> Dataset:
         MeterMeasures(meter_id="M16", target_kind="zone", target_id="B14.warehouse"),
         MeterMeasures(meter_id="R1", target_kind="campus", target_id=CAMPUS_ID),
         MeterMeasures(meter_id="R2", target_kind="campus", target_id=CAMPUS_ID),
+        MeterMeasures(meter_id="F1", target_kind="campus", target_id=CAMPUS_ID),
+        MeterMeasures(meter_id="F2", target_kind="campus", target_id=CAMPUS_ID),
         MeterMeasures(meter_id="M17", target_kind="campus", target_id=CAMPUS_ID),
     ]
 
@@ -604,6 +636,8 @@ def build() -> Dataset:
         "M16",
         "R1",
         "R2",
+        "F1",
+        "F2",
         "M17",
     ]
     sensors = [
@@ -626,7 +660,7 @@ def build() -> Dataset:
     external_intakes = ["I1", "I2", "I3"]
     internal_downstream = [
         "M1", "M2", "M3", "M4", "M5", "M7", "M8", "M9", "M10", "M11", "M12",
-        "M13", "M15", "M16", "R1", "R2",
+        "M13", "M15", "M16", "R1", "R2", "F1", "F2",
     ]
     # Synthetic PME external ids for downstream meters. M0 uses the
     # proposal's example id to keep the mapping recognizable.
@@ -651,6 +685,8 @@ def build() -> Dataset:
         "M16": "631:263",
         "R1": "631:300",
         "R2": "631:301",
+        "F1": "631:310",
+        "F2": "631:311",
         "M17": "631:270",
     }
 

@@ -13,38 +13,61 @@ EPS = 1e-9
 
 
 def check_cycles(ds: Dataset) -> list[Violation]:
-    """No cycles in the union of hasSubMeter and feeds edges."""
-    adj: dict[str, list[str]] = defaultdict(list)
+    """No cycles in the meter graph at any single point in time.
+
+    A cycle is a real violation only if every edge in it is simultaneously
+    valid. A direction flip encoded as `A→B (valid_to=t)` + `B→A
+    (valid_from=t)` is topologically a back-edge but has an empty
+    temporal intersection — so it's not flagged.
+    """
+    adj: dict[str, list[tuple[str, MeterRelation]]] = defaultdict(list)
     for r in ds.relations:
-        adj[r.parent_meter_id].append(r.child_meter_id)
+        adj[r.parent_meter_id].append((r.child_meter_id, r))
 
     WHITE, GRAY, BLACK = 0, 1, 2
     color: dict[str, int] = defaultdict(lambda: WHITE)
     violations: list[Violation] = []
 
-    def dfs(node: str, path: list[str]) -> None:
+    def dfs(node: str, path: list[str], edges: list[MeterRelation]) -> None:
         color[node] = GRAY
         path.append(node)
-        for nxt in adj.get(node, []):
+        for nxt, rel in adj.get(node, []):
             if color[nxt] == GRAY:
                 start = path.index(nxt)
-                cycle = [*path[start:], nxt]
-                violations.append(
-                    Violation(
-                        rule="no_cycles",
-                        message=f"cycle in meter graph: {' -> '.join(cycle)}",
-                        context={"cycle": cycle},
+                cycle_nodes = [*path[start:], nxt]
+                cycle_edges = [*edges[start:], rel]
+                if _edges_cotemporal(cycle_edges):
+                    violations.append(
+                        Violation(
+                            rule="no_cycles",
+                            message=f"cycle in meter graph: {' -> '.join(cycle_nodes)}",
+                            context={"cycle": cycle_nodes},
+                        )
                     )
-                )
             elif color[nxt] == WHITE:
-                dfs(nxt, path)
+                edges.append(rel)
+                dfs(nxt, path, edges)
+                edges.pop()
         path.pop()
         color[node] = BLACK
 
     for m in ds.meters:
         if color[m.meter_id] == WHITE:
-            dfs(m.meter_id, [])
+            dfs(m.meter_id, [], [])
     return violations
+
+
+def _edges_cotemporal(edges: list[MeterRelation]) -> bool:
+    """True if every edge's validity window overlaps every other's.
+
+    A cycle needs a moment in time where all its edges are active — i.e.
+    the intersection of all `[valid_from, valid_to)` intervals is
+    non-empty. Equivalent to: the max of all valid_from < the min of
+    all valid_to.
+    """
+    lo = max((e.valid_from or date.min) for e in edges)
+    hi = min((e.valid_to or date.max) for e in edges)
+    return lo < hi
 
 
 def check_feeds_coefficients(ds: Dataset) -> list[Violation]:

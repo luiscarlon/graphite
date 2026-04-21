@@ -712,3 +712,93 @@ def test_bracket_and_interpolate_pass_validation() -> None:
     # Abbey Road now uses `bracket` and `interpolate` on M17; the whole
     # dataset must still validate clean.
     assert validate(ds) == []
+
+
+def test_flip_scenario_structural() -> None:
+    """F1/F2 carry a direction-flipping hasSubMeter pair bracketing FLIP_DATE."""
+    ds = abbey_road.build()
+    flip_rels = [
+        r for r in ds.relations
+        if {r.parent_meter_id, r.child_meter_id} == {"F1", "F2"}
+    ]
+    assert len(flip_rels) == 2
+    pre = next(r for r in flip_rels if r.parent_meter_id == "F1")
+    post = next(r for r in flip_rels if r.parent_meter_id == "F2")
+    assert pre.valid_to == abbey_road.FLIP_DATE and pre.valid_from is None
+    assert post.valid_from == abbey_road.FLIP_DATE and post.valid_to is None
+    assert pre.relation_type == post.relation_type == "hasSubMeter"
+    # The topologically-back-edge pair is NOT a real cycle because its
+    # validity windows are disjoint — validation must let it through.
+    from validation import validate
+    violations = [v for v in validate(ds) if v.rule == "no_cycles"]
+    assert violations == [], f"flip pair wrongly flagged as cycle: {violations}"
+
+
+def test_flip_scenario_readings_respect_validity() -> None:
+    """F1's hourly flow drops at FLIP_DATE; F2's rises. The generator
+    already honors edge validity, so the synthetic counters reflect the
+    physical re-wire even though the SQL layer does not yet.
+    """
+    from datetime import datetime
+    ds = abbey_road.build()
+    rs = generate_readings(ds, seed=42)
+    flip_dt = datetime(
+        abbey_road.FLIP_DATE.year,
+        abbey_road.FLIP_DATE.month,
+        abbey_road.FLIP_DATE.day,
+    )
+    f1 = sorted(
+        [r for r in rs if r.timeseries_id == "F1:h"], key=lambda r: r.timestamp
+    )
+    f2 = sorted(
+        [r for r in rs if r.timeseries_id == "F2:h"], key=lambda r: r.timestamp
+    )
+
+    def mean_delta(rows: list, window: tuple[datetime, datetime]) -> float:
+        inside = [r for r in rows if window[0] <= r.timestamp < window[1]]
+        values = [r.value for r in inside]
+        return (values[-1] - values[0]) / (len(values) - 1) if len(values) > 1 else 0.0
+
+    pre = (datetime(2026, 1, 1), flip_dt)
+    post = (flip_dt, datetime(2026, 3, 1))
+    f1_pre, f1_post = mean_delta(f1, pre), mean_delta(f1, post)
+    f2_pre, f2_post = mean_delta(f2, pre), mean_delta(f2, post)
+
+    # Pre-flip F1 ≈ F1_own + F2_own ≈ 21; post-flip ≈ F1_own ≈ 12.
+    # (Daily/weekly/monthly shape inflates the baseline; allow a wide band.)
+    assert f1_pre > f1_post * 1.3, (
+        f"F1 should drop at flip: pre={f1_pre:.2f}, post={f1_post:.2f}"
+    )
+    assert f2_post > f2_pre * 1.3, (
+        f"F2 should rise at flip: pre={f2_pre:.2f}, post={f2_post:.2f}"
+    )
+
+
+def test_flip_scenario_calc_respects_validity() -> None:
+    """F1 and F2's own consumption must be positive in both halves.
+
+    Today's SQL ignores `meter_relations.valid_from/valid_to`, so both
+    the pre-flip `F1→F2` edge AND the post-flip `F2→F1` edge fire at
+    every timestamp. The consequence is a double-subtraction that makes
+    F2.net strongly negative before FLIP_DATE and F1.net strongly
+    negative after. Once the SQL honors validity, both meters' nets are
+    just their own consumption in each half.
+
+    This test is the canary for the temporal-SQL change: it fails hard
+    under the timeless calc and passes under the fixed one.
+    """
+    import calc
+    ds = abbey_road.build()
+    ds.readings = generate_readings(ds, seed=42)
+    conn = calc.connect(ds)
+    df = conn.execute(
+        "SELECT meter_id, strftime(timestamp, '%Y-%m') AS month, "
+        "SUM(net_kwh) AS net FROM meter_net "
+        "WHERE meter_id IN ('F1','F2') GROUP BY 1, 2 ORDER BY 2, 1"
+    ).fetchdf()
+    rows = {(r.meter_id, r.month): r.net for r in df.itertuples()}
+    for key in (("F1", "2026-01"), ("F1", "2026-02"),
+                ("F2", "2026-01"), ("F2", "2026-02")):
+        assert rows[key] > 0, (
+            f"{key}: net_kwh={rows[key]:.1f} — temporal validity not honored"
+        )

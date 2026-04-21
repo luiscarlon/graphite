@@ -35,6 +35,8 @@ WITH attributed AS (
         END AS campus_id
     FROM meter_net mn
     JOIN meter_measures mm       ON mm.meter_id = mn.meter_id
+                                AND (mm.valid_from IS NULL OR mm.valid_from <= mn.timestamp)
+                                AND (mm.valid_to   IS NULL OR mm.valid_to   >  mn.timestamp)
     LEFT JOIN zones z            ON mm.target_kind = 'zone'
                                 AND z.zone_id = mm.target_id
     LEFT JOIN buildings b_direct ON mm.target_kind = 'building'

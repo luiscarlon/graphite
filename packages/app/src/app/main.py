@@ -472,7 +472,20 @@ def main() -> None:
             st.dataframe([v.model_dump() for v in violations], width="stretch")
 
     st.subheader("Topology")
-    _topology_chart(to_dot(ds))
+    # Anchor date: topology reflects meters + relations valid at this date.
+    # Default is today so the common "what's the wiring right now?" answer
+    # is one click away; scrub backward to inspect historical structures
+    # (e.g. the pre-July-2025 B614/B642 ÅNGA flip).
+    topo_as_of = st.date_input(
+        "Topology as of",
+        value=date.today(),
+        key="topology_as_of",
+        help=(
+            "Filters meters and relations by their [valid_from, valid_to) "
+            "windows. Retired meters and inactive edges are hidden."
+        ),
+    )
+    _topology_chart(to_dot(ds, as_of=topo_as_of))
 
     ann_bands = None
     ann_hints = None

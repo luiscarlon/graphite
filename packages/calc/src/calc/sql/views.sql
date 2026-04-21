@@ -22,6 +22,15 @@
 --                   to a single target (campus/building/zone) via
 --                   meter_measures. Downstream aggregations consume
 --                   this view.
+--
+-- Temporal relations
+-- ------------------
+-- Every meter_relations row carries a [valid_from, valid_to) interval
+-- (NULLs = unbounded). A relation contributes to flow calculations at
+-- timestamp t only while t is inside that window, so a parent/child
+-- flip like `A→B (valid_to=T)` + `B→A (valid_from=T)` fires exactly one
+-- edge at any given t instead of both. The temporal predicate is
+-- reused across every join on meter_relations below.
 
 CREATE OR REPLACE VIEW measured_flow AS
 SELECT
@@ -51,6 +60,8 @@ sub_total AS (
     FROM meter_relations r
     JOIN measured_flow mf ON mf.meter_id = r.child_meter_id
     WHERE r.relation_type = 'hasSubMeter'
+      AND (r.valid_from IS NULL OR r.valid_from <= mf.timestamp)
+      AND (r.valid_to   IS NULL OR r.valid_to   >  mf.timestamp)
     GROUP BY r.parent_meter_id, mf.timestamp
 ),
 flow(meter_id, timestamp, delta_kwh, hop) AS (
@@ -74,6 +85,8 @@ flow(meter_id, timestamp, delta_kwh, hop) AS (
     JOIN meter_relations rel
         ON rel.parent_meter_id = parent.meter_id
        AND rel.relation_type = 'feeds'
+       AND (rel.valid_from IS NULL OR rel.valid_from <= parent.timestamp)
+       AND (rel.valid_to   IS NULL OR rel.valid_to   >  parent.timestamp)
     LEFT JOIN sub_total subs
         ON subs.parent_meter_id = parent.meter_id
        AND subs.timestamp = parent.timestamp
@@ -101,9 +114,9 @@ CREATE OR REPLACE VIEW meter_net AS
 --   partial share (k<1): the unshared fraction stays at M as its own
 --   no feeds children: net(M) = flow(M) − Σ hasSubMeter flow
 --
--- Σ feeds k is computed once (not per hour) because Abbey Road has no
--- per-hour feeds validity. When that becomes real, move feeds_k_sum
--- into a per-hour join.
+-- Both hs_total and feeds_k_sum are per-timestamp: each filters
+-- meter_relations by the edge's validity window so temporal flips
+-- (A→B then B→A) and retired feeds edges don't double-apply.
 WITH
 hs_total AS (
     SELECT
@@ -113,13 +126,21 @@ hs_total AS (
     FROM meter_relations r
     JOIN meter_flow mf ON mf.meter_id = r.child_meter_id
     WHERE r.relation_type = 'hasSubMeter'
+      AND (r.valid_from IS NULL OR r.valid_from <= mf.timestamp)
+      AND (r.valid_to   IS NULL OR r.valid_to   >  mf.timestamp)
     GROUP BY r.parent_meter_id, mf.timestamp
 ),
 feeds_k_sum AS (
-    SELECT parent_meter_id, SUM(flow_coefficient) AS total_k
-    FROM meter_relations
-    WHERE relation_type = 'feeds'
-    GROUP BY parent_meter_id
+    SELECT
+        r.parent_meter_id,
+        mf.timestamp,
+        SUM(r.flow_coefficient) AS total_k
+    FROM meter_relations r
+    JOIN meter_flow mf ON mf.meter_id = r.parent_meter_id
+    WHERE r.relation_type = 'feeds'
+      AND (r.valid_from IS NULL OR r.valid_from <= mf.timestamp)
+      AND (r.valid_to   IS NULL OR r.valid_to   >  mf.timestamp)
+    GROUP BY r.parent_meter_id, mf.timestamp
 )
 SELECT
     mf.meter_id,
@@ -131,4 +152,5 @@ LEFT JOIN hs_total hs
     ON hs.parent_meter_id = mf.meter_id
    AND hs.timestamp = mf.timestamp
 LEFT JOIN feeds_k_sum fk
-    ON fk.parent_meter_id = mf.meter_id;
+    ON fk.parent_meter_id = mf.meter_id
+   AND fk.timestamp = mf.timestamp;
