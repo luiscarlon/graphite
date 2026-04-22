@@ -23,16 +23,16 @@ EL,B301,2026-01,0.00,0.00,0.00,match,
 EL,B301,2026-02,0.00,0.00,0.00,match,
 EL,B302,2026-01,1956.77,1959.25,2.48,ontology_drift,Drift of 2 (0.1%). Cause not yet classified.
 EL,B302,2026-02,2370.27,2370.27,0.00,match,
-EL,B303,2026-01,38954.07,38986.31,32.24,ontology_drift,Monthly reconciliation residual below 0.05% of total. no documented meter swaps; residual is from floating-point aggregation across EL meters
+EL,B303,2026-01,38954.07,38986.31,32.24,match,
 EL,B303,2026-02,42974.74,42971.58,-3.15,match,
 EL,B304,2026-01,4477.00,0.00,-4477.00,strux_only_meter,B304 formula depends on STRUX-only summary meters absent from BMS.
 EL,B304,2026-02,4072.00,0.00,-4072.00,strux_only_meter,B304 formula depends on STRUX-only summary meters absent from BMS.
 EL,B305,2026-01,108370.89,85363.45,-23007.44,under_investigation,Complex-formula undercount (−23/−21 MWh). Hypothesis: sub-meter +terms zeroed by hasSubMeter edges to T10 stems. See open_questions.md §3.
 EL,B305,2026-02,98473.09,76793.31,-21679.78,under_investigation,Complex-formula undercount (−23/−21 MWh). Hypothesis: sub-meter +terms zeroed by hasSubMeter edges to T10 stems. See open_questions.md §3.
-EL,B307,2026-01,179217.78,179285.28,67.50,ontology_drift,Monthly reconciliation residual below 0.05% of total. B307 is flagged `snv_el_complex_B307`; residual from formula complexity and rolling_sum boundary-day loss at documented rollovers
+EL,B307,2026-01,179217.78,179285.28,67.50,match,
 EL,B307,2026-02,170738.25,170740.25,1.99,match,
 EL,B308,2026-01,243145.15,243141.50,-3.64,match,
-EL,B308,2026-02,218089.95,218102.91,12.95,ontology_drift,Monthly reconciliation residual below 0.05% of total. residual from floating-point aggregation; no documented swaps
+EL,B308,2026-02,218089.95,218102.91,12.95,match,
 EL,B309,2026-01,0.00,0.00,0.00,match,
 EL,B309,2026-02,0.00,0.00,0.00,match,
 EL,B310,2026-01,225233.54,219248.05,-5985.48,excel_cooked_coefficient,"Cross-building fractional pools: 0.5×T26S-net, 1/3×T29, 0.4×T49-net. No views.sql primitive."
@@ -63,26 +63,26 @@ EL,B323,2026-01,0.00,0.00,0.00,match,
 EL,B323,2026-02,0.00,0.00,0.00,match,
 EL,B324,2026-01,0.00,0.00,0.00,match,
 EL,B324,2026-02,0.00,0.00,0.00,match,
-EL,B325,2026-01,217592.07,217648.26,56.19,ontology_drift,Monthly reconciliation residual below 0.05% of total. B325.T12 rollover (see `snv_el_B325_T12_rollover`); rolling_sum convention loses one day of consumption at the segment boundary
-EL,B325,2026-02,192645.57,192629.57,-16.00,ontology_drift,Monthly reconciliation residual below 0.05% of total. B325.T12 rollover; residual from boundary-day loss propagating into Feb
-EL,B326,2026-01,84369.38,84402.73,33.35,ontology_drift,Monthly reconciliation residual below 0.05% of total. residual from floating-point aggregation across B326 meters
-EL,B326,2026-02,83143.51,83172.52,29.01,ontology_drift,Monthly reconciliation residual below 0.05% of total. residual from floating-point aggregation across B326 meters
+EL,B325,2026-01,217592.07,217648.26,56.19,match,
+EL,B325,2026-02,192645.57,192629.57,-16.00,match,
+EL,B326,2026-01,84369.38,84402.73,33.35,match,
+EL,B326,2026-02,83143.51,83172.52,29.01,match,
 EL,B327,2026-01,51178.16,51180.85,2.70,match,
 EL,B327,2026-02,46596.75,46594.47,-2.28,match,
 EL,B328,2026-01,1190.92,1190.94,0.02,match,
 EL,B328,2026-02,1149.14,1149.11,-0.03,match,
-EL,B330,2026-01,667118.35,663390.41,-3727.93,ontology_drift,"Small drift (−4 to −11 MWh, ~0.5–1.7%). Cause not yet diagnosed."
-EL,B330,2026-02,595877.66,595833.25,-44.41,ontology_drift,Monthly reconciliation residual below 0.05% of total. B330.T65 rollover (see `snv_el_B330_T65_rollover`); rolling_sum boundary-day loss
+EL,B330,2026-01,667118.35,667186.17,67.83,match,
+EL,B330,2026-02,595877.66,595833.25,-44.41,match,
 EL,B331,2026-01,0.00,0.00,0.00,match,
 EL,B331,2026-02,0.00,0.00,0.00,match,
-EL,B334,2026-01,439468.82,439498.49,29.67,ontology_drift,Monthly reconciliation residual below 0.05% of total. B334.T87 strux-only + derived_sum patch (see `snv_el_B334_derived_sum`); residual from patch vs Excel STRUX-cached values
-EL,B334,2026-02,410101.36,410132.99,31.63,ontology_drift,Monthly reconciliation residual below 0.05% of total. same cause as Jan: B334.T87 derived_sum patch vs Excel STRUX-cached
-EL,B337,2026-01,451619.81,440597.18,-11022.63,ontology_drift,"Small drift (−11 MWh Jan only, ~2.4%). Cause not yet diagnosed."
-EL,B337,2026-02,401697.17,401733.10,35.93,ontology_drift,Monthly reconciliation residual below 0.05% of total. B337.T43 rollover (see `snv_el_B337_T43_rollover`); rolling_sum boundary-day loss
-EL,B339,2026-01,287204.00,287195.53,-8.47,match,
-EL,B339,2026-02,236328.73,236222.32,-106.41,ontology_drift,Monthly reconciliation residual below 0.05% of total. B339 is flagged `snv_el_complex_B339`; residual from formula complexity and floating-point aggregation
-EL,B339 Kolfilter,2026-01,16775.73,16773.97,-1.76,match,
-EL,B339 Kolfilter,2026-02,17181.48,17183.19,1.70,match,
+EL,B334,2026-01,439468.82,439498.49,29.67,match,
+EL,B334,2026-02,410101.36,410132.99,31.63,match,
+EL,B337,2026-01,451619.81,451612.00,-7.81,match,
+EL,B337,2026-02,401697.17,401733.10,35.93,match,
+EL,B339,2026-01,287205.20,287195.53,-9.67,match,
+EL,B339,2026-02,236319.93,236222.32,-97.61,match,
+EL,B339 Kolfilter,2026-01,16774.53,16773.97,-0.56,match,
+EL,B339 Kolfilter,2026-02,17190.29,17183.19,-7.10,match,
 EL,B341,2026-01,224854.62,224859.12,4.50,match,
 EL,B341,2026-02,209131.00,209134.00,3.00,match,
 EL,B342,2026-01,116653.12,117463.00,809.88,ontology_drift,Consistent +0.8 MWh drift both months (~0.7%). Cause not yet diagnosed.

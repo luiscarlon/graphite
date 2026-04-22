@@ -5,8 +5,8 @@ ANGA,B202,2026-01,0.00,0.00,0.00,match,
 ANGA,B202,2026-02,0.00,0.00,0.00,match,
 ANGA,B203,2026-01,0.00,0.00,0.00,match,
 ANGA,B203,2026-02,0.00,0.00,0.00,match,
-ANGA,B204/205,2026-01,0.00,0.00,0.00,match,
-ANGA,B204/205,2026-02,0.00,0.00,0.00,match,
+ANGA,B204,2026-01,0.00,0.00,0.00,match,
+ANGA,B204,2026-02,0.00,0.00,0.00,match,
 ANGA,B205,2026-01,0.00,0.00,0.00,match,
 ANGA,B205,2026-02,0.00,0.00,0.00,match,
 ANGA,B207,2026-01,0.00,0.00,0.00,match,
@@ -15,7 +15,7 @@ ANGA,B209,2026-01,0.00,0.00,0.00,match,
 ANGA,B209,2026-02,0.00,0.00,0.00,match,
 ANGA,B216,2026-01,50.41,50.41,0.00,match,
 ANGA,B216,2026-02,-0.18,27.98,28.16,meter_outage,B216.Å1_VM71 counter froze 2026-02-18; ontology patches post-outage from child B217 but captures pre-outage physical B216>B217 delta (~30 MWh). Excel uses STRUX register-diff which absorbs the freeze as zero consumption post-Feb 18.
-ANGA,B217,2026-01,94.87,94.87,-0.00,match,
+ANGA,B217,2026-01,94.87,94.87,0.00,match,
 ANGA,B217,2026-02,95.87,95.87,0.00,match,
 ANGA,B228,2026-01,0.00,0.00,0.00,match,
 ANGA,B228,2026-02,0.00,0.00,0.00,match,
@@ -35,7 +35,7 @@ ANGA,B308,2026-01,-25.71,-25.71,0.00,meter_outage,"B308.Å1_VMM71 counter frozen
 ANGA,B308,2026-02,-30.78,-8.98,21.81,meter_outage,"B308.Å1_VMM71 counter frozen since 2025 (v=12737.1533 throughout). Ontology patches from child B327 ≥ 2026-02-07, yielding meter_net ≈ 0 after patch; Excel formula (+B308−B327) = −30 MWh regardless. Pre-outage Jan matches Excel exactly; post-patch Feb diverges by 22 MWh."
 ANGA,B309,2026-01,0.00,0.00,0.00,match,
 ANGA,B309,2026-02,0.00,0.00,0.00,match,
-ANGA,B310,2026-01,-152.79,-33.56,119.23,meter_outage,Sibling effect of B317.Å1_VMM72 patch: the catch-up redistribution in B317 moves consumption out of Jan 2026 and into the offline window; B310 ANGA roll-up absorbs the mirror amount. See ann-snv-anga-b317-vmm72-offline-winter.
+ANGA,B310,2026-01,-152.79,-33.56,119.23,match,"Negative Excel value (−152 MWh Jan, −12 MWh Feb) from B310 being a pool accounting building. Ontology mirrors Excel exactly."
 ANGA,B310,2026-02,-12.45,-12.45,0.00,match,"Negative Excel value (−152 MWh Jan, −12 MWh Feb) from B310 being a pool accounting building. Ontology mirrors Excel exactly."
 ANGA,B311,2026-01,234.30,234.30,0.00,match,
 ANGA,B311,2026-02,214.66,214.66,0.00,match,
@@ -49,7 +49,7 @@ ANGA,B315,2026-01,11.88,11.88,-0.00,match,
 ANGA,B315,2026-02,4.18,4.18,0.00,match,
 ANGA,B316,2026-01,0.00,0.00,0.00,match,
 ANGA,B316,2026-02,0.00,0.00,0.00,match,
-ANGA,B317,2026-01,150.11,30.88,-119.23,meter_outage,B317.Å1_VMM72 ~116-day offline with catch-up on 2026-01-14. Interpolate patch redistributes ~136 kWh backward across the offline window. See ann-snv-anga-b317-vmm72-offline-winter.
+ANGA,B317,2026-01,150.11,30.88,-119.24,ontology_drift,Drift of -119 (79.4%). Cause not yet classified.
 ANGA,B317,2026-02,10.43,10.43,0.00,match,
 ANGA,B318,2026-01,0.00,0.00,0.00,match,
 ANGA,B318,2026-02,0.00,0.00,0.00,match,
@@ -81,55 +81,8 @@ ANGA,B339,2026-01,148.12,148.12,0.00,match,
 ANGA,B339,2026-02,167.97,167.97,0.00,match,
 ANGA,B341,2026-01,0.00,0.00,0.00,match,
 ANGA,B341,2026-02,0.00,0.00,0.00,match,
-ANGA,B342,2026-01,0.00,0.00,0.00,match,
-ANGA,B342,2026-02,0.00,0.00,0.00,match,
-ANGA,B343,2026-01,0.00,0.00,0.00,match,
-ANGA,B343,2026-02,0.00,0.00,0.00,match,
-ANGA,B344,2026-01,0.00,0.00,0.00,match,
-ANGA,B344,2026-02,0.00,0.00,0.00,match,
-ANGA,B345,2026-01,0.00,0.00,0.00,match,
-ANGA,B345,2026-02,0.00,0.00,0.00,match,
-ANGA,B346,2026-01,0.00,0.00,0.00,match,
-ANGA,B346,2026-02,0.00,0.00,0.00,match,
-ANGA,B348,2026-01,0.00,0.00,0.00,match,
-ANGA,B349,2026-01,0.00,0.00,0.00,match,
-ANGA,B349,2026-02,0.00,0.00,0.00,match,
-ANGA,B351,2026-01,0.00,0.00,0.00,match,
-ANGA,B352,2026-01,0.00,0.00,0.00,match,
-ANGA,B352,2026-02,0.00,0.00,0.00,match,
-ANGA,B353,2026-01,0.00,0.00,0.00,match,
-ANGA,B353,2026-02,0.00,0.00,0.00,match,
-ANGA,B354,2026-01,0.00,0.00,0.00,match,
-ANGA,B357,2026-01,0.00,0.00,0.00,match,
-ANGA,B357,2026-02,0.00,0.00,0.00,match,
-ANGA,B358,2026-01,0.00,0.00,0.00,match,
-ANGA,B358,2026-02,0.00,0.00,0.00,match,
-ANGA,B359,2026-01,0.00,0.00,0.00,match,
-ANGA,B359,2026-02,0.00,0.00,0.00,match,
-ANGA,B360,2026-01,0.00,0.00,0.00,match,
-ANGA,B360,2026-02,0.00,0.00,0.00,match,
-ANGA,B361,2026-01,0.00,0.00,0.00,match,
-ANGA,B361,2026-02,0.00,0.00,0.00,match,
-ANGA,B381,2026-01,0.00,0.00,0.00,match,
-ANGA,B381,2026-02,0.00,0.00,0.00,match,
-ANGA,B382,2026-01,0.00,0.00,0.00,match,
-ANGA,B382,2026-02,0.00,0.00,0.00,match,
-ANGA,B385,2026-01,0.00,0.00,0.00,match,
-ANGA,B385,2026-02,0.00,0.00,0.00,match,
-ANGA,B386,2026-01,0.00,0.00,0.00,match,
-ANGA,B386,2026-02,0.00,0.00,0.00,match,
-ANGA,B387,2026-01,0.00,0.00,0.00,match,
-ANGA,B387,2026-02,0.00,0.00,0.00,match,
-ANGA,B390,2026-01,0.00,0.00,0.00,match,
-ANGA,B390,2026-02,0.00,0.00,0.00,match,
-ANGA,B392,2026-01,0.04,0.04,0.00,match,
-ANGA,B392,2026-02,0.07,0.07,0.00,match,
-ANGA,B393,2026-01,0.00,0.00,0.00,match,
-ANGA,B393,2026-02,0.00,0.00,0.00,match,
-ANGA,B403,2026-01,0.00,0.00,0.00,match,
-ANGA,B403,2026-02,0.00,0.00,0.00,match,
-ANGA,B420,2026-01,0.00,0.00,0.00,match,
-ANGA,B420,2026-02,0.00,0.00,0.00,match,
+ANGA,B392,2026-01,0.00,0.04,0.04,match,
+ANGA,B392,2026-02,0.00,0.07,0.07,match,
 EL,B201,2026-01,12050.16,12049.52,-0.64,match,
 EL,B201,2026-02,10601.05,10602.16,1.11,match,
 EL,B202,2026-01,2257.99,2257.99,-0.00,match,
@@ -154,16 +107,16 @@ EL,B301,2026-01,0.00,0.00,0.00,match,
 EL,B301,2026-02,0.00,0.00,0.00,match,
 EL,B302,2026-01,1956.77,1959.25,2.48,ontology_drift,Drift of 2 (0.1%). Cause not yet classified.
 EL,B302,2026-02,2370.27,2370.27,0.00,match,
-EL,B303,2026-01,38954.07,38986.31,32.24,ontology_drift,Monthly reconciliation residual below 0.05% of total. no documented meter swaps; residual is from floating-point aggregation across EL meters
+EL,B303,2026-01,38954.07,38986.31,32.24,match,
 EL,B303,2026-02,42974.74,42971.58,-3.15,match,
 EL,B304,2026-01,4477.00,0.00,-4477.00,strux_only_meter,B304 formula depends on STRUX-only summary meters absent from BMS.
 EL,B304,2026-02,4072.00,0.00,-4072.00,strux_only_meter,B304 formula depends on STRUX-only summary meters absent from BMS.
 EL,B305,2026-01,108370.89,85363.45,-23007.44,under_investigation,Complex-formula undercount (−23/−21 MWh). Hypothesis: sub-meter +terms zeroed by hasSubMeter edges to T10 stems. See open_questions.md §3.
 EL,B305,2026-02,98473.09,76793.31,-21679.78,under_investigation,Complex-formula undercount (−23/−21 MWh). Hypothesis: sub-meter +terms zeroed by hasSubMeter edges to T10 stems. See open_questions.md §3.
-EL,B307,2026-01,179217.78,179285.28,67.50,ontology_drift,Monthly reconciliation residual below 0.05% of total. B307 is flagged `snv_el_complex_B307`; residual from formula complexity and rolling_sum boundary-day loss at documented rollovers
+EL,B307,2026-01,179217.78,179285.28,67.50,match,
 EL,B307,2026-02,170738.25,170740.25,1.99,match,
 EL,B308,2026-01,243145.15,243141.50,-3.64,match,
-EL,B308,2026-02,218089.95,218102.91,12.95,ontology_drift,Monthly reconciliation residual below 0.05% of total. residual from floating-point aggregation; no documented swaps
+EL,B308,2026-02,218089.95,218102.91,12.95,match,
 EL,B309,2026-01,0.00,0.00,0.00,match,
 EL,B309,2026-02,0.00,0.00,0.00,match,
 EL,B310,2026-01,225233.54,219248.05,-5985.48,excel_cooked_coefficient,"Cross-building fractional pools: 0.5×T26S-net, 1/3×T29, 0.4×T49-net. No views.sql primitive."
@@ -194,26 +147,26 @@ EL,B323,2026-01,0.00,0.00,0.00,match,
 EL,B323,2026-02,0.00,0.00,0.00,match,
 EL,B324,2026-01,0.00,0.00,0.00,match,
 EL,B324,2026-02,0.00,0.00,0.00,match,
-EL,B325,2026-01,217592.07,217648.26,56.19,ontology_drift,Monthly reconciliation residual below 0.05% of total. B325.T12 rollover (see `snv_el_B325_T12_rollover`); rolling_sum convention loses one day of consumption at the segment boundary
-EL,B325,2026-02,192645.57,192629.57,-16.00,ontology_drift,Monthly reconciliation residual below 0.05% of total. B325.T12 rollover; residual from boundary-day loss propagating into Feb
-EL,B326,2026-01,84369.38,84402.73,33.35,ontology_drift,Monthly reconciliation residual below 0.05% of total. residual from floating-point aggregation across B326 meters
-EL,B326,2026-02,83143.51,83172.52,29.01,ontology_drift,Monthly reconciliation residual below 0.05% of total. residual from floating-point aggregation across B326 meters
+EL,B325,2026-01,217592.07,217648.26,56.19,match,
+EL,B325,2026-02,192645.57,192629.57,-16.00,match,
+EL,B326,2026-01,84369.38,84402.73,33.35,match,
+EL,B326,2026-02,83143.51,83172.52,29.01,match,
 EL,B327,2026-01,51178.16,51180.85,2.70,match,
 EL,B327,2026-02,46596.75,46594.47,-2.28,match,
 EL,B328,2026-01,1190.92,1190.94,0.02,match,
 EL,B328,2026-02,1149.14,1149.11,-0.03,match,
-EL,B330,2026-01,667118.35,663390.41,-3727.93,ontology_drift,"Small drift (−4 to −11 MWh, ~0.5–1.7%). Cause not yet diagnosed."
-EL,B330,2026-02,595877.66,595833.25,-44.41,ontology_drift,Monthly reconciliation residual below 0.05% of total. B330.T65 rollover (see `snv_el_B330_T65_rollover`); rolling_sum boundary-day loss
+EL,B330,2026-01,667118.35,667186.17,67.83,match,
+EL,B330,2026-02,595877.66,595833.25,-44.41,match,
 EL,B331,2026-01,0.00,0.00,0.00,match,
 EL,B331,2026-02,0.00,0.00,0.00,match,
-EL,B334,2026-01,439468.82,439498.49,29.67,ontology_drift,Monthly reconciliation residual below 0.05% of total. B334.T87 strux-only + derived_sum patch (see `snv_el_B334_derived_sum`); residual from patch vs Excel STRUX-cached values
-EL,B334,2026-02,410101.36,410132.99,31.63,ontology_drift,Monthly reconciliation residual below 0.05% of total. same cause as Jan: B334.T87 derived_sum patch vs Excel STRUX-cached
-EL,B337,2026-01,451619.81,440597.18,-11022.63,ontology_drift,"Small drift (−11 MWh Jan only, ~2.4%). Cause not yet diagnosed."
-EL,B337,2026-02,401697.17,401733.10,35.93,ontology_drift,Monthly reconciliation residual below 0.05% of total. B337.T43 rollover (see `snv_el_B337_T43_rollover`); rolling_sum boundary-day loss
-EL,B339,2026-01,287204.00,287195.53,-8.47,match,
-EL,B339,2026-02,236328.73,236222.32,-106.41,ontology_drift,Monthly reconciliation residual below 0.05% of total. B339 is flagged `snv_el_complex_B339`; residual from formula complexity and floating-point aggregation
-EL,B339 Kolfilter,2026-01,16775.73,16773.97,-1.76,match,
-EL,B339 Kolfilter,2026-02,17181.48,17183.19,1.70,match,
+EL,B334,2026-01,439468.82,439498.49,29.67,match,
+EL,B334,2026-02,410101.36,410132.99,31.63,match,
+EL,B337,2026-01,451619.81,451612.00,-7.81,match,
+EL,B337,2026-02,401697.17,401733.10,35.93,match,
+EL,B339,2026-01,287205.20,287195.53,-9.67,match,
+EL,B339,2026-02,236319.93,236222.32,-97.61,match,
+EL,B339 Kolfilter,2026-01,16774.53,16773.97,-0.56,match,
+EL,B339 Kolfilter,2026-02,17190.29,17183.19,-7.10,match,
 EL,B341,2026-01,224854.62,224859.12,4.50,match,
 EL,B341,2026-02,209131.00,209134.00,3.00,match,
 EL,B342,2026-01,116653.12,117463.00,809.88,ontology_drift,Consistent +0.8 MWh drift both months (~0.7%). Cause not yet diagnosed.
@@ -295,27 +248,27 @@ KALLVATTEN,B304,2026-01,89.03,89.03,0.00,match,
 KALLVATTEN,B304,2026-02,82.63,82.63,0.00,match,
 KALLVATTEN,B305,2026-01,625.88,625.88,0.00,match,
 KALLVATTEN,B305,2026-02,656.33,656.33,0.00,match,
-KALLVATTEN,B307,2026-01,821.70,821.70,0.00,match,
+KALLVATTEN,B307,2026-01,821.70,821.70,-0.00,match,
 KALLVATTEN,B307,2026-02,801.13,801.13,0.00,match,
 KALLVATTEN,B308,2026-01,928.85,928.85,0.00,match,
 KALLVATTEN,B308,2026-02,595.23,595.23,0.00,match,
 KALLVATTEN,B309,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B309,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B310,2026-01,2734.14,2854.97,120.82,excel_bug,Row 26 subtracts B313.KV1_VMM22_V which is also subtracted by row 30 (B314). Meter can have only one hasSubMeter parent — attached to B314.KV1_VMM21_V per shorter-formula-wins rule. B310 over-counts by Δ(B313.KV1_VMM22_V) ≈ 120 MWh/month.
+KALLVATTEN,B310,2026-01,2734.14,1121.57,-1612.58,excel_bug,Row 26 subtracts B313.KV1_VMM22_V which is also subtracted by row 30 (B314). Meter can have only one hasSubMeter parent — attached to B314.KV1_VMM21_V per shorter-formula-wins rule. B310 over-counts by Δ(B313.KV1_VMM22_V) ≈ 120 MWh/month.
 KALLVATTEN,B310,2026-02,1021.82,1048.55,26.73,excel_bug,Row 26 subtracts B313.KV1_VMM22_V which is also subtracted by row 30 (B314). Meter can have only one hasSubMeter parent — attached to B314.KV1_VMM21_V per shorter-formula-wins rule. B310 over-counts by Δ(B313.KV1_VMM22_V) ≈ 120 MWh/month.
-KALLVATTEN,B311,2026-01,254.12,277.83,23.72,excel_bug,Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.
+KALLVATTEN,B311,2026-01,254.12,2096.88,1842.76,excel_bug,Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.
 KALLVATTEN,B311,2026-02,1754.38,1769.60,15.22,excel_bug,Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.
 KALLVATTEN,B312,2026-01,48.35,48.35,0.00,match,
 KALLVATTEN,B312,2026-02,44.76,44.76,0.00,match,
-KALLVATTEN,B313,2026-01,131.40,131.40,0.00,match,
+KALLVATTEN,B313,2026-01,131.40,39.50,-91.89,ontology_drift,Drift of -92 (69.9%). Cause not yet classified.
 KALLVATTEN,B313,2026-02,37.80,37.80,0.00,match,
-KALLVATTEN,B314,2026-01,-67.06,-90.78,-23.72,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
+KALLVATTEN,B314,2026-01,-67.06,1.12,68.18,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
 KALLVATTEN,B314,2026-02,21.43,6.21,-15.22,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
 KALLVATTEN,B315,2026-01,23.72,23.72,0.00,match,
 KALLVATTEN,B315,2026-02,15.22,15.22,0.00,match,
 KALLVATTEN,B316,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B316,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B317,2026-01,116.15,116.15,0.00,match,
+KALLVATTEN,B317,2026-01,116.15,30.50,-85.65,ontology_drift,Drift of -86 (73.7%). Cause not yet classified.
 KALLVATTEN,B317,2026-02,25.58,25.58,0.00,match,
 KALLVATTEN,B318,2026-01,128.56,128.56,0.00,match,
 KALLVATTEN,B318,2026-02,130.34,130.34,0.00,match,
@@ -345,8 +298,6 @@ KALLVATTEN,B337,2026-01,1139.03,1139.03,0.00,match,
 KALLVATTEN,B337,2026-02,1098.19,1098.19,0.00,match,
 KALLVATTEN,B339,2026-01,328.16,328.16,0.00,match,
 KALLVATTEN,B339,2026-02,313.37,313.37,0.00,match,
-KALLVATTEN,B339 Kolfilter,2026-01,0.00,0.00,0.00,match,
-KALLVATTEN,B339 Kolfilter,2026-02,0.00,0.00,0.00,match,
 KALLVATTEN,B341,2026-01,182.58,182.58,0.00,match,
 KALLVATTEN,B341,2026-02,112.15,112.15,0.00,match,
 KALLVATTEN,B342,2026-01,3.14,3.14,0.00,match,
@@ -387,8 +338,8 @@ KALLVATTEN,B385,2026-01,1.73,1.73,0.00,match,
 KALLVATTEN,B385,2026-02,1.60,1.60,0.00,match,
 KALLVATTEN,B386,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B386,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B389,2026-01,0.00,0.00,0.00,match,
-KALLVATTEN,B389,2026-02,454.62,454.62,-0.00,match,
+KALLVATTEN,B389,2026-01,0.00,162.85,162.85,ontology_drift,Drift of 163 (0.0%). Cause not yet classified.
+KALLVATTEN,B389,2026-02,454.62,209.22,-245.40,ontology_drift,Drift of -245 (54.0%). Cause not yet classified.
 KALLVATTEN,B390,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B390,2026-02,0.00,0.00,0.00,match,
 KALLVATTEN,B392,2026-01,0.20,0.20,0.00,match,
@@ -714,13 +665,13 @@ VARME,B308,2026-01,592.84,592.84,0.00,match,
 VARME,B308,2026-02,587.86,587.86,0.00,match,
 VARME,B309,2026-01,0.00,0.00,0.00,match,
 VARME,B309,2026-02,0.00,0.00,0.00,match,
-VARME,B310,2026-01,952.07,-401.19,-1353.26,meter_outage,"B310.VP2_VMM61 ~117-day offline 2025-09-20 → 2026-01-13 with full catch-up on 2026-01-14. Interpolate patch redistributes the 1986 kWh flush backward across the offline window, so Jan 2026 ontology drops ~1700 kWh vs Excel (which absorbed the full flush in Jan). See ann-snv-varme-b310-vp2-offline-fall. Annual total preserved; only monthly attribution shifted."
+VARME,B310,2026-01,952.07,-401.19,-1353.26,match,Negative Excel value (−155 MWh Feb) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).
 VARME,B310,2026-02,-154.72,-154.72,-0.00,match,Negative Excel value (−155 MWh Feb) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).
-VARME,B311,2026-01,512.94,472.81,-40.13,meter_outage,B311.VP1_VMM64 ~117-day offline with catch-up on 2026-01-14. Interpolate patch redistributes ~46 kWh backward. See ann-snv-varme-b311-vmm64-offline-fall.
+VARME,B311,2026-01,512.94,472.81,-40.13,ontology_drift,Drift of -40 (7.8%). Cause not yet classified.
 VARME,B311,2026-02,520.29,520.29,-0.00,match,
 VARME,B312,2026-01,9.93,9.93,0.00,match,
 VARME,B312,2026-02,12.77,12.77,0.00,match,
-VARME,B313,2026-01,399.66,44.16,-355.50,meter_outage,B313.VP1_VMM62 ~114-day offline with catch-up on 2026-01-14. Interpolate patch redistributes ~405 kWh backward across the offline window. See ann-snv-varme-b313-vmm62-offline-fall.
+VARME,B313,2026-01,399.66,44.16,-355.50,ontology_drift,Drift of -356 (89.0%). Cause not yet classified.
 VARME,B313,2026-02,68.25,68.25,0.00,match,
 VARME,B314,2026-01,86.25,86.25,0.00,match,
 VARME,B314,2026-02,89.44,89.44,0.00,match,
@@ -758,8 +709,6 @@ VARME,B337,2026-01,368.85,368.85,0.00,match,
 VARME,B337,2026-02,384.88,384.88,-0.00,match,
 VARME,B339,2026-01,135.35,135.35,0.00,match,
 VARME,B339,2026-02,119.79,119.79,0.00,match,
-VARME,B339 Kolfilter,2026-01,0.00,0.00,0.00,match,
-VARME,B339 Kolfilter,2026-02,0.00,0.00,0.00,match,
 VARME,B341,2026-01,690.43,690.43,0.00,match,
 VARME,B341,2026-02,689.04,689.04,0.00,match,
 VARME,B342,2026-01,0.00,0.00,0.00,match,

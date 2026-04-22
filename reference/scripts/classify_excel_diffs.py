@@ -178,8 +178,14 @@ def compute_diffs(site_dir: Path, media_id: str):
     for f in os.listdir(site_dir):
         if f.endswith('.csv'):
             name = f[:-4]
+            # When valid_from/valid_to columns are all-empty, duckdb
+            # infers VARCHAR which breaks comparisons against TIMESTAMP
+            # in views.sql. Force DATE where present.
+            date_hint = ""
+            if name in ('meter_relations', 'timeseries_refs', 'meters', 'meter_measures'):
+                date_hint = ", types={'valid_from': 'DATE', 'valid_to': 'DATE'}"
             con.execute(
-                f"CREATE TABLE {name} AS SELECT * FROM read_csv_auto('{site_dir / f}', HEADER=TRUE, ALL_VARCHAR=FALSE)"
+                f"CREATE TABLE {name} AS SELECT * FROM read_csv_auto('{site_dir / f}', HEADER=TRUE, ALL_VARCHAR=FALSE{date_hint})"
             )
     con.execute(VIEWS_SQL.read_text())
     q = f"""

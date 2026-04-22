@@ -27,27 +27,27 @@ KALLVATTEN,B304,2026-01,89.03,89.03,0.00,match,
 KALLVATTEN,B304,2026-02,82.63,82.63,0.00,match,
 KALLVATTEN,B305,2026-01,625.88,625.88,0.00,match,
 KALLVATTEN,B305,2026-02,656.33,656.33,0.00,match,
-KALLVATTEN,B307,2026-01,821.70,821.70,0.00,match,
+KALLVATTEN,B307,2026-01,821.70,821.70,-0.00,match,
 KALLVATTEN,B307,2026-02,801.13,801.13,0.00,match,
 KALLVATTEN,B308,2026-01,928.85,928.85,0.00,match,
 KALLVATTEN,B308,2026-02,595.23,595.23,0.00,match,
 KALLVATTEN,B309,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B309,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B310,2026-01,2734.14,2854.97,120.82,excel_bug,Row 26 subtracts B313.KV1_VMM22_V which is also subtracted by row 30 (B314). Meter can have only one hasSubMeter parent — attached to B314.KV1_VMM21_V per shorter-formula-wins rule. B310 over-counts by Δ(B313.KV1_VMM22_V) ≈ 120 MWh/month.
+KALLVATTEN,B310,2026-01,2734.14,1121.57,-1612.58,excel_bug,Row 26 subtracts B313.KV1_VMM22_V which is also subtracted by row 30 (B314). Meter can have only one hasSubMeter parent — attached to B314.KV1_VMM21_V per shorter-formula-wins rule. B310 over-counts by Δ(B313.KV1_VMM22_V) ≈ 120 MWh/month.
 KALLVATTEN,B310,2026-02,1021.82,1048.55,26.73,excel_bug,Row 26 subtracts B313.KV1_VMM22_V which is also subtracted by row 30 (B314). Meter can have only one hasSubMeter parent — attached to B314.KV1_VMM21_V per shorter-formula-wins rule. B310 over-counts by Δ(B313.KV1_VMM22_V) ≈ 120 MWh/month.
-KALLVATTEN,B311,2026-01,254.12,277.83,23.72,excel_bug,Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.
+KALLVATTEN,B311,2026-01,254.12,2096.88,1842.76,excel_bug,Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.
 KALLVATTEN,B311,2026-02,1754.38,1769.60,15.22,excel_bug,Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.
 KALLVATTEN,B312,2026-01,48.35,48.35,0.00,match,
 KALLVATTEN,B312,2026-02,44.76,44.76,0.00,match,
-KALLVATTEN,B313,2026-01,131.40,131.40,0.00,match,
+KALLVATTEN,B313,2026-01,131.40,39.50,-91.89,ontology_drift,Drift of -92 (69.9%). Cause not yet classified.
 KALLVATTEN,B313,2026-02,37.80,37.80,0.00,match,
-KALLVATTEN,B314,2026-01,-67.06,-90.78,-23.72,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
+KALLVATTEN,B314,2026-01,-67.06,1.12,68.18,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
 KALLVATTEN,B314,2026-02,21.43,6.21,-15.22,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
 KALLVATTEN,B315,2026-01,23.72,23.72,0.00,match,
 KALLVATTEN,B315,2026-02,15.22,15.22,0.00,match,
 KALLVATTEN,B316,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B316,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B317,2026-01,116.15,116.15,0.00,match,
+KALLVATTEN,B317,2026-01,116.15,30.50,-85.65,ontology_drift,Drift of -86 (73.7%). Cause not yet classified.
 KALLVATTEN,B317,2026-02,25.58,25.58,0.00,match,
 KALLVATTEN,B318,2026-01,128.56,128.56,0.00,match,
 KALLVATTEN,B318,2026-02,130.34,130.34,0.00,match,
@@ -77,8 +77,6 @@ KALLVATTEN,B337,2026-01,1139.03,1139.03,0.00,match,
 KALLVATTEN,B337,2026-02,1098.19,1098.19,0.00,match,
 KALLVATTEN,B339,2026-01,328.16,328.16,0.00,match,
 KALLVATTEN,B339,2026-02,313.37,313.37,0.00,match,
-KALLVATTEN,B339 Kolfilter,2026-01,0.00,0.00,0.00,match,
-KALLVATTEN,B339 Kolfilter,2026-02,0.00,0.00,0.00,match,
 KALLVATTEN,B341,2026-01,182.58,182.58,0.00,match,
 KALLVATTEN,B341,2026-02,112.15,112.15,0.00,match,
 KALLVATTEN,B342,2026-01,3.14,3.14,0.00,match,
@@ -119,8 +117,8 @@ KALLVATTEN,B385,2026-01,1.73,1.73,0.00,match,
 KALLVATTEN,B385,2026-02,1.60,1.60,0.00,match,
 KALLVATTEN,B386,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B386,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B389,2026-01,0.00,0.00,0.00,match,
-KALLVATTEN,B389,2026-02,454.62,454.62,-0.00,match,
+KALLVATTEN,B389,2026-01,0.00,162.85,162.85,ontology_drift,Drift of 163 (0.0%). Cause not yet classified.
+KALLVATTEN,B389,2026-02,454.62,209.22,-245.40,ontology_drift,Drift of -245 (54.0%). Cause not yet classified.
 KALLVATTEN,B390,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B390,2026-02,0.00,0.00,0.00,match,
 KALLVATTEN,B392,2026-01,0.20,0.20,0.00,match,
