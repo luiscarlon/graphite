@@ -144,3 +144,103 @@ annotations:
       Not currently flagged as having issues in Jan/Feb 2026 Excel
       comparisons, but is the obvious candidate for sum-children
       patching if it ever goes offline.
+
+  # ---------------------------------------------------------------
+  # Reference formula doc (VÄRME sheet, 2026-04-22) — structural /
+  # accounting context. 30/31 SNV VÄRME formulas match verbatim;
+  # one sign fix applied to B327's B326 term (was +, now − per doc).
+  # ---------------------------------------------------------------
+
+  - annotation_id: ann-snv-varme-ref-doc-formula-verified
+    target_kind: campus
+    target_id: SNV
+    category: unknown
+    description: >-
+      All SNV VÄRME building formulas cross-checked verbatim against
+      reference/reference_formula_doc/the_only_one_formula_doc.xlsx
+      (VÄRME sheet). 30/31 buildings match current meter_allocations
+      including the massive B310 pool (4+/22−), B311 4+/3−, the
+      B313→B314→B315 chain, B308 two-subtraction, and all leaf
+      buildings. One sign error fixed on B327 (see
+      ann-snv-varme-b327-excel-double-count). Closed buildings
+      B202/B204/B205/B209 grouped under B203; five direct-electric
+      buildings have no VÄRME formula; B336 demolished.
+    is_resolved: true
+
+  - annotation_id: ann-snv-varme-closed-houses-grouped
+    target_kind: building
+    target_id: B203
+    category: unknown
+    valid_from: 2026-03-17
+    description: >-
+      Reference formula doc states that closed buildings B202, B203,
+      B204, B205, B209 are counted as one for VÄRME ("STÄNGDA HUS
+      RÄKNAS SOM ETT. FORMEL UPPDATERAD 2026-03-17"). Single formula
+      +B203.VP1_VMM61_E covers all five. Ontology currently allocates
+      only to B203; per-building attribution for B202/B204/B205/B209
+      will read zero. This matches the documented intent.
+    is_resolved: true
+
+  - annotation_id: ann-snv-varme-b217-formula-updated-mar2026
+    target_kind: building
+    target_id: B217
+    category: unknown
+    valid_from: 2026-03-17
+    description: >-
+      B217 VÄRME formula updated 2026-03-17 per reference formula doc
+      ("FORMEL UPPDATERAD 2026-03-17"). Current formula
+      +B217.VP1_VMM61_E matches. Same update date as B217 KV and the
+      B202/203/204/205/209 closed-house grouping — likely a single
+      EBO/PME rewrite session on that date.
+    is_resolved: true
+
+  - annotation_id: ann-snv-varme-direct-electric-no-formula
+    target_kind: campus
+    target_id: SNV
+    category: unknown
+    description: >-
+      Five SNV buildings are marked "ingen VS / direktverkande el" in
+      the reference formula doc — B342, B344, B353, B392, B420 — i.e.
+      heated directly via electric resistance, not via the värme
+      (water-borne heating) distribution. No VÄRME formula; VÄRME
+      topology correctly omits them. Their heating consumption shows
+      up on the EL side instead.
+    is_resolved: true
+
+  - annotation_id: ann-snv-varme-b330-b331-combined
+    target_kind: building
+    target_id: B330
+    category: unknown
+    description: >-
+      B330 VÄRME accounting covers both B330 and B331 as one combined
+      unit per reference formula doc ("B330/331 är det som gäller i
+      PME"). B331 has no standalone VÄRME formula; its consumption
+      is embedded in B330.VS1_VMM61_E. Mirrors the same grouping in
+      ÅNGA and KALLVATTEN.
+    is_resolved: true
+
+  - annotation_id: ann-snv-varme-b336-demolished
+    target_kind: building
+    target_id: B336
+    category: unknown
+    description: >-
+      B336 listed as "Utgår byggnads rivs" (demolished) in the
+      reference formula doc — no VÄRME formula. Ontology correctly
+      has no B336 allocation. Same status as B336 in KALLVATTEN.
+    is_resolved: true
+
+  - annotation_id: ann-snv-varme-b327-excel-double-count
+    target_kind: meter
+    target_id: B327.VS1_VMM61
+    category: data_quality
+    description: >-
+      Resolved 2026-04-22: reference formula doc specifies the
+      correct sign as −B326.VS1_VMM61 in B327's formula. Previously-
+      parsed Excel had +B326 (double-counting B326.VS1_VMM61 in both
+      B326's +term and B327's +term). meter_allocations updated to
+      use the doc-authoritative sign. B327 topology now correctly
+      subtracts B326's contribution; B326 accounting unchanged.
+    related_refs:
+      - B326.VS1_VMM61:d
+      - B327.VS1_VMM61:d
+    is_resolved: true
