@@ -1,5 +1,11 @@
 timeseries_id,sensor_id,aggregate,reading_type,kind,preferred,valid_from,valid_to,database_id,path,external_id,device_id,sources,aggregation
-B600N.KV1_VM20:d,B600N.KV1_VM20.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B600N.KV1_VM20,,,
+B600N.KV1_VM20:d.raw,B600N.KV1_VM20.volume,daily,counter,raw,False,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B600N.KV1_VM20,,,
+B600N.KV1_VM20:d.A,B600N.KV1_VM20.volume,daily,counter,derived,False,,2025-07-30,,,,,B600N.KV1_VM20:d.raw,slice
+B600N.KV1_VM20:d.patch1,B600N.KV1_VM20.volume,daily,counter,derived,False,2025-07-30,2025-07-31,,,,,B600N.KV1_VM20:d.raw,interpolate
+B600N.KV1_VM20:d.B,B600N.KV1_VM20.volume,daily,counter,derived,False,2025-07-31,2025-08-31,,,,,B600N.KV1_VM20:d.raw,slice
+B600N.KV1_VM20:d.patch2,B600N.KV1_VM20.volume,daily,counter,derived,False,2025-08-31,2025-09-01,,,,,B600N.KV1_VM20:d.raw,interpolate
+B600N.KV1_VM20:d.C,B600N.KV1_VM20.volume,daily,counter,derived,False,2025-09-01,,,,,,B600N.KV1_VM20:d.raw,slice
+B600N.KV1_VM20:d,B600N.KV1_VM20.volume,daily,counter,derived,True,,,,,,,B600N.KV1_VM20:d.A|B600N.KV1_VM20:d.patch1|B600N.KV1_VM20:d.B|B600N.KV1_VM20:d.patch2|B600N.KV1_VM20:d.C,rolling_sum
 B600S.KV1_VM20:d,B600S.KV1_VM20.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B600S.KV1_VM20,,,
 B611.KV1_VM21:d,B611.KV1_VM21.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B611.KV1_VM21,,,
 B611.KV1_VM22:d,B611.KV1_VM22.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B611.KV1_VM22,,,

@@ -15,6 +15,7 @@ import yaml
 
 import calc
 from app.graph import to_dot
+from app.status_board import render_status_banner
 from ontology import Dataset, Meter, load_dataset
 from validation import validate
 
@@ -38,6 +39,9 @@ _ANNOTATION_COLORS = {
     "patch": "#54a24b",
     "rollover": "#b279a2",
 }
+
+# Status board moved to `app.status_board` — shared with the Work status
+# page under `pages/`.
 
 
 def _annotation_layer(
@@ -435,7 +439,8 @@ def _topology_chart(dot: str, height: int = 640) -> None:
 
 def main() -> None:
     st.set_page_config(page_title="graphite", layout="wide")
-    st.title("graphite")
+    # Title updates dynamically once site + media are resolved below.
+    title_slot = st.empty()
 
     if not SITES_ROOT.exists():
         st.error(f"No sites directory at `{SITES_ROOT}`.")
@@ -462,7 +467,9 @@ def main() -> None:
     selected_media = st.sidebar.selectbox("Media", available_media, index=default_media_idx)
     ds = ds_full.filter_by_media(selected_media)
 
-    st.caption(site_meta.get("summary", ""))
+    site_label = site_meta.get("name", selected_site)
+    title_slot.title(f"{site_label} — {selected_media}")
+    render_status_banner(selected_site, selected_media)
 
     st.sidebar.markdown("### Counts")
     st.sidebar.write(
