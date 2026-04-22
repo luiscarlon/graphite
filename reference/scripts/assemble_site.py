@@ -152,7 +152,8 @@ def main() -> int:
     write_csv(
         out / "annotations.csv",
         ["annotation_id", "target_kind", "target_id", "category",
-         "valid_from", "valid_to", "description", "related_refs", "media"],
+         "valid_from", "valid_to", "description", "related_refs", "media",
+         "is_resolved"],
         all_annotations,
     )
 

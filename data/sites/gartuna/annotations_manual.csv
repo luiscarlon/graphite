@@ -1,17 +1,17 @@
-annotation_id,target_kind,target_id,category,valid_from,valid_to,description,related_refs
-B600NS_parallel,meter,B600N.Å1_VMM71,data_quality,,,B600N and B600S are parallel intakes (north/south spine) not series. naming_index_chain wrongly inferred parent-child. Removed via topology_overrides.,
-B600S_offline,meter,B600S.Å1_VMM71,outage,2026-01-17,2026-01-17,Patched from 9 children's readings (sum aggregation). Counter froze Jan 17 then reset to 0 on Feb 2.,B600S.Å1_VMM71:d.patch
-B600S_intermittent,meter,B600S.Å1_VMM71,data_quality,2026-01-08,2026-01-17,Counter degrading: intermittent reads then 3-day flat then backlog flush (234 MWh in one day). Transition period before full offline.,
-B600N_shutdown_jul,meter,B600N.Å1_VMM71,outage,2025-07-14,2025-07-21,Counter flat for 6 days — summer shutdown. Self-recovering.,
-B600N_flat_jan,meter,B600N.Å1_VMM71,data_quality,2026-01-22,2026-01-23,Single-day flat reading (delta=0). Next day shows 200 MWh (two days accumulated).,
-B616_swap,meter,B616.Å1_VMM71,swap,2025-11-05,2025-11-05,Device replacement. Old counter ended at 19693. New device started at 1934. Stitched via rolling_sum derived ref.,B616.Å1_VMM71:d.A|B616.Å1_VMM71:d.B|B616.Å1_VMM71:d
-B642_72_offline,meter,B642.Å1_VMM72,outage,2025-07-31,2025-07-31,Counter reset to 0.001 and stayed dead. Patched from child B642.VMM71.,B642.Å1_VMM72:d.patch
-B642_72_glitch,meter,B642.Å1_VMM72,data_quality,2025-03-15,2025-03-18,Counter dropped from 25231 to 10890 for 3 days then reverted. Temporary register glitch. Readings excluded via validity split.,B642.Å1_VMM72:d.A|B642.Å1_VMM72:d.B
-B642_72_anomaly,meter,B642.Å1_VMM72,unknown,2025-01-01,2025-06-30,B642.VMM72 flow exceeds parent B614.VMM71 by 2-7x during Jan and Apr-Jun. PDF confirms downstream. Suspected undocumented additional steam feed. Needs on-site investigation.,
-B613_dead,meter,B613.Å1_VMM71,outage,2025-03-12,2025-03-12,Counter frozen since Mar 12. Leaf meter — cannot patch.,
-B641_dead,meter,B641.Å1_VMM71,outage,2025-01-01,2025-01-01,Counter at 0 for entire observation window. Leaf meter — cannot patch.,
-B841_dead,meter,B841.Å1_VMM71,outage,2025-01-01,2025-01-01,Counter at 0 for entire observation window. Leaf meter — cannot patch.,
-B643_intermittent,meter,B643.Å1_VMM71,data_quality,2025-06-20,2025-07-20,Multiple frozen periods (Jun 20 / Jun 30 / Jul 12). Intermittent meter — reads some weeks then goes flat.,
-B833_offline,meter,B833.Å1_VMM71,outage,2026-02-19,2026-02-19,Counter frozen from Feb 19 onwards. Leaf meter — cannot patch.,
-B600_north_unmetered,building,B600,unknown,,,B600N north spine has 60% unmetered flow. Only 40% of intake captured by downstream meters (B616/B643/B833/B921). Missing meters or undocumented consumers.,
-B600_loss_pct,campus,GTN,data_quality,,,31% of total site steam intake not accounted for by downstream meters. South spine 14% (acceptable). North spine 60% (missing meters).,
+annotation_id,target_kind,target_id,category,valid_from,valid_to,description,related_refs,is_resolved
+B600NS_parallel,meter,B600N.Å1_VMM71,data_quality,,,B600N and B600S are parallel intakes (north/south spine) not series. naming_index_chain wrongly inferred parent-child. Removed via topology_overrides.,,True
+B600S_offline,meter,B600S.Å1_VMM71,outage,2026-01-17,2026-01-17,Patched from 9 children's readings (sum aggregation). Counter froze Jan 17 then reset to 0 on Feb 2.,B600S.Å1_VMM71:d.patch,True
+B600S_intermittent,meter,B600S.Å1_VMM71,data_quality,2026-01-08,2026-01-17,Counter degrading: intermittent reads then 3-day flat then backlog flush (234 MWh in one day). Transition period before full offline.,,True
+B600N_shutdown_jul,meter,B600N.Å1_VMM71,outage,2025-07-14,2025-07-21,Counter flat for 6 days — summer shutdown. Self-recovering.,,True
+B600N_flat_jan,meter,B600N.Å1_VMM71,data_quality,2026-01-22,2026-01-23,Single-day flat reading (delta=0). Next day shows 200 MWh (two days accumulated).,,True
+B616_swap,meter,B616.Å1_VMM71,swap,2025-11-05,2025-11-05,Device replacement. Old counter ended at 19693. New device started at 1934. Stitched via rolling_sum derived ref.,B616.Å1_VMM71:d.A|B616.Å1_VMM71:d.B|B616.Å1_VMM71:d,True
+B642_72_offline,meter,B642.Å1_VMM72,outage,2025-07-31,2025-07-31,Counter reset to 0.001 and stayed dead. Patched from child B642.VMM71.,B642.Å1_VMM72:d.patch,True
+B642_72_glitch,meter,B642.Å1_VMM72,data_quality,2025-03-15,2025-03-18,Counter dropped from 25231 to 10890 for 3 days then reverted. Temporary register glitch. Readings excluded via validity split.,B642.Å1_VMM72:d.A|B642.Å1_VMM72:d.B,True
+B642_72_anomaly,meter,B642.Å1_VMM72,unknown,2025-01-01,2025-06-30,B642.VMM72 flow exceeds parent B614.VMM71 by 2-7x during Jan and Apr-Jun. PDF confirms downstream. Suspected undocumented additional steam feed. Needs on-site investigation.,,False
+B613_dead,meter,B613.Å1_VMM71,outage,2025-03-12,2025-03-12,Counter frozen since Mar 12. Leaf meter — cannot patch.,,True
+B641_dead,meter,B641.Å1_VMM71,outage,2025-01-01,2025-01-01,Counter at 0 for entire observation window. Leaf meter — cannot patch.,,True
+B841_dead,meter,B841.Å1_VMM71,outage,2025-01-01,2025-01-01,Counter at 0 for entire observation window. Leaf meter — cannot patch.,,True
+B643_intermittent,meter,B643.Å1_VMM71,data_quality,2025-06-20,2025-07-20,Multiple frozen periods (Jun 20 / Jun 30 / Jul 12). Intermittent meter — reads some weeks then goes flat.,,True
+B833_offline,meter,B833.Å1_VMM71,outage,2026-02-19,2026-02-19,Counter frozen from Feb 19 onwards. Leaf meter — cannot patch.,,True
+B600_north_unmetered,building,B600,unknown,,,B600N north spine has 60% unmetered flow. Only 40% of intake captured by downstream meters (B616/B643/B833/B921). Missing meters or undocumented consumers.,,False
+B600_loss_pct,campus,GTN,data_quality,,,31% of total site steam intake not accounted for by downstream meters. South spine 14% (acceptable). North spine 60% (missing meters).,,False

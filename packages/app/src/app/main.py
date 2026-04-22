@@ -347,7 +347,19 @@ def _tables_section(
     with tabs[1]:
         st.dataframe([r.model_dump() for r in relations], width="stretch")
     with tabs[2]:
-        st.dataframe([a.model_dump() for a in annotations], width="stretch")
+        ann_filter = st.selectbox(
+            "Status",
+            options=["All", "Resolved only", "Unresolved only"],
+            index=0,
+            key="tables_ann_resolved_filter",
+        )
+        if ann_filter == "Resolved only":
+            ann_view = [a for a in annotations if a.is_resolved]
+        elif ann_filter == "Unresolved only":
+            ann_view = [a for a in annotations if not a.is_resolved]
+        else:
+            ann_view = list(annotations)
+        st.dataframe([a.model_dump() for a in ann_view], width="stretch")
     with tabs[3]:
         st.dataframe([z.model_dump() for z in zones], width="stretch")
     with tabs[4]:
@@ -668,22 +680,42 @@ def _consumption_section(
 
 def _annotations_picker(ds: Dataset) -> tuple[pd.DataFrame | None, dict | None]:
     """Returns (bands_df, filter_hints) where filter_hints has meters, buildings, date_range."""
-    cols = st.columns([1, 1])
+    cols = st.columns([1, 1, 1])
     with cols[0]:
         select_all = st.checkbox("Select all", key="ann_select_all")
     with cols[1]:
         isolate = st.checkbox("Isolate selection", key="ann_isolate",
                               help="Filter readings and consumption to only show data relevant to selected annotations")
-    adf = pd.DataFrame([a.model_dump() for a in ds.annotations])
+    with cols[2]:
+        resolved_filter = st.selectbox(
+            "Status",
+            options=["All", "Resolved only", "Unresolved only"],
+            index=0,
+            key="ann_resolved_filter",
+            help="Filter annotations by is_resolved flag",
+        )
+    ann_list = list(ds.annotations)
+    if resolved_filter == "Resolved only":
+        ann_list = [a for a in ann_list if a.is_resolved]
+    elif resolved_filter == "Unresolved only":
+        ann_list = [a for a in ann_list if not a.is_resolved]
+    if not ann_list:
+        st.info("No annotations match the current filter.")
+        return None, None
+    adf = pd.DataFrame([a.model_dump() for a in ann_list])
+    adf["_orig_index"] = [ds.annotations.index(a) for a in ann_list]
     adf["select"] = select_all
     adf["patched"] = adf["related_refs"].apply(lambda r: "yes" if r else "no")
-    display_cols = ["select", "annotation_id", "description", "patched", "category",
-                    "target_kind", "target_id", "valid_from", "valid_to"]
+    display_cols = ["select", "annotation_id", "description", "patched", "is_resolved",
+                    "category", "target_kind", "target_id", "valid_from", "valid_to"]
     edited = st.data_editor(
         adf[display_cols],
         hide_index=True,
         width="stretch",
-        column_config={"select": st.column_config.CheckboxColumn("", default=False, width="small")},
+        column_config={
+            "select": st.column_config.CheckboxColumn("", default=False, width="small"),
+            "is_resolved": st.column_config.CheckboxColumn("resolved", width="small", disabled=True),
+        },
         key="ann_editor",
     )
 
@@ -691,7 +723,8 @@ def _annotations_picker(ds: Dataset) -> tuple[pd.DataFrame | None, dict | None]:
     if selected.empty:
         return None, None
 
-    sel_annotations = [ds.annotations[i] for i in selected.index]
+    orig_indices = adf.loc[selected.index, "_orig_index"].tolist()
+    sel_annotations = [ds.annotations[i] for i in orig_indices]
     rows = []
     for a in sel_annotations:
         # Annotation CSVs store sentinels (1900-01-01 / 9999-01-01)

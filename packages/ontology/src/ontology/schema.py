@@ -206,12 +206,26 @@ class Annotation(BaseModel):
     description: str = ""
     related_refs: list[str] = Field(default_factory=list)
     media: str | None = None
+    # True = documented/understood, no open action; False = investigation
+    # pending, calibration recommended, topology conflict unresolved, etc.
+    is_resolved: bool = True
 
     @field_validator("related_refs", mode="before")
     @classmethod
     def _split_refs(cls, v: object) -> object:
         if isinstance(v, str):
             return [x for x in v.split("|") if x]
+        return v
+
+    @field_validator("is_resolved", mode="before")
+    @classmethod
+    def _coerce_resolved(cls, v: object) -> object:
+        if isinstance(v, str):
+            s = v.strip().lower()
+            if s in ("", "true", "1", "yes"):
+                return True
+            if s in ("false", "0", "no"):
+                return False
         return v
 
 

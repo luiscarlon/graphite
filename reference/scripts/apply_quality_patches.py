@@ -46,6 +46,7 @@ ANNOTATION_FIELDS = [
     "valid_to",
     "description",
     "related_refs",
+    "is_resolved",
 ]
 
 REF_FIELDS = [

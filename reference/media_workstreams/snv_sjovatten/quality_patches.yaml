@@ -31,7 +31,7 @@ annotations:
       −5369 each, B307 −13721 kWh. Permanent until a weighted-
       subtract primitive exists.
     related_refs: []
-
+    is_resolved: false
   - annotation_id: ann-snv-sv-b304-strux-only
     target_kind: meter
     target_id: B304-52-V2-AW026

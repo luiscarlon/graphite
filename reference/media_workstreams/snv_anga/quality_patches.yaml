@@ -44,7 +44,7 @@ annotations:
       - B217.Å1_VMM71:d.C
       - B217.Å1_VMM71:d.D
       - B217.Å1_VMM71:d
-
+    is_resolved: false
   - annotation_id: ann-snv-anga-b217-glitch-aug
     target_kind: meter
     target_id: B217.Å1_VMM71
@@ -255,6 +255,169 @@ annotations:
       meters are leaf-level relative to their building's accounting.
     related_refs: []
 
+  # ---------------------------------------------------------------
+  # Reference formula doc — building-accounting context
+  # Source: reference/reference_formula_doc/the_only_one_formula_doc.xlsx
+  # (ÅNGA sheet). Verbatim building formulas + Kommentar column.
+  # Cross-checked: every SNV building formula matches current
+  # meter_allocations; every N/A building is correctly absent.
+  # ---------------------------------------------------------------
+    is_resolved: false
+  - annotation_id: ann-snv-anga-b315-shared-with-b357
+    target_kind: meter
+    target_id: B315.Å1_VMM71
+    category: unknown
+    description: >-
+      B315's meter also covers B357's steam consumption. Per the
+      reference formula doc ("Mäts tillsammans med B357"), B357 has
+      no standalone ÅNGA meter; its usage is bundled into B315's
+      reading. Affects per-building attribution if B357 is queried
+      alone — the value reported for B315 includes B357.
+    related_refs:
+      - B315.Å1_VMM71:d
+
+  - annotation_id: ann-snv-anga-b312-metered-with-b385
+    target_kind: building
+    target_id: B312
+    category: unknown
+    description: >-
+      ÅNGA supply to B312 is shut off; any residual consumption is
+      metered together with B385 per the reference formula doc
+      ("Ånga är avstängd till byggnad så mäts tillsammans med B385").
+      B312 has no standalone ÅNGA meter, so per-building attribution
+      will blend B312 into B385.
+    related_refs:
+      - B385.Å1_VMM71:d
+
+  - annotation_id: ann-snv-anga-b330-b331-combined
+    target_kind: building
+    target_id: B330
+    category: unknown
+    description: >-
+      B330 accounting in PME covers both B330 and B331 as one combined
+      unit per the reference formula doc ("B330/331 är det som gäller
+      i PME"). B331 has no standalone ÅNGA formula; its consumption is
+      embedded in B330's three-meter sum (VMM71 + VMM72 + VMM73).
+    related_refs:
+      - B330.Å1_VMM71:d
+      - B330.Å1_VMM72:d
+      - B330.Å1_VMM73:d
+
+  - annotation_id: ann-snv-anga-b307-two-feed-shortest-path
+    target_kind: meter
+    target_id: B307.Å1_VMM71
+    category: unknown
+    description: >-
+      B307 is fed from two directions. Per the reference formula doc
+      ("Matning från 2 håll, utgår att media tar kortaste vägen")
+      accounting assumes steam takes the shortest path to each
+      downstream consumer. The 10-term building formula subtracts
+      B216, B339, B302.VMM73, B311, B334, B304, B330, B337 from
+      (B307.VMM71 + B307.VMM72). Relevant when interpreting pool
+      residuals on B307.
+    related_refs:
+      - B307.Å1_VMM71:d
+      - B307.Å1_VMM72:d
+
+  - annotation_id: ann-snv-anga-b308-formula-under-review
+    target_kind: building
+    target_id: B308
+    category: unknown
+    description: >-
+      B308 is fed from two directions; the current building formula
+      (B308.VMM71 − B327.VMM71) is under review by site engineer
+      Anton per the reference formula doc ("Anton kollar upp
+      formeln"). Two meters at B308 are scheduled for replacement at
+      Sommarstopp 2025 — expect formula revision after the swap.
+    related_refs:
+      - B308.Å1_VMM71:d
+      - B327.Å1_VMM71:d
+    is_resolved: false
+  - annotation_id: ann-snv-anga-b339-carbon-filter-only
+    target_kind: building
+    target_id: B339
+    category: unknown
+    description: >-
+      Only the carbon filter at B339 currently consumes ÅNGA per the
+      reference formula doc ("Endast kolfiltret som använder ånga").
+      Post-Sommarstopp 2025 B339 will additionally feed the 200-series
+      buildings (B201–B209, currently all "avstängd" / N/A), enabling
+      future line-loss calculations for the 339 → 200-houses spur.
+    related_refs:
+      - B339.Å1_VMM70:d
+    is_resolved: false
+  - annotation_id: ann-snv-anga-b325-producer-post-rebuild
+    target_kind: building
+    target_id: B325
+    category: unknown
+    description: >-
+      B325 is being rebuilt and will be producer-only post-rebuild
+      (no ÅNGA consumption). Current formula
+      B325 = Panna2 + Panna3 − B390 is flagged "Osäkert värde"
+      (uncertain value) in the reference formula doc. Post-
+      Sommarstopp 2025 the trunk-export accounting will change: B325
+      will take over metering of the full B390 trunk. Revise
+      building formula after the rebuild lands.
+    related_refs:
+      - B325.Panna2_MWH:d
+      - B325.Panna3_MWH:d
+      - B390.Å1_VMM70:d
+    is_resolved: false
+  - annotation_id: ann-snv-anga-b325-panna-device-types
+    target_kind: meter
+    target_id: B325.Panna2_MWH
+    category: unknown
+    description: >-
+      Per the reference formula doc's Mätarlista:
+      B325.Panna2_MWH is the electric boiler (Elpanna).
+      B325.Panna3_MWH is the oil boiler burning HVO biodiesel
+      (Oljepanna HVO-olja). Both are producers feeding the B390
+      trunk, not consumers.
+    related_refs:
+      - B325.Panna2_MWH:d
+      - B325.Panna3_MWH:d
+
+  - annotation_id: ann-snv-anga-sommarstopp-2025
+    target_kind: campus
+    target_id: SNV
+    category: swap
+    valid_from: 2025-06-01
+    valid_to: 2025-08-31
+    description: >-
+      Reference formula doc lists planned ÅNGA meter changes for the
+      Sommarstopp 2025 window: (1) B325 to take over full B390 trunk
+      metering; (2) two B308 meters to be replaced (formula under
+      Anton's review); (3) B339 to redirect and feed the 200-series
+      buildings (enabling 339→200-houses loss calculations);
+      (4) B302: one meter to be reset to zero; (5) B616 (GTN) swap —
+      already executed 2025-11-05, see GTN B616_swap. Several SNV
+      building formulas may need revision post-Sommarstopp.
+    related_refs:
+      - B325.Panna2_MWH:d
+      - B325.Panna3_MWH:d
+      - B390.Å1_VMM70:d
+      - B308.Å1_VMM71:d
+      - B339.Å1_VMM70:d
+      - B302.Å1_VMM71:d
+    is_resolved: false
+  - annotation_id: ann-snv-anga-vm7x-transitional-naming
+    target_kind: campus
+    target_id: SNV
+    category: data_quality
+    description: >-
+      Several ÅNGA meters use transitional "VM7x" names in Snowflake
+      (instead of the stable "VMM7x") per the reference formula doc
+      ("heter VM71 än så länge. Kommer döpas om på sikt till VMM71").
+      Affected SNV meters: B216.Å1_VM71, B217.Å1_VM71, B313.Å1_VM71.
+      Ontology meter_ids already use the canonical VMM71 form; the
+      Snowflake crosswalk currently maps VMM71 → VM71 for these. When
+      the upstream rename lands, the crosswalk must prefer the new
+      VMM7x variant (consistent with the "_E" variant preference rule).
+    related_refs:
+      - B216.Å1_VMM71:d
+      - B217.Å1_VMM71:d
+      - B313.Å1_VMM71:d
+
 
 
 # B217.Å1_VMM71 bracket restructure reverted (was here earlier). At
@@ -274,3 +437,4 @@ annotations:
 #       validity source shadow a full-period source within its window
 #       (including skipping emission entirely on days where the
 #       shadow source has no reading).
+    is_resolved: false

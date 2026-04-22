@@ -27,7 +27,7 @@ annotations:
     related_refs:
       - B310.KV1:d
       - B314.KV1:d
-
+    is_resolved: false
   - annotation_id: ann-snv-kv-b315-double-subtract
     target_kind: meter
     target_id: B315.KV1_VMM21_V
@@ -47,6 +47,7 @@ annotations:
   # ---------------------------------------------------------------
   # Device swap — already handled via rolling_sum
   # ---------------------------------------------------------------
+    is_resolved: false
   - annotation_id: ann-snv-kv-b302-swap
     target_kind: meter
     target_id: B302.KV1_VMM21_V
