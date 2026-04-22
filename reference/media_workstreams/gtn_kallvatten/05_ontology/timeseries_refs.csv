@@ -67,3 +67,7 @@ B841.KV1_VM23:d,B841.KV1_VM23.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS
 B841.KV1_VM24:d,B841.KV1_VM24.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B841.KV1_VM24,,,
 B850.KV1_VM21:d,B850.KV1_VM21.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B850.KV1_VM21,,,
 B921.KV1_VM21_V:d,B921.KV1_VM21_V.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B921.KV1_VM21_V,,,
+B653.KV1_VM21_V:d,B653.KV1_VM21_V.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B653.KV1_VM21_V,,,
+B653.KV1_VM22_V:d,B653.KV1_VM22_V.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B653.KV1_VM22_V,,,
+B654.KV1_VM22_V:d,B654.KV1_VM22_V.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B654.KV1_VM22_V,,,
+B661.KV1_VM21:d,B661.KV1_VM21.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B661.KV1_VM21,,,

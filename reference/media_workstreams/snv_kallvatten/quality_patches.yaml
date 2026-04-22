@@ -143,3 +143,88 @@ annotations:
       B311.KV1_VMM26 is the main kallvatten distribution node with 13
       children. Currently healthy; candidate for sum-children patch
       if it ever goes offline.
+
+  # ---------------------------------------------------------------
+  # Reference formula doc (KALLVATTEN sheet) — structural /
+  # accounting context. Every SNV KV formula matches verbatim except
+  # B336 (building demolished — no allocation).
+  # ---------------------------------------------------------------
+
+  - annotation_id: ann-snv-kv-ref-doc-formula-verified
+    target_kind: campus
+    target_id: SNV
+    category: unknown
+    description: >-
+      All SNV KALLVATTEN building formulas cross-checked verbatim
+      against reference/reference_formula_doc/the_only_one_formula_doc.xlsx
+      (KALLVATTEN sheet). 39/40 buildings match current
+      meter_allocations including the big B311 15-term pool, the
+      B310 8-term pool, the B202 multi-intake chain, and every
+      cross-building subtraction (B307 − B342 − B344; B327 − B326;
+      B334 − B330; B339 − B318; B314 with + B315 − B313 term;
+      B318 − B353 − B319). B336 is the only miss (see
+      ann-snv-kv-b336-demolished). B204/205 and B330/331 combined in
+      PME as documented elsewhere.
+    is_resolved: true
+
+  - annotation_id: ann-snv-kv-b336-demolished
+    target_kind: building
+    target_id: B336
+    category: unknown
+    description: >-
+      Reference formula doc lists a B336 formula
+      (B334.KV1_VM26_V − (B392.KV1_VM21 + B392.KV1_VM22)) but marks
+      it "Utgår byggnads rivs" (building being demolished). Ontology
+      has no B336 allocation. Any residual B336 flow previously
+      tracked by this transit-loss formula is unaccounted post-
+      demolition. Confirm with facilities whether B392.VM21/VM22 are
+      still expected to pass through B336 physically.
+    is_resolved: false
+
+  - annotation_id: ann-snv-kv-b217-formula-updated-mar2026
+    target_kind: building
+    target_id: B217
+    category: unknown
+    valid_from: 2026-03-17
+    description: >-
+      B217 KV formula updated on 2026-03-17 per reference formula doc
+      ("FORMEL UPPDATERAD 2026-03-17"). Current formula is
+      +B217.KV1_VM24_V only (single meter). Jan/Feb 2026 reconciliation
+      windows pre-date this change; post-March 2026 values should
+      continue to match.
+    is_resolved: true
+
+  - annotation_id: ann-snv-kv-b314-vm22-installed-apr2025
+    target_kind: meter
+    target_id: B314.KV1_VMM22_V
+    category: data_quality
+    valid_from: 2025-04-22
+    description: >-
+      B314.KV1_VM22_V was installed on 2025-04-22 per reference formula
+      doc ("OBS B314.KV1_VM22_V installerades 2025-04-22"). Pre-install
+      readings will be absent/zero, so the B310 formula term
+      (−B314.KV1_VM22_V) contributes zero to the Jan-Apr 2025 window
+      — expected, not a data gap.
+    is_resolved: true
+
+  - annotation_id: ann-snv-kv-b204-b205-combined
+    target_kind: building
+    target_id: B204
+    category: unknown
+    description: >-
+      B204 accounting in PME covers both B204 and B205 as one combined
+      unit per reference formula doc ("B204/205 är det som gäller i
+      PME"). B205 has no standalone KALLVATTEN formula; its
+      consumption is embedded in B204.KV1_VM22_V.
+    is_resolved: true
+
+  - annotation_id: ann-snv-kv-b330-b331-combined
+    target_kind: building
+    target_id: B330
+    category: unknown
+    description: >-
+      B330 KV accounting covers both B330 and B331 as one combined
+      unit per reference formula doc ("B330/331 är det som gäller i
+      PME"). B331 has no standalone KALLVATTEN formula; its
+      consumption is embedded in B330.KV1_VM23_V.
+    is_resolved: true
