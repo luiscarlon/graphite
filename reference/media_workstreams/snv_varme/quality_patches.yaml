@@ -121,6 +121,7 @@ annotations:
     target_id: B203.FV1_MQ4
     category: outage
     valid_from: 2025-10-18
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-10-18 at value 4582.21. Leaf meter.
 
@@ -129,6 +130,7 @@ annotations:
     target_id: B311.VP1_VMM61
     category: outage
     valid_from: 2025-02-13
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-02-13 at value 158.73. Outside
       Jan/Feb 2026 reference period.
@@ -138,6 +140,8 @@ annotations:
     target_kind: meter
     target_id: B310.VP2_VMM61
     category: calibration
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B310.VP2_VMM61 is the primary värme distribution node with 23
       children across B301–B305, B311, B312, B313, B317, B341, B385.
@@ -155,6 +159,8 @@ annotations:
     target_kind: campus
     target_id: SNV
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       All SNV VÄRME building formulas cross-checked verbatim against
       reference/reference_formula_doc/the_only_one_formula_doc.xlsx
@@ -172,6 +178,7 @@ annotations:
     target_id: B203
     category: unknown
     valid_from: 2026-03-17
+    valid_to: 9999-01-01
     description: >-
       Reference formula doc states that closed buildings B202, B203,
       B204, B205, B209 are counted as one for VÄRME ("STÄNGDA HUS
@@ -186,6 +193,7 @@ annotations:
     target_id: B217
     category: unknown
     valid_from: 2026-03-17
+    valid_to: 9999-01-01
     description: >-
       B217 VÄRME formula updated 2026-03-17 per reference formula doc
       ("FORMEL UPPDATERAD 2026-03-17"). Current formula
@@ -198,6 +206,8 @@ annotations:
     target_kind: campus
     target_id: SNV
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Five SNV buildings are marked "ingen VS / direktverkande el" in
       the reference formula doc — B342, B344, B353, B392, B420 — i.e.
@@ -211,6 +221,8 @@ annotations:
     target_kind: building
     target_id: B330
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B330 VÄRME accounting covers both B330 and B331 as one combined
       unit per reference formula doc ("B330/331 är det som gäller i
@@ -223,6 +235,8 @@ annotations:
     target_kind: building
     target_id: B336
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B336 listed as "Utgår byggnads rivs" (demolished) in the
       reference formula doc — no VÄRME formula. Ontology correctly
@@ -233,6 +247,8 @@ annotations:
     target_kind: meter
     target_id: B327.VS1_VMM61
     category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Resolved 2026-04-22: reference formula doc specifies the
       correct sign as −B326.VS1_VMM61 in B327's formula. Previously-
@@ -243,4 +259,32 @@ annotations:
     related_refs:
       - B326.VS1_VMM61:d
       - B327.VS1_VMM61:d
+    is_resolved: true
+
+  # ---------------------------------------------------------------
+  # Seasonal / low-activity VÄRME sub-meters (audit)
+  # ---------------------------------------------------------------
+
+  - annotation_id: ann-snv-varme-b312-vp2-summer-flat
+    target_kind: meter
+    target_id: B312.VP2_VMM61
+    category: data_quality
+    valid_from: 2025-04-27
+    valid_to: 2025-09-23
+    description: >-
+      B312.VP2_VMM61 flat for 149 days ending 2025-09-23 — expected
+      summer dormancy on a low-magnitude heating meter (median 0.16
+      MWh/day). Not a data gap; heating circuit simply off in summer.
+    is_resolved: true
+
+  - annotation_id: ann-snv-varme-b385-vp2-summer-flat
+    target_kind: meter
+    target_id: B385.VP2_VMM61
+    category: data_quality
+    valid_from: 2025-04-14
+    valid_to: 2025-06-14
+    description: >-
+      B385.VP2_VMM61 shows 61-day spring/summer flat run (2025-04 →
+      2025-06) with tiny deltas (max 0.1 MWh/day). Expected low-load
+      behaviour for this meter; accepted.
     is_resolved: true

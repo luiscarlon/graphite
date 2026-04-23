@@ -82,6 +82,7 @@ annotations:
     target_id: B216.Å1_VMM71
     category: outage
     valid_from: 2026-02-19
+    valid_to: 9999-01-01
     description: >-
       Counter froze 2026-02-19 at value 12121.072. Ontology stitches
       raw segment (:d.raw, valid_to 2026-02-19) with a children-sum
@@ -96,6 +97,7 @@ annotations:
     target_id: B216.Å1_VMM71:d.patch
     category: patch
     valid_from: 2026-02-19
+    valid_to: 9999-01-01
     description: >-
       Children-sum patch: recovers B216 consumption from its sole
       child B217.Å1_VMM71 after B216's counter froze. Assumes B217
@@ -113,6 +115,7 @@ annotations:
     target_id: B308.Å1_VMM71
     category: outage
     valid_from: 2025-01-01
+    valid_to: 9999-01-01
     description: >-
       Counter frozen at 12737.1533 for the entire observed window; last
       real reading predates the 2025-01-01 ingest start. Patched from
@@ -127,6 +130,7 @@ annotations:
     target_id: B308.Å1_VMM71:d.patch
     category: patch
     valid_from: 2026-02-07
+    valid_to: 9999-01-01
     description: >-
       Children-sum patch: B327.Å1_VMM71 (sole child) stands in for
       B308's frozen counter. Produces meter_net ≈ 0 (as children equal
@@ -192,6 +196,7 @@ annotations:
     target_id: B390.Å1_VMM70
     category: outage
     valid_from: 2025-07-31
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-07-31 at 328545. Downstream of B325
       Panna2; no children to patch from — consumption beyond this date
@@ -205,6 +210,7 @@ annotations:
     target_id: B313.Å1_VMM71
     category: outage
     valid_from: 2025-07-25
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-07-25 at 133.0. Leaf meter; no
       children available for a sum-patch.
@@ -216,6 +222,7 @@ annotations:
     target_id: B385.Å1_VMM71
     category: outage
     valid_from: 2025-11-26
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-11-26 at near-zero value (0.00213...).
       Leaf meter; no children available for a sum-patch.
@@ -229,6 +236,8 @@ annotations:
     target_kind: meter
     target_id: B307.Å1_VMM71
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Excel row 23 (B307 pool formula) subtracts B330.Å1_VMM71, and
       row 46 (B337) subtracts the same meter — B330 is double-counted
@@ -248,6 +257,8 @@ annotations:
     target_kind: meter
     target_id: B311.Å1_VMM70
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Direction conflict between flow_schema and naming extractor for
       the B311.Å1_VMM70 ↔ B311.Å1_VMM71 edge. Not yet resolved in
@@ -267,6 +278,8 @@ annotations:
     target_kind: meter
     target_id: B315.Å1_VMM71
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B315's meter also covers B357's steam consumption. Per the
       reference formula doc ("Mäts tillsammans med B357"), B357 has
@@ -280,6 +293,8 @@ annotations:
     target_kind: building
     target_id: B312
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       ÅNGA supply to B312 is shut off; any residual consumption is
       metered together with B385 per the reference formula doc
@@ -293,6 +308,8 @@ annotations:
     target_kind: building
     target_id: B330
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B330 accounting in PME covers both B330 and B331 as one combined
       unit per the reference formula doc ("B330/331 är det som gäller
@@ -307,6 +324,8 @@ annotations:
     target_kind: meter
     target_id: B307.Å1_VMM71
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B307 is fed from two directions. Per the reference formula doc
       ("Matning från 2 håll, utgår att media tar kortaste vägen")
@@ -323,6 +342,8 @@ annotations:
     target_kind: building
     target_id: B308
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B308 is fed from two directions; the current building formula
       (B308.VMM71 − B327.VMM71) is under review by site engineer
@@ -337,6 +358,8 @@ annotations:
     target_kind: building
     target_id: B339
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Only the carbon filter at B339 currently consumes ÅNGA per the
       reference formula doc ("Endast kolfiltret som använder ånga").
@@ -350,6 +373,8 @@ annotations:
     target_kind: building
     target_id: B325
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B325 is being rebuilt and will be producer-only post-rebuild
       (no ÅNGA consumption). Current formula
@@ -367,6 +392,8 @@ annotations:
     target_kind: meter
     target_id: B325.Panna2_MWH
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Per the reference formula doc's Mätarlista:
       B325.Panna2_MWH is the electric boiler (Elpanna).
@@ -404,6 +431,8 @@ annotations:
     target_kind: campus
     target_id: SNV
     category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Several ÅNGA meters use transitional "VM7x" names in Snowflake
       (instead of the stable "VMM7x") per the reference formula doc
@@ -438,3 +467,110 @@ annotations:
 #       (including skipping emission entirely on days where the
 #       shadow source has no reading).
     is_resolved: false
+
+  # ---------------------------------------------------------------
+  # Flat/inactive meter notes (reference-period audit)
+  # ---------------------------------------------------------------
+
+  - annotation_id: ann-snv-anga-b325-panna3-frozen
+    target_kind: meter
+    target_id: B325.Panna3_MWH
+    category: outage
+    valid_from: 2025-07-12
+    valid_to: 9999-01-01
+    description: >-
+      Oil boiler (Oljepanna HVO) counter flat from 2025-07-12 onward,
+      but Excel cache shows 3419 MWh Jan / 3391 MWh Feb 2026 on
+      building B325. Implies either the boiler is idle (Excel value
+      is stale / manually entered) or the counter is dead while the
+      boiler still runs. Needs site verification before the Jan/Feb
+      comparison for B325 can be trusted.
+    is_resolved: false
+
+  - annotation_id: ann-snv-anga-b216-vmm72-idle
+    target_kind: meter
+    target_id: B216.Å1_VMM72
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      Auxiliary sub-meter for B216 stays flat at zero across the full
+      reference period (2025-01 → 2026-02). B216's actual steam
+      consumption flows through B216.Å1_VM71. Expected inactivity.
+    is_resolved: true
+
+  - annotation_id: ann-snv-anga-b302-vmm72-vmm73-idle
+    target_kind: building
+    target_id: B302
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      Auxiliary meters B302.Å1_VMM72 and B302.Å1_VMM73 stay flat at
+      zero for the full reference window. The building's steam
+      consumption flows entirely through B302.Å1_VMM71 with Excel
+      cache showing ~194/247 MWh Jan/Feb. Expected inactivity.
+    is_resolved: true
+
+  - annotation_id: ann-snv-anga-b305-no-steam
+    target_kind: building
+    target_id: B305
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      B305.Å1_VMM71 flat across the whole reference period (2025-01 →
+      2026-02). Excel cache confirms B305 ÅNGA = 0 both months — the
+      building has no steam consumption in this window. Expected.
+    is_resolved: true
+
+  - annotation_id: ann-snv-anga-b313-vmm72-idle
+    target_kind: meter
+    target_id: B313.Å1_VMM72
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      B313.Å1_VMM72 flat at zero across the reference period. B313's
+      consumption is entirely through B313.Å1_VM71 (which also has a
+      long flat run, see ann-snv-anga-b313-offline). Excel cache shows
+      B313 ÅNGA = 0. Expected inactivity.
+    is_resolved: true
+
+  - annotation_id: ann-snv-anga-b341-inactive
+    target_kind: building
+    target_id: B341
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      B341.Å1_VMM71 flat at zero for the whole reference period. No
+      Excel ÅNGA row for B341. Building either has no steam connection
+      active or the meter is dormant. Expected inactivity.
+    is_resolved: true
+
+  - annotation_id: ann-snv-anga-b330-vmm73-low
+    target_kind: meter
+    target_id: B330.Å1_VMM73
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      B330.Å1_VMM73 mostly flat with tiny increments (max ~0.08 MWh/day).
+      B330 consumption is dominated by B330.Å1_VMM71 and B330.Å1_VMM72;
+      VMM73 contributes negligibly (< 1% of building total).
+    is_resolved: true
+
+  - annotation_id: ann-snv-anga-seasonal-summer-flat
+    target_kind: campus
+    target_id: SNV
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      Several SNV ÅNGA meters show multi-week flat runs in summer
+      (June–August) — normal seasonal dormancy because steam demand
+      collapses when process loads shut down. Examples: B301
+      (~53 days flat), B304 (~32 days flat), B325.Panna2/Panna3
+      (summer shutdowns). Not a data quality issue; expected behaviour.
+    is_resolved: true

@@ -14,6 +14,7 @@ annotations:
     target_id: B203.KB1
     category: outage
     valid_from: 2025-10-17
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-10-17 at value 6023.20. Leaf meter;
       ref carries valid_to=2025-10-17 so no flat-carry past the event.
@@ -23,6 +24,7 @@ annotations:
     target_id: B203.KB5-Intverk
     category: outage
     valid_from: 2025-10-17
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-10-17 at value 7879.81. Same upstream
       event family as B203.KB1 and B209.KB4.
@@ -32,6 +34,7 @@ annotations:
     target_id: B209.KB4_VMM51
     category: outage
     valid_from: 2025-10-17
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-10-17 at value 7346.35. Three-meter
       coincident offline (B203.KB1, B203.KB5-Intverk, B209.KB4_VMM51)
@@ -42,6 +45,7 @@ annotations:
     target_id: B201.KB1_Elogg
     category: outage
     valid_from: 2026-02-17
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2026-02-17 at value 494.0. Inside the
       Jan/Feb 2026 reference period — affects the last ~2 weeks of
@@ -52,6 +56,7 @@ annotations:
     target_id: B207.VENT
     category: outage
     valid_from: 2026-02-15
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2026-02-15 at value 936.7. Inside the Feb
       2026 reference period — affects the last ~2 weeks of February.
@@ -61,6 +66,7 @@ annotations:
     target_id: B216.VENT
     category: outage
     valid_from: 2025-09-27
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-09-27 at value 1050.1. Outside the
       Jan/Feb 2026 reference period; no impact on the current facit.
@@ -69,6 +75,8 @@ annotations:
     target_kind: campus
     target_id: SNV
     category: calibration
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Four meter refs carry tenant/pool splits that require a
       fractional-subtract primitive not available in views.sql:
@@ -78,3 +86,31 @@ annotations:
       fully-split convention. Residuals of ±1–3 MWh on B302/B303/
       B305/B307 are expected until a weighted-subtract primitive
       exists. See decisions.md in this workstream.
+
+  # ---------------------------------------------------------------
+  # Flat / seasonal KYLA sub-meters (audit)
+  # ---------------------------------------------------------------
+
+  - annotation_id: ann-snv-kyla-b312-inactive
+    target_kind: meter
+    target_id: B312.KB1
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      B312.KB1 flat at zero for the entire reference period. B312
+      has no active chilled-water cooling; Excel cache confirms 0.
+      Expected inactivity.
+    is_resolved: true
+
+  - annotation_id: ann-snv-kyla-b209-b304-spring-flat
+    target_kind: campus
+    target_id: SNV
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      B209.KB1 (63 days) and B304.KB1 (36 days) show early-year flat
+      runs ending around 2025-03-06. Low-magnitude meters; normal
+      pre-cooling-season dormancy (chilled water not yet active).
+    is_resolved: true

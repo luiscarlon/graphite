@@ -17,6 +17,8 @@ annotations:
     target_kind: meter
     target_id: B313.KV1_VMM22_V
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Excel double-subtracts this meter: it appears as a subtracted
       −term on row 26 (B310 formula) AND on row 30 (B314 formula).
@@ -32,6 +34,8 @@ annotations:
     target_kind: meter
     target_id: B315.KV1_VMM21_V
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Excel lists B315.KV1_VMM21_V as both a +term on row 30 (B314)
       AND the sole +term on row 31 (B315). Ontology attached the
@@ -80,6 +84,7 @@ annotations:
     target_id: B409.KV1_VM21
     category: outage
     valid_from: 2025-10-17
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-10-17 at value 236425.72. Leaf meter;
       no children for sum-patch. Outside Jan/Feb 2026 reference.
@@ -89,6 +94,7 @@ annotations:
     target_id: B301.KV1_VMM21_V
     category: outage
     valid_from: 2026-01-14
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2026-01-14 at value 278.83. Inside the
       Jan 2026 reference period — affects Jan 14 → Feb 28. Ref
@@ -101,6 +107,7 @@ annotations:
     target_id: B305.KV1_VMM23_V
     category: outage
     valid_from: 2026-02-24
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2026-02-24 at value 79.15. Inside Feb 2026
       — last 4 days of the month missing.
@@ -110,6 +117,7 @@ annotations:
     target_id: B317.KV1_VMM22_V
     category: outage
     valid_from: 2026-02-21
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2026-02-21 at value 35.62. Inside Feb 2026
       reference period.
@@ -119,6 +127,7 @@ annotations:
     target_id: B317.KV1_VMM23_V
     category: outage
     valid_from: 2026-02-10
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2026-02-10 at near-zero value
       (8.74e-05). Inside Feb 2026 reference period.
@@ -128,6 +137,7 @@ annotations:
     target_id: B317.KV1_VMM25_V
     category: outage
     valid_from: 2026-01-09
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2026-01-09 at value 77.94. Inside Jan 2026
       reference period.
@@ -256,6 +266,8 @@ annotations:
     target_kind: meter
     target_id: B311.KV1_VMM26
     category: calibration
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B311.KV1_VMM26 is the main kallvatten distribution node with 13
       children. Currently healthy; candidate for sum-children patch
@@ -271,6 +283,8 @@ annotations:
     target_kind: campus
     target_id: SNV
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       All SNV KALLVATTEN building formulas cross-checked verbatim
       against reference/reference_formula_doc/the_only_one_formula_doc.xlsx
@@ -288,6 +302,8 @@ annotations:
     target_kind: building
     target_id: B336
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       Reference formula doc lists a B336 formula
       (B334.KV1_VM26_V − (B392.KV1_VM21 + B392.KV1_VM22)) but marks
@@ -303,6 +319,7 @@ annotations:
     target_id: B217
     category: unknown
     valid_from: 2026-03-17
+    valid_to: 9999-01-01
     description: >-
       B217 KV formula updated on 2026-03-17 per reference formula doc
       ("FORMEL UPPDATERAD 2026-03-17"). Current formula is
@@ -316,6 +333,7 @@ annotations:
     target_id: B314.KV1_VMM22_V
     category: data_quality
     valid_from: 2025-04-22
+    valid_to: 9999-01-01
     description: >-
       B314.KV1_VM22_V was installed on 2025-04-22 per reference formula
       doc ("OBS B314.KV1_VM22_V installerades 2025-04-22"). Pre-install
@@ -328,6 +346,8 @@ annotations:
     target_kind: building
     target_id: B204
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B204 accounting in PME covers both B204 and B205 as one combined
       unit per reference formula doc ("B204/205 är det som gäller i
@@ -339,9 +359,68 @@ annotations:
     target_kind: building
     target_id: B330
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B330 KV accounting covers both B330 and B331 as one combined
       unit per reference formula doc ("B330/331 är det som gäller i
       PME"). B331 has no standalone KALLVATTEN formula; its
       consumption is embedded in B330.KV1_VM23_V.
+    is_resolved: true
+
+  # ---------------------------------------------------------------
+  # Auxiliary / inactive sub-meters (reference-period audit)
+  # ---------------------------------------------------------------
+
+  - annotation_id: ann-snv-kv-b302-vmm23-unused
+    target_kind: meter
+    target_id: B302.KV1_VMM23_V
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      B302.KV1_VMM23_V flat at zero for the whole reference period
+      (2025-01 → 2026-02). Reference formula doc's B302 formula uses
+      VMM21, VMM22, VMM23 — so VMM23 is part of the building formula
+      but currently reads zero. Either the sub-loop is idle or the
+      counter is dormant. Low magnitude; accepted.
+    is_resolved: true
+
+  - annotation_id: ann-snv-kv-b304-vmm23-low
+    target_kind: meter
+    target_id: B304.KV1_VMM23_V
+    category: data_quality
+    valid_from: 2025-05-17
+    valid_to: 2025-06-18
+    description: >-
+      B304.KV1_VMM23_V had a 33-day flat run in early summer 2025 with
+      low-magnitude readings (median 0.17 m³/day, max 24 m³/day).
+      Seasonal / intermittent use pattern typical of auxiliary cold-
+      water loops.
+    is_resolved: true
+
+  - annotation_id: ann-snv-kv-b308-vmm23-spring-spike
+    target_kind: meter
+    target_id: B308.KV1_VMM23_V
+    category: data_quality
+    valid_from: 2025-03-10
+    valid_to: 2025-03-14
+    description: >-
+      B308.KV1_VMM23_V shows a 5-day burst (2025-03-10 → 14) of
+      200–366 m³/day, well above the 17 m³/day median. No ontology
+      patch needed — monotonic counter, real consumption. Possibly a
+      process test or seasonal filling; worth noting for trend
+      baselines.
+    is_resolved: true
+
+  - annotation_id: ann-snv-kv-b318-vmm21-oct-spike
+    target_kind: meter
+    target_id: B318.KV1_VMM21_V
+    category: data_quality
+    valid_from: 2025-10-01
+    valid_to: 2025-10-02
+    description: >-
+      B318.KV1_VMM21_V shows a 2-day spike (160 + 116 m³) above its
+      ~4 m³/day baseline. Monotonic counter, no patch needed. Likely
+      a process event; flagged for context only.
     is_resolved: true

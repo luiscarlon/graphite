@@ -249,7 +249,7 @@ KALLVATTEN,B304,2026-02,82.63,82.63,0.00,match,
 KALLVATTEN,B305,2026-01,625.88,625.88,0.00,match,
 KALLVATTEN,B305,2026-02,656.33,656.33,0.00,match,
 KALLVATTEN,B307,2026-01,821.70,821.70,-0.00,match,
-KALLVATTEN,B307,2026-02,801.13,801.13,0.00,match,
+KALLVATTEN,B307,2026-02,801.13,801.13,-0.00,match,
 KALLVATTEN,B308,2026-01,928.85,928.85,0.00,match,
 KALLVATTEN,B308,2026-02,595.23,595.23,0.00,match,
 KALLVATTEN,B309,2026-01,0.00,0.00,0.00,match,
@@ -666,9 +666,9 @@ VARME,B308,2026-02,587.86,587.86,0.00,match,
 VARME,B309,2026-01,0.00,0.00,0.00,match,
 VARME,B309,2026-02,0.00,0.00,0.00,match,
 VARME,B310,2026-01,952.07,-401.19,-1353.26,match,Negative Excel value (−155 MWh Feb) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).
-VARME,B310,2026-02,-154.72,-154.72,-0.00,match,Negative Excel value (−155 MWh Feb) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).
+VARME,B310,2026-02,-154.72,-154.72,0.00,match,Negative Excel value (−155 MWh Feb) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).
 VARME,B311,2026-01,512.94,472.81,-40.13,ontology_drift,Drift of -40 (7.8%). Cause not yet classified.
-VARME,B311,2026-02,520.29,520.29,-0.00,match,
+VARME,B311,2026-02,520.29,520.29,0.00,match,
 VARME,B312,2026-01,9.93,9.93,0.00,match,
 VARME,B312,2026-02,12.77,12.77,0.00,match,
 VARME,B313,2026-01,399.66,44.16,-355.50,ontology_drift,Drift of -356 (89.0%). Cause not yet classified.

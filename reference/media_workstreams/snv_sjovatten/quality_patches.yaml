@@ -17,6 +17,8 @@ annotations:
     target_kind: campus
     target_id: SNV
     category: calibration
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       The Excel sjövatten sheet uses a virtual residual meter
       "BPS_V2" (= B342 total inlet − 15 direct consumers) that is
@@ -36,6 +38,8 @@ annotations:
     target_kind: meter
     target_id: B304-52-V2-AW026
     category: unknown
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
     description: >-
       B304-52-V2-AW026 is a manually-read STRUX meter with no
       Snowflake equivalent. Excel caches the meter's monthly value;
@@ -85,6 +89,7 @@ annotations:
     target_id: B229.V2_VMM51
     category: outage
     valid_from: 2026-02-20
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2026-02-20 at value 9471341.0. Inside
       Feb 2026 reference period — affects last 8 days of the month.
@@ -94,6 +99,7 @@ annotations:
     target_id: B305.V2_VMM21
     category: outage
     valid_from: 2025-10-18
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-10-18 at value 6.60 (essentially
       zero before offline too). Outside Jan/Feb 2026.
@@ -103,6 +109,35 @@ annotations:
     target_id: B339.V2_GF4
     category: outage
     valid_from: 2025-05-19
+    valid_to: 9999-01-01
     description: >-
       Counter went offline 2025-05-19 at value 4840979.0. Outside
       Jan/Feb 2026.
+
+  # ---------------------------------------------------------------
+  # Flat / intermittent SJÖVATTEN sub-meters (audit)
+  # ---------------------------------------------------------------
+
+  - annotation_id: ann-snv-sv-b308-vm21-inactive
+    target_kind: meter
+    target_id: B308.V2_VM21-V
+    category: data_quality
+    valid_from: 1900-01-01
+    valid_to: 9999-01-01
+    description: >-
+      B308.V2_VM21-V flat at zero for the full reference period.
+      Inactive sub-meter. Not used in building formulas; no impact.
+    is_resolved: true
+
+  - annotation_id: ann-snv-sv-b339-gf3-4-intermittent
+    target_kind: meter
+    target_id: B339.V2_GF3_4
+    category: data_quality
+    valid_from: 2025-08-26
+    valid_to: 2025-10-19
+    description: >-
+      B339.V2_GF3_4 flat 55 days ending 2025-10-19. Large-magnitude
+      meter (median 2374 L/day). Consistent with the seasonal V9
+      sjövatten pattern at B339 (active Dec–May, dormant Jun–Nov).
+      Accepted seasonal behaviour.
+    is_resolved: true
