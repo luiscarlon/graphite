@@ -64,12 +64,10 @@ CURATED: dict[str, list] = {
         ('B833', 'data_quality_artifact', 'Bi-daily BMS sensor (B833.KB1_GF4 reads ~31 times over 59 days). Negative residual is a sampling artifact.'),
     ],
     'gtn_el': [
-        ('B631', 'strux_only_meter', 'B631.T4-A3 and B631.T4-C4 are STRUX-only (no BMS data). Ontology has nothing to attribute.'),
-        ('B613', 'strux_only_meter', 'B613.T4-C1 is STRUX-only (no BMS data). Ontology has nothing to attribute.'),
-        ('B611', 'strux_only_meter', 'B611.T4 trunk in BMS includes T4-A3/C1/C4 flow; Excel subtracts those via STRUX, ontology cannot.'),
-        ('B664', 'excel_stale', 'Excel formula attributes 0 to B664; T42-2-1 actually feeds this building. Mirror delta vs B665.'),
-        ('B665', 'excel_stale', 'Excel over-attributes T42-2-1 to B665. Mirror delta vs B664.'),
-        ('B652', 'excel_bug', 'Residual from the B612 T8-A3-A14-112 double-subtraction mirror edge; ~0.6 MWh redistribution is approximate.'),
+        ('B664', 'excel_stale', 'Excel missed T42-2-1, so it lands 0 here. PME has the meter (~4.9 MWh/mo); ontology credits B664. Mirror of B665.'),
+        ('B665', 'excel_stale', 'Excel missed T42-2-1, so its subtract is a no-op and B665 keeps the full T42. PME has T42-2-1; ontology subtracts it. Mirror of B664.'),
+        ('B612', 'excel_bug', 'Excel subtracts T8-A3-A14-112 twice (once via T8-A3, once on its own line), so B612 is short by ~21 MWh/mo. Ontology walks the T8 → T8-A3 → T8-A3-A14-112 chain and subtracts only once.'),
+        ('B652', 'data_source_drift', '~0.6 MWh / 3% gap between Excel\'s cached T8-A3-A14-112 value and the PME daily sum. Same meter, slightly different aggregation.'),
         ('B660', '2026-02', 'under_investigation', 'Jan matches within 609 kWh, Feb drifts -141 MWh (-2.2%). Root cause not yet diagnosed.'),
     ],
     'snv_el': [
@@ -149,7 +147,8 @@ def build_lookup(entries: list) -> dict:
     return out
 
 
-def classify(bldg: str, month: str, excel: float, onto: float, curated: dict):
+def classify(bldg: str, month: str, excel: float, onto: float,
+             curated: dict, bldgs_with_meters: set[str], media_id: str):
     diff = onto - excel
     absd = abs(diff)
     pct = abs(diff / excel * 100) if excel else 0.0
@@ -163,6 +162,12 @@ def classify(bldg: str, month: str, excel: float, onto: float, curated: dict):
         return ('match', '')
     if excel == 0 and absd < 10:  # native-unit: < 10 kWh / 10 MWh / 10 m³
         return ('match', '')
+    # Building has no meters targeting it for this media — its Excel line
+    # is a campus-intake reading attributed to the campus in the ontology.
+    # Don't flag as drift; explain the topology choice.
+    if bldg not in bldgs_with_meters and excel > 0 and onto == 0:
+        return ('campus_attributed',
+                f"No {media_id} meter targets {bldg} in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.")
     # Month-specific curated override
     if (bldg, month) in curated:
         return curated[(bldg, month)]
@@ -215,7 +220,16 @@ def compute_diffs(site_dir: Path, media_id: str):
     FROM ex FULL OUTER JOIN onto USING (building_id, month)
     ORDER BY bldg, month
     """
-    return con.execute(q).fetchall()
+    rows = con.execute(q).fetchall()
+    bldgs_with_meters = {
+        r[0] for r in con.execute(
+            f"SELECT DISTINCT mm.target_id "
+            f"FROM meters m JOIN meter_measures mm "
+            f"  ON mm.meter_id = m.meter_id AND mm.target_kind='building' "
+            f"WHERE m.media_type_id = '{media_id}'"
+        ).fetchall()
+    }
+    return rows, bldgs_with_meters
 
 
 def process(ws_name: str, site: str, media_id: str) -> dict:
@@ -224,11 +238,11 @@ def process(ws_name: str, site: str, media_id: str) -> dict:
     out_path = ws_dir / '05_ontology/excel_comparison_annotations.csv'
 
     curated = build_lookup(CURATED.get(ws_name, []))
-    rows = compute_diffs(site_dir, media_id)
+    rows, bldgs_with_meters = compute_diffs(site_dir, media_id)
 
     out_rows = []
     for bldg, month, excel, onto in rows:
-        reason, expl = classify(bldg, month, excel, onto, curated)
+        reason, expl = classify(bldg, month, excel, onto, curated, bldgs_with_meters, media_id)
         out_rows.append({
             'media': media_id,
             'building_id': bldg,

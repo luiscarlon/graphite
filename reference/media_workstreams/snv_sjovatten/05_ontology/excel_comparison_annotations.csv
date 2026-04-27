@@ -24,18 +24,18 @@ SJOVATTEN,B229,2026-01,0.00,0.00,0.00,match,
 SJOVATTEN,B229,2026-02,2.00,2.00,0.00,match,
 SJOVATTEN,B230,2026-01,624.00,624.00,0.00,match,
 SJOVATTEN,B230,2026-02,578.00,578.00,0.00,match,
-SJOVATTEN,B301,2026-01,540.27,0.00,-540.27,excel_cooked_coefficient,B301 = 0.09 × BPS_V2. BPS_V2 is a sheet-level residual (B342 inlets − 15 direct consumers) with monthly-variable R factors; not mirrored in the ontology. See open_questions.md.
-SJOVATTEN,B301,2026-02,2684.58,0.00,-2684.58,excel_cooked_coefficient,B301 = 0.09 × BPS_V2. BPS_V2 is a sheet-level residual (B342 inlets − 15 direct consumers) with monthly-variable R factors; not mirrored in the ontology. See open_questions.md.
-SJOVATTEN,B302,2026-01,1080.55,0.00,-1080.55,excel_cooked_coefficient,B302 = 0.18 × BPS_V2. Same BPS fractional split — see B301.
-SJOVATTEN,B302,2026-02,5369.17,0.00,-5369.17,excel_cooked_coefficient,B302 = 0.18 × BPS_V2. Same BPS fractional split — see B301.
-SJOVATTEN,B303,2026-01,1080.55,0.00,-1080.55,excel_cooked_coefficient,B303 = 0.18 × BPS_V2. Same BPS fractional split — see B301.
-SJOVATTEN,B303,2026-02,5369.17,0.00,-5369.17,excel_cooked_coefficient,B303 = 0.18 × BPS_V2. Same BPS fractional split — see B301.
+SJOVATTEN,B301,2026-01,540.27,0.00,-540.27,campus_attributed,No SJOVATTEN meter targets B301 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
+SJOVATTEN,B301,2026-02,2684.58,0.00,-2684.58,campus_attributed,No SJOVATTEN meter targets B301 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
+SJOVATTEN,B302,2026-01,1080.55,0.00,-1080.55,campus_attributed,No SJOVATTEN meter targets B302 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
+SJOVATTEN,B302,2026-02,5369.17,0.00,-5369.17,campus_attributed,No SJOVATTEN meter targets B302 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
+SJOVATTEN,B303,2026-01,1080.55,0.00,-1080.55,campus_attributed,No SJOVATTEN meter targets B303 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
+SJOVATTEN,B303,2026-02,5369.17,0.00,-5369.17,campus_attributed,No SJOVATTEN meter targets B303 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
 SJOVATTEN,B304,2026-01,29639.90,0.00,-29639.90,strux_only_meter,B304-52-V2-AW026 is a manually-read STRUX meter; no BMS data. Excel cached values come from manual STRUX entry.
 SJOVATTEN,B304,2026-02,43483.40,0.00,-43483.40,strux_only_meter,B304-52-V2-AW026 is a manually-read STRUX meter; no BMS data. Excel cached values come from manual STRUX entry.
 SJOVATTEN,B305,2026-01,0.00,0.00,0.00,match,
 SJOVATTEN,B305,2026-02,0.00,0.00,0.00,match,
-SJOVATTEN,B307,2026-01,2761.41,0.00,-2761.41,excel_cooked_coefficient,B307 = 0.46 × BPS_V2 (largest share). Same BPS fractional split — see B301.
-SJOVATTEN,B307,2026-02,13721.20,0.00,-13721.20,excel_cooked_coefficient,B307 = 0.46 × BPS_V2 (largest share). Same BPS fractional split — see B301.
+SJOVATTEN,B307,2026-01,2761.41,0.00,-2761.41,campus_attributed,No SJOVATTEN meter targets B307 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
+SJOVATTEN,B307,2026-02,13721.20,0.00,-13721.20,campus_attributed,No SJOVATTEN meter targets B307 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
 SJOVATTEN,B308,2026-01,0.00,0.00,0.00,match,
 SJOVATTEN,B308,2026-02,0.00,0.00,0.00,match,
 SJOVATTEN,B309,2026-01,0.00,0.00,0.00,match,
@@ -91,8 +91,8 @@ SJOVATTEN,B342,2026-01,0.00,0.00,0.00,match,
 SJOVATTEN,B342,2026-02,0.00,0.00,0.00,match,
 SJOVATTEN,B343,2026-01,0.00,0.00,0.00,match,
 SJOVATTEN,B343,2026-02,0.00,0.00,0.00,match,
-SJOVATTEN,B344,2026-01,540.27,0.00,-540.27,excel_cooked_coefficient,B344 = 0.09 × BPS_V2. Same BPS fractional split — see B301.
-SJOVATTEN,B344,2026-02,2684.58,0.00,-2684.58,excel_cooked_coefficient,B344 = 0.09 × BPS_V2. Same BPS fractional split — see B301.
+SJOVATTEN,B344,2026-01,540.27,0.00,-540.27,campus_attributed,No SJOVATTEN meter targets B344 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
+SJOVATTEN,B344,2026-02,2684.58,0.00,-2684.58,campus_attributed,No SJOVATTEN meter targets B344 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
 SJOVATTEN,B345,2026-01,0.00,0.00,0.00,match,
 SJOVATTEN,B345,2026-02,0.00,0.00,0.00,match,
 SJOVATTEN,B346,2026-01,0.00,0.00,0.00,match,

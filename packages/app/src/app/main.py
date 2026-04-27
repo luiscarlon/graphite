@@ -123,7 +123,7 @@ def _readings_section(
     ds: Dataset,
     ann_bands: pd.DataFrame | None = None,
     ann_hints: dict | None = None,
-) -> tuple[list[str], list[str], tuple[date, date]] | None:
+) -> tuple[list[str], tuple[date, date]] | None:
     if not ds.readings:
         st.info("No readings loaded.")
         return None
@@ -140,37 +140,31 @@ def _readings_section(
     df["aggregate"] = df["timeseries_id"].map(lambda t: refs[t].aggregate)
     df["reading_type"] = df["timeseries_id"].map(lambda t: refs[t].reading_type)
     df["kind"] = df["timeseries_id"].map(lambda t: refs[t].kind)
-    df["building_id"] = df["meter_id"].map(
-        lambda m: meters_by_id[m].building_id or "(campus)"
-    )
 
     granularity = _detect_granularity(ds)
     unit = _unit_label(ds)
     rate_label = f"{unit}/{granularity}" if granularity != "unknown" else unit
 
-    cols = st.columns([1, 1, 2])
+    cols = st.columns([3, 2])
     with cols[0]:
-        buildings = sorted(df["building_id"].unique())
-        if ann_hints and ann_hints["buildings"]:
-            default_buildings = sorted(b for b in ann_hints["buildings"] if b in buildings)
-        else:
-            default_buildings = buildings
-        sel_buildings = st.multiselect("Building", buildings, default=default_buildings)
-    with cols[1]:
-        df_b = df[df["building_id"].isin(sel_buildings)]
-        meter_ids = sorted(df_b["meter_id"].unique())
-        # Default: all meters in the selected buildings. Annotation hints
-        # override this (e.g. the "Isolate" toggle on an annotation); if
-        # the intersection with the current view is empty, fall back to
-        # all meters rather than a partial selection.
+        timeseries_ids = sorted(df["timeseries_id"].unique())
+        # Annotation hints carry meter IDs (ontology layer); map them to
+        # timeseries IDs so the "Isolate" toggle still works in the raw
+        # readings view. No-op if no hints or no overlap.
         if ann_hints and ann_hints["meters"]:
-            default_meters = sorted(m for m in ann_hints["meters"] if m in meter_ids)
-            if not default_meters:
-                default_meters = meter_ids
+            hinted = {sensor_meter[refs[t].sensor_id] for t in timeseries_ids}
+            hinted_ts = sorted(
+                t for t in timeseries_ids
+                if sensor_meter[refs[t].sensor_id] in ann_hints["meters"]
+            )
+            default_ts = hinted_ts if hinted_ts else timeseries_ids
         else:
-            default_meters = meter_ids
-        sel_meters = st.multiselect("Meter", meter_ids, default=default_meters)
-    with cols[2]:
+            default_ts = timeseries_ids
+        sel_timeseries = st.multiselect(
+            "Timeseries", timeseries_ids, default=default_ts,
+            help="Raw counter and delta series. Ontology projections (building, meter, campus) are applied in the Consumption section.",
+        )
+    with cols[1]:
         tmin = df["timestamp"].min().date()
         tmax = df["timestamp"].max().date()
         if ann_hints and ann_hints["date_range"]:
@@ -182,6 +176,11 @@ def _readings_section(
             "Date range", min_value=tmin, max_value=tmax, value=(dmin, dmax)
         )
 
+    # sel_meters is derived purely for downstream helpers that key off
+    # meter (validity bands, annotation overlap) — it is NOT a user
+    # filter on the readings view.
+    sel_meters = sorted({sensor_meter[refs[t].sensor_id] for t in sel_timeseries})
+
     view = st.radio(
         "Counter view",
         ["cumulative (index)", f"rate ({rate_label})"],
@@ -191,13 +190,13 @@ def _readings_section(
     )
 
     df_sel = df[
-        df["meter_id"].isin(sel_meters)
+        df["timeseries_id"].isin(sel_timeseries)
         & (df["timestamp"].dt.date >= date_range[0])
         & (df["timestamp"].dt.date <= date_range[1] + timedelta(days=1))
     ].copy()
     if df_sel.empty:
         st.warning("No readings for the current selection.")
-        return sel_buildings, sel_meters, date_range
+        return sel_timeseries, date_range
 
     counters = df_sel[df_sel["reading_type"] == "counter"].copy()
     deltas = df_sel[df_sel["reading_type"] == "delta"].copy()
@@ -276,56 +275,18 @@ def _readings_section(
         )
         st.altair_chart(bars, width="stretch")
 
-    return sel_buildings, sel_meters, date_range
+    return sel_timeseries, date_range
 
 
-def _tables_section(
-    ds: Dataset,
-    selection: tuple[list[str], list[str], tuple[date, date]] | None,
-) -> None:
-    if selection is None:
-        sel_buildings: list[str] | None = None
-        sel_meters: list[str] | None = None
-    else:
-        sel_buildings, sel_meters, _date_range = selection
-
-    include_campus = sel_buildings is None or "(campus)" in sel_buildings
-    building_filter = (
-        None if sel_buildings is None else [b for b in sel_buildings if b != "(campus)"]
-    )
-
-    def keep_meter(mid: str | None) -> bool:
-        if sel_meters is None:
-            return True
-        return mid is not None and mid in sel_meters
-
-    def keep_building(bid: str | None) -> bool:
-        if building_filter is None:
-            return True
-        if bid is None:
-            return include_campus
-        return bid in building_filter
-
-    meters = [m for m in ds.meters if keep_building(m.building_id)]
-    if sel_meters is not None:
-        meters = [m for m in meters if m.meter_id in sel_meters]
-    relations = [
-        r for r in ds.relations
-        if sel_meters is None
-        or r.parent_meter_id in sel_meters
-        or r.child_meter_id in sel_meters
-    ]
-    zones = [z for z in ds.zones if keep_building(z.building_id)]
-    meter_measures = [mm for mm in ds.meter_measures if keep_meter(mm.meter_id)]
+def _tables_section(ds: Dataset) -> None:
+    meters = list(ds.meters)
+    relations = list(ds.relations)
+    zones = list(ds.zones)
+    meter_measures = list(ds.meter_measures)
     media_types = ds.media_types
-    buildings = [b for b in ds.buildings if keep_building(b.building_id)]
-    sensor_meter = {s.sensor_id: s.meter_id for s in ds.sensors}
-    sensors = [s for s in ds.sensors if keep_meter(s.meter_id)]
-    timeseries_refs = [
-        tr for tr in ds.timeseries_refs
-        if keep_meter(sensor_meter.get(tr.sensor_id))
-    ]
-
+    buildings = list(ds.buildings)
+    sensors = list(ds.sensors)
+    timeseries_refs = list(ds.timeseries_refs)
     annotations = ds.annotations
 
     tabs = st.tabs(
@@ -524,7 +485,7 @@ def main() -> None:
     selection = _readings_section(ds, ann_bands, ann_hints)
 
     with st.expander("Tables"):
-        _tables_section(ds, selection)
+        _tables_section(ds)
 
     st.subheader("Consumption")
     _consumption_section(ds, selection, ann_bands)
@@ -533,9 +494,29 @@ def main() -> None:
     _excel_comparison_section(ds, site_dir)
 
 
+def _consumption_targets(ds: Dataset, level: str) -> tuple[list[str], list[str]]:
+    """Return (options, default) for the consumption-section target picker.
+
+    Each level reads from the ontology — not the readings — so virtual
+    meters and campus-level intake aggregators appear without needing
+    raw timeseries.
+    """
+    if level == "campus":
+        ids = sorted(c.campus_id for c in ds.campuses)
+    elif level == "building":
+        ids = sorted(b.building_id for b in ds.buildings)
+    elif level == "zone":
+        ids = sorted(z.zone_id for z in ds.zones)
+    elif level in ("meter", "series"):
+        ids = sorted(m.meter_id for m in ds.meters)
+    else:
+        ids = []
+    return ids, ids
+
+
 def _consumption_section(
     ds: Dataset,
-    selection: tuple[list[str], list[str], tuple[date, date]] | None,
+    selection: tuple[list[str], tuple[date, date]] | None,
     ann_bands: pd.DataFrame | None = None,
 ) -> None:
     granularity = _detect_granularity(ds)
@@ -562,31 +543,44 @@ def _consumption_section(
         st.error(f"SQL error: {e}")
         return
 
-    # Series view: preferred timeseries flow per meter
-    sensor_meter = {s.sensor_id: s.meter_id for s in ds.sensors}
+    # Series view: raw measured flow (real meters only, LAG diff of
+    # preferred counter timeseries). Virtuals don't appear here.
     series_df = conn.execute(
         "SELECT meter_id, timestamp, delta_kwh FROM measured_flow"
     ).fetchdf()
     series_df["timestamp"] = pd.to_datetime(series_df["timestamp"])
 
+    # Meter view: synthesized flow including virtuals (EL_INTAKE etc.)
+    # via the recursive feeds-aware meter_flow view.
+    meter_df = conn.execute(
+        "SELECT meter_id, timestamp, delta_kwh FROM meter_flow"
+    ).fetchdf()
+    meter_df["timestamp"] = pd.to_datetime(meter_df["timestamp"])
+
     levels = sorted(df["level"].unique()) if not df.empty else []
-    all_levels = ["series"] + levels
-    level = st.radio("Group by", all_levels, index=0, horizontal=True)
+    all_levels = ["series", "meter"] + levels
 
-    # Apply filters from Readings section
-    if selection is not None:
-        sel_buildings, sel_meters, date_range = selection
-        bld_set = {b for b in sel_buildings if b != "(campus)"}
-        meter_building = {m.meter_id: m.building_id or "(campus)" for m in ds.meters}
-    else:
-        sel_buildings = sel_meters = None
-        date_range = None
-        bld_set = None
+    # Ontology-sourced filter row. Each level draws its target list
+    # straight from the ontology (not from readings), so virtual meters
+    # like B660.EL_INTAKE appear under campus alongside real intake
+    # meters. Future ontology classes (zone, equipment, system) drop in
+    # here as additional levels.
+    fcols = st.columns([1, 4])
+    with fcols[0]:
+        level = st.radio("Group by", all_levels, index=0, horizontal=False)
+    with fcols[1]:
+        target_options, target_default = _consumption_targets(ds, level)
+        sel_targets = st.multiselect(
+            level.capitalize(), target_options, default=target_default,
+            help="Filter the chart to these targets. Sourced from the ontology — virtuals included.",
+        )
 
-    if level == "series":
-        scoped = series_df.copy()
-        if sel_meters:
-            scoped = scoped[scoped["meter_id"].isin(sel_meters)]
+    date_range = selection[1] if selection else None
+
+    if level in ("series", "meter"):
+        scoped = (series_df if level == "series" else meter_df).copy()
+        if sel_targets:
+            scoped = scoped[scoped["meter_id"].isin(sel_targets)]
         if date_range:
             scoped = scoped[
                 (scoped.timestamp.dt.date >= date_range[0])
@@ -612,8 +606,8 @@ def _consumption_section(
             return
         scoped = df[df["level"] == level].copy()
         scoped["timestamp"] = pd.to_datetime(scoped["timestamp"])
-        if level == "building" and bld_set:
-            scoped = scoped[scoped["target_id"].isin(bld_set)]
+        if sel_targets:
+            scoped = scoped[scoped["target_id"].isin(sel_targets)]
         if date_range:
             scoped = scoped[
                 (scoped.timestamp.dt.date >= date_range[0])
