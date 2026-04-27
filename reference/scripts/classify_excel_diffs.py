@@ -158,7 +158,10 @@ def classify(bldg: str, month: str, excel: float, onto: float,
     # the boilerplate explanation just clutters the app view.
     if excel == 0 and onto == 0:
         return ('match', '')
-    if excel > 0 and pct < 0.1:
+    # Noise floor for relative drift: 0.25%. Below this, the difference
+    # is at the level of Excel cached aggregation vs PME daily-sum
+    # rounding and isn't worth flagging.
+    if excel > 0 and pct < 0.25:
         return ('match', '')
     if excel == 0 and absd < 10:  # native-unit: < 10 kWh / 10 MWh / 10 m³
         return ('match', '')

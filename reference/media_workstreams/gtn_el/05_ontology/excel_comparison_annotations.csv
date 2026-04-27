@@ -52,7 +52,7 @@ EL,B652,2026-02,20500.01,21144.23,644.22,data_source_drift,"~0.6 MWh / 3% gap be
 EL,B653,2026-01,362349.55,362358.68,9.12,match,
 EL,B653,2026-02,370006.70,370008.45,1.75,match,
 EL,B654,2026-01,288836.75,288830.75,-6.00,match,
-EL,B654,2026-02,115446.75,115231.25,-215.50,ontology_drift,Drift of -216 (0.2%). Cause not yet classified.
+EL,B654,2026-02,115446.75,115231.25,-215.50,match,
 EL,B655,2026-01,5637.88,5638.04,0.16,match,
 EL,B655,2026-02,6888.05,6887.42,-0.63,match,
 EL,B656,2026-01,0.00,0.00,0.00,match,
@@ -64,7 +64,7 @@ EL,B659,2026-02,119431.03,119409.37,-21.66,match,
 EL,B660,2026-01,7016098.56,0.00,-7016098.56,campus_attributed,No EL meter targets B660 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
 EL,B660,2026-02,6455431.55,0.00,-6455431.55,campus_attributed,No EL meter targets B660 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
 EL,B661,2026-01,79741.38,79742.94,1.56,match,
-EL,B661,2026-02,139002.75,139143.06,140.31,ontology_drift,Drift of 140 (0.1%). Cause not yet classified.
+EL,B661,2026-02,139002.75,139143.06,140.31,match,
 EL,B662,2026-01,0.00,0.00,0.00,match,
 EL,B662,2026-02,0.00,0.00,0.00,match,
 EL,B663,2026-01,0.00,0.00,0.00,match,

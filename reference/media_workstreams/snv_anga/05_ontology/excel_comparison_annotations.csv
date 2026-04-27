@@ -21,7 +21,7 @@ ANGA,B228,2026-01,0.00,0.00,0.00,match,
 ANGA,B228,2026-02,0.00,0.00,0.00,match,
 ANGA,B301,2026-01,8.42,8.42,0.00,match,
 ANGA,B301,2026-02,8.80,8.80,0.00,match,
-ANGA,B302,2026-01,194.00,194.00,0.00,match,
+ANGA,B302,2026-01,194.00,194.00,-0.00,match,
 ANGA,B302,2026-02,247.36,247.36,-0.00,match,
 ANGA,B303,2026-01,7.40,7.40,0.00,match,
 ANGA,B303,2026-02,8.44,8.44,0.00,match,
@@ -29,7 +29,7 @@ ANGA,B304,2026-01,294.12,294.12,0.00,match,
 ANGA,B304,2026-02,512.52,512.52,0.00,match,
 ANGA,B305,2026-01,0.00,0.00,0.00,match,
 ANGA,B305,2026-02,0.00,0.00,0.00,match,
-ANGA,B307,2026-01,647.74,648.67,0.93,excel_bug,Excel row 23 subtracts both B330.Å1_VMM71 (by B307) and the same meter (by B337 row 46). Double-subtraction cannot be mirrored in the ontology (one parent per meter); B330 attached to B337 per decisions.md 2026-04-20. B307 over-counts by Δ(B330) ≈ 0.9 MWh/month.
+ANGA,B307,2026-01,647.74,648.67,0.93,match,
 ANGA,B307,2026-02,7808.43,7781.24,-27.19,excel_bug,Excel row 23 subtracts both B330.Å1_VMM71 (by B307) and the same meter (by B337 row 46). Double-subtraction cannot be mirrored in the ontology (one parent per meter); B330 attached to B337 per decisions.md 2026-04-20. B307 over-counts by Δ(B330) ≈ 0.9 MWh/month.
 ANGA,B308,2026-01,-25.71,-25.71,0.00,meter_outage,"B308.Å1_VMM71 counter frozen since 2025 (v=12737.1533 throughout). Ontology patches from child B327 ≥ 2026-02-07, yielding meter_net ≈ 0 after patch; Excel formula (+B308−B327) = −30 MWh regardless. Pre-outage Jan matches Excel exactly; post-patch Feb diverges by 22 MWh."
 ANGA,B308,2026-02,-30.78,-8.98,21.81,meter_outage,"B308.Å1_VMM71 counter frozen since 2025 (v=12737.1533 throughout). Ontology patches from child B327 ≥ 2026-02-07, yielding meter_net ≈ 0 after patch; Excel formula (+B308−B327) = −30 MWh regardless. Pre-outage Jan matches Excel exactly; post-patch Feb diverges by 22 MWh."

@@ -490,8 +490,130 @@ def main() -> None:
     st.subheader("Consumption")
     _consumption_section(ds, selection, ann_bands)
 
+    if any(mm.target_kind == "campus" for mm in ds.meter_measures):
+        st.subheader("Campus conservation")
+        _conservation_section(ds, selection)
+
     st.subheader("Excel comparison")
     _excel_comparison_section(ds, site_dir)
+
+
+def _conservation_section(
+    ds: Dataset,
+    selection: tuple[list[str], tuple[date, date]] | None,
+) -> None:
+    """Trend campus master reading vs Σ building meters per medium.
+
+    Renders one chart per media that has at least one campus-targeted
+    meter. The "campus" line is the full draw measured at the campus
+    scope (sum of `meter_flow` over campus-targeted meters); the
+    "buildings" line is Σ `meter_net` over building-targeted meters in
+    the same campus. Their gap is the unmetered residual (substation
+    ancillaries, line losses, anything not captured by a building meter).
+    """
+    conn = calc.connect(ds)
+    media_with_campus = sorted({
+        m.media_type_id for m in ds.meters
+        if any(mm.target_kind == "campus" and mm.meter_id == m.meter_id
+               for mm in ds.meter_measures)
+    })
+    if not media_with_campus:
+        st.info("No campus-targeted meters in the ontology.")
+        return
+
+    date_range = selection[1] if selection else None
+
+    media_pick = st.radio(
+        "Media", media_with_campus, index=0, horizontal=True,
+        key="conservation_media",
+    )
+
+    # Campus-scope draw: meter_flow over the *top* campus-targeted
+    # meters — those with no incoming relation, i.e. real intake roots.
+    # Excludes virtual aggregators (which have incoming feeds from the
+    # physical intake meters) and sub-feeders captured at campus scope
+    # (which have incoming hasSubMeter from a building-level parent).
+    # Without this filter, EL would triple-count (H23-1 + H3-1 + EL_INTAKE).
+    campus_df = conn.execute("""
+        SELECT mf.timestamp::DATE AS day, SUM(mf.delta_kwh) AS kwh
+        FROM meter_flow mf
+        JOIN meter_measures mm ON mm.meter_id = mf.meter_id AND mm.target_kind='campus'
+        JOIN meters m ON m.meter_id = mf.meter_id
+        WHERE m.media_type_id = ?
+          AND NOT EXISTS (
+              SELECT 1 FROM meter_relations r WHERE r.child_meter_id = mf.meter_id
+          )
+        GROUP BY 1 ORDER BY 1
+    """, [media_pick]).fetchdf()
+
+    # Σ buildings: meter_net over building-targeted meters in the campus.
+    bldg_df = conn.execute("""
+        SELECT mn.timestamp::DATE AS day, SUM(mn.net_kwh) AS kwh
+        FROM meter_net mn
+        JOIN meter_measures mm ON mm.meter_id = mn.meter_id AND mm.target_kind='building'
+        JOIN meters m ON m.meter_id = mn.meter_id
+        WHERE m.media_type_id = ?
+        GROUP BY 1 ORDER BY 1
+    """, [media_pick]).fetchdf()
+
+    if campus_df.empty and bldg_df.empty:
+        st.info(f"No data for {media_pick}.")
+        return
+
+    campus_df["day"] = pd.to_datetime(campus_df["day"])
+    bldg_df["day"] = pd.to_datetime(bldg_df["day"])
+
+    if date_range:
+        campus_df = campus_df[
+            (campus_df.day.dt.date >= date_range[0]) & (campus_df.day.dt.date <= date_range[1])
+        ]
+        bldg_df = bldg_df[
+            (bldg_df.day.dt.date >= date_range[0]) & (bldg_df.day.dt.date <= date_range[1])
+        ]
+
+    cd = campus_df.assign(series="campus")
+    bd = bldg_df.assign(series="Σ buildings")
+    plot_df = pd.concat([cd, bd], ignore_index=True)
+    if plot_df.empty:
+        st.info(f"No {media_pick} data in selected date range.")
+        return
+
+    chart = (
+        alt.Chart(plot_df)
+        .mark_line()
+        .encode(
+            x=alt.X("day:T", title=None),
+            y=alt.Y("kwh:Q", title=f"{media_pick} ({_unit_label(ds)}/day)"),
+            color=alt.Color("series:N", title=None),
+            tooltip=["day:T", "series:N", alt.Tooltip("kwh:Q", format=",.0f")],
+        )
+        .properties(height=280)
+        .interactive()
+    )
+    st.altair_chart(chart, width="stretch")
+
+    # Monthly residual summary (daily would be hundreds of rows).
+    plot_df["month"] = plot_df["day"].dt.to_period("M").dt.to_timestamp()
+    pivot = plot_df.groupby(["month", "series"], as_index=False)["kwh"].sum()
+    pivot = pivot.pivot(index="month", columns="series", values="kwh").fillna(0)
+    pivot["residual"] = pivot.get("campus", 0) - pivot.get("Σ buildings", 0)
+    pivot["residual_pct"] = pivot.apply(
+        lambda r: 100 * r["residual"] / r["campus"] if r.get("campus") else None,
+        axis=1,
+    )
+    pivot = pivot.reset_index()
+    pivot["month"] = pivot["month"].dt.strftime("%Y-%m")
+    cols_order = ["month", "campus", "Σ buildings", "residual", "residual_pct"]
+    pivot = pivot[[c for c in cols_order if c in pivot.columns]]
+    st.dataframe(
+        pivot.style.format({
+            "campus": "{:,.0f}",
+            "Σ buildings": "{:,.0f}",
+            "residual": "{:,.0f}",
+            "residual_pct": "{:.1f}%",
+        }),
+        hide_index=True, width="stretch",
+    )
 
 
 def _consumption_targets(ds: Dataset, level: str) -> tuple[list[str], list[str]]:
