@@ -10,3 +10,10 @@ B621.KV1_VM21,B623.KV1_VM21_V,hasSubMeter,,,,excel_Kallvatten_r19_building_621 (
 B821.KV1_VM21,B626.KV1_VM20,hasSubMeter,,,,excel_Kallvatten_r50_building_821
 B821.KV1_VM21,B626.KV1_VM21,hasSubMeter,,,,excel_Kallvatten_r50_building_821
 B833.KV1_VM21,B834.KV1_VM21,hasSubMeter,,,,excel_Kallvatten_r51_building_833
+B653.KV1_VM21_V,GTN.KV_AVRAKNING,feeds,1.0,,,excel_Kallvatten_avrakningsmatare
+B653.KV1_VM22_V,GTN.KV_AVRAKNING,feeds,1.0,,,excel_Kallvatten_avrakningsmatare
+B654.KV1_VM22_V,GTN.KV_AVRAKNING,feeds,1.0,,,excel_Kallvatten_avrakningsmatare
+B661.KV1_VM21,GTN.KV_AVRAKNING,feeds,1.0,,,excel_Kallvatten_avrakningsmatare
+B921.KV1_VM21_V,GTN.KV_AVRAKNING,feeds,1.0,,,excel_Kallvatten_avrakningsmatare
+B600N.KV1_VM20,B600.KALLVATTEN_INTAKE,feeds,1.0,,,B600_water_intake
+B600S.KV1_VM20,B600.KALLVATTEN_INTAKE,feeds,1.0,,,B600_water_intake

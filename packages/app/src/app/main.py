@@ -599,7 +599,7 @@ def _conservation_section(
     pivot = pivot.pivot(index="month", columns="series", values="kwh").fillna(0)
     pivot["residual"] = pivot.get("campus", 0) - pivot.get("Σ buildings", 0)
     pivot["residual_pct"] = pivot.apply(
-        lambda r: 100 * r["residual"] / r["campus"] if r.get("campus") else None,
+        lambda r: 100 * r["residual"] / r["campus"] if r.get("campus") else float("nan"),
         axis=1,
     )
     pivot = pivot.reset_index()
@@ -612,7 +612,7 @@ def _conservation_section(
             "Σ buildings": "{:,.0f}",
             "residual": "{:,.0f}",
             "residual_pct": "{:.1f}%",
-        }),
+        }, na_rep="—"),
         hide_index=True, width="stretch",
     )
 
