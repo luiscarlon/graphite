@@ -1,6 +1,6 @@
 media,building_id,month,excel_kwh,onto_kwh,diff_kwh,reason,explanation
-ANGA,B600,2026-01,3932.15,-1732.60,-5664.74,match_intake,B600 is the site intake; residual vs per-building sum is expected.
-ANGA,B600,2026-02,2431.89,-491.63,-2923.52,match_intake,B600 is the site intake; residual vs per-building sum is expected.
+ANGA,B600,2026-01,3932.15,0.00,-3932.15,campus_attributed,No ANGA meter targets B600 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
+ANGA,B600,2026-02,2431.89,0.00,-2431.89,campus_attributed,No ANGA meter targets B600 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
 ANGA,B602,2026-01,0.00,0.00,0.00,match,
 ANGA,B602,2026-02,0.00,0.00,0.00,match,
 ANGA,B603,2026-01,0.00,0.00,0.00,match,

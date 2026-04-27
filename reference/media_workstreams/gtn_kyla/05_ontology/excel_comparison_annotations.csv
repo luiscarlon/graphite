@@ -5,7 +5,7 @@ KYLA,B603,2026-01,0.00,0.00,0.00,match,
 KYLA,B603,2026-02,0.00,0.00,0.00,match,
 KYLA,B604,2026-01,0.00,0.00,0.00,match,
 KYLA,B604,2026-02,0.00,0.00,0.00,match,
-KYLA,B611,2026-01,-20.88,-20.88,-0.00,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
+KYLA,B611,2026-01,-20.88,-20.88,0.00,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
 KYLA,B611,2026-02,-12.01,-11.94,0.08,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
 KYLA,B612,2026-01,7.99,6.24,-1.75,excel_cooked_coefficient,Excel uses fractional 0.9×B637 subtraction; views.sql has no fractional-subtract primitive so 1–3 MWh residuals are expected.
 KYLA,B612,2026-02,13.77,11.97,-1.80,excel_cooked_coefficient,Excel uses fractional 0.9×B637 subtraction; views.sql has no fractional-subtract primitive so 1–3 MWh residuals are expected.

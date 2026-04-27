@@ -18,6 +18,8 @@ B612.Å1_VMM71,B613.Å1_VMM71,hasSubMeter,,,,flow_schema_V600-52.E.8-001
 B612.Å1_VMM71,B641.Å1_VMM71,hasSubMeter,,,,flow_schema_V600-52.E.8-001
 B614.Å1_VMM71,B642.Å1_VMM72,hasSubMeter,,,,flow_schema_V600-52.E.8-001
 B642.Å1_VMM72,B642.Å1_VMM71,hasSubMeter,,,,flow_schema_V600-52.E.8-001
+B600N.Å1_VMM71,B600.ANGA_INTAKE,feeds,1.0,,,B600_steam_intake
+B600S.Å1_VMM71,B600.ANGA_INTAKE,feeds,1.0,,,B600_steam_intake
 B611.T2,B622.T2-3-1-B1,hasSubMeter,,,,el_naming_hierarchy
 B611.T4,B611.T4-A3,hasSubMeter,,,,el_naming_hierarchy
 B611.T4,B611.T4-C1,hasSubMeter,,,,el_naming_hierarchy

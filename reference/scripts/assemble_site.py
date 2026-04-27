@@ -253,6 +253,15 @@ def main() -> int:
                 v_last = row.get("V_LAST", "")
                 if not v_last:
                     continue
+                # Note: PME stores some meters in MWh ("Active Energy
+                # Delivered(Mega)") and others in kWh ("Active Energy
+                # Delivered"). Values are stored as-is here so they round-
+                # trip with the original PME export and with the cached
+                # Excel building totals (which are also in the source
+                # unit). The `delta_kwh` column name is therefore a
+                # misnomer for non-kWh meters; the conservation chart and
+                # any cross-media aggregation must read sensors.unit and
+                # rescale at query time.
                 day = row["DAY"]
                 for tr in ref_list:
                     vf = tr.get("valid_from", "")

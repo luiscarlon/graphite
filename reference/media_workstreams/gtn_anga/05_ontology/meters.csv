@@ -1,6 +1,6 @@
 meter_id,name,building_id,media_type_id,is_virtual_meter,identifier,valid_from,valid_to
-B600N.Å1_VMM71,600 ANGA meter Å1_VMM71,B600,ANGA,False,snowflake=B600N.Å1_VMM71_E; strux=B600N.Å1_VMM71_E,,
-B600S.Å1_VMM71,600 ANGA meter Å1_VMM71,B600,ANGA,False,snowflake=B600S.Å1_VMM71_E; strux=B600S.Å1_VMM71_E,,
+B600N.Å1_VMM71, ANGA meter Å1_VMM71,,ANGA,False,snowflake=B600N.Å1_VMM71_E; strux=B600N.Å1_VMM71_E,,
+B600S.Å1_VMM71, ANGA meter Å1_VMM71,,ANGA,False,snowflake=B600S.Å1_VMM71_E; strux=B600S.Å1_VMM71_E,,
 B611.Å1_VMM71,611 ANGA meter Å1_VMM71,B611,ANGA,False,snowflake=B611.Å1_VM71; strux=B611.Å1_VM71,,
 B611.Å1_VMM72,611 ANGA meter Å1_VMM72,B611,ANGA,False,snowflake=B611.Å1_VM72,,
 B611.Å1_VMM73,611 ANGA meter Å1_VMM73,B611,ANGA,False,snowflake=B611.Å1_VM73; strux=B611.Å1_VM73,,
@@ -20,3 +20,4 @@ B821.Å1_VMM71,821 ANGA meter Å1_VMM71,B821,ANGA,False,snowflake=B821.Å1_VMM71
 B833.Å1_VMM71,833 ANGA meter Å1_VMM71,B833,ANGA,False,snowflake=B833.Å1_VMM71_E; strux=B833.Å1_VMM71_E,,
 B841.Å1_VMM71,841 ANGA meter Å1_VMM71,B841,ANGA,False,snowflake=B841.Å1_VMM71_E; strux=B841.Å1_VMM71_E,,2025-01-01
 B921.Å1_VMM71,921 ANGA meter Å1_VMM71,B921,ANGA,False,snowflake=B921.Å1_VMM71_E; strux=B921.Å1_VMM71_E,,
+B600.ANGA_INTAKE, ANGA virtual B600.ANGA_INTAKE,,ANGA,True,,,

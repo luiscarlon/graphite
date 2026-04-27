@@ -110,6 +110,7 @@ def _detect_unit(ds: Dataset) -> str:
 
 _UNIT_SHORT = {
     "KiloW-HR": "kWh",
+    "Kilowatt-Hour": "kWh",
     "Megawatt-Hour": "MWh",
     "M3": "m³",
 }

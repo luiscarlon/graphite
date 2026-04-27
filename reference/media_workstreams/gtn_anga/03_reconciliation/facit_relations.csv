@@ -1,4 +1,4 @@
-from_meter,to_meter,coefficient,derived_from
+from_meter,to_meter,coefficient,derived_from,relation_type
 B600N.Å1_VMM71,B616.Å1_VMM71,1.0,flow_schema_V600-52.E.8-001
 B600N.Å1_VMM71,B643.Å1_VMM71,1.0,flow_schema_V600-52.E.8-001
 B600N.Å1_VMM71,B833.Å1_VMM71,1.0,flow_schema_V600-52.E.8-001
@@ -18,3 +18,5 @@ B612.Å1_VMM71,B613.Å1_VMM71,1.0,flow_schema_V600-52.E.8-001
 B612.Å1_VMM71,B641.Å1_VMM71,1.0,flow_schema_V600-52.E.8-001
 B614.Å1_VMM71,B642.Å1_VMM72,1.0,flow_schema_V600-52.E.8-001
 B642.Å1_VMM72,B642.Å1_VMM71,1.0,flow_schema_V600-52.E.8-001
+B600N.Å1_VMM71,B600.ANGA_INTAKE,1.0,B600_steam_intake,feeds
+B600S.Å1_VMM71,B600.ANGA_INTAKE,1.0,B600_steam_intake,feeds

@@ -1,6 +1,6 @@
 meter_id,building,meter_type
-B600N.Å1_VMM71,600,real
-B600S.Å1_VMM71,600,real
+B600N.Å1_VMM71,,real
+B600S.Å1_VMM71,,real
 B611.Å1_VMM71,611,real
 B611.Å1_VMM72,611,real
 B611.Å1_VMM73,611,real
@@ -35,3 +35,4 @@ B821.ANGA_BUILDING,821,virtual
 B833.ANGA_BUILDING,833,virtual
 B841.ANGA_BUILDING,841,virtual
 B921.ANGA_BUILDING,921,virtual
+B600.ANGA_INTAKE,,virtual
