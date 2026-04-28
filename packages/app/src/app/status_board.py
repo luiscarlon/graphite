@@ -75,8 +75,12 @@ STATUS_BOARD: dict[tuple[str, str], tuple[str, str]] = {
         "buildings) keep ontology and Excel from matching on six "
         "buildings; all open issues blocked on a fractional-subtract "
         "primitive. B324 substation intake (B324.EL_INTAKE = H3 + H4_1) "
-        "closes the campus conservation balance against AZ-total EL "
-        "within 0.01 percent; details in annotations.",
+        "sums to AZ-total EL within 0.01 percent (7922 MWh Jan). "
+        "Conservation panel master is B324.H4_1 = building distribution "
+        "side (4509 MWh Jan vs Sigma buildings 4206 MWh, 6.7 percent "
+        "residual); B324.H3 Elpanna boiler (3413 MWh, produces AANGA) "
+        "is targeted at building B324 so it does not inflate the panel "
+        "(matches Excel which also reports B324 EL = 0).",
     ),
     ("snackviken", "KALLVATTEN"): (
         "yellow",
