@@ -124,7 +124,10 @@ CURATED: dict[str, list] = {
     ],
     'snv_varme': [
         ('B327', 'excel_bug', 'Excel row 38 double-counts B326.VS1_VMM61 (already + term in row 37 for B326). Meter can have only one building attribution; assigned to B326 per decisions.md. B327 under-counts by Δ(B326.VS1_VMM61) ≈ 17 MWh/month.'),
-        ('B310', 'match', 'Negative Excel value (−155 MWh Feb) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).'),
+        ('B310', '2026-02', 'match', 'Negative Excel value (−155 MWh) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).'),
+        ('B310', '2026-01', 'meter_outage', '2026-01-14 catch-up cluster: B310.VP2_VMM61 (+parent) lost ~1987 MWh from interpolate spread of the Sept-Jan freeze; B313.VP1_VMM62 / B311.VP1_VMM64 (subs) under-subtract by ~450 MWh combined. Net B310 Jan ontology ~1353 MWh below Excel. See ann-snv-varme-b310-vp2-offline-fall and the matching b311/b313 entries.'),
+        ('B311', '2026-01', 'meter_outage', '2026-01-14 catch-up cluster: B311.VP1_VMM64 was flat 117 days then a single-day +45.6 MWh flush on 2026-01-14. The rolling_sum aggregation absorbs the spike, leaving Jan ontology ~40 MWh below Excel. See ann-snv-varme-b311-vmm64-offline-fall.'),
+        ('B313', '2026-01', 'meter_outage', '2026-01-14 catch-up cluster: B313.VP1_VMM62 was flat 114 days then a single-day +404.8 MWh flush on 2026-01-14. The rolling_sum aggregation absorbs the spike, leaving Jan ontology ~356 MWh below Excel. See ann-snv-varme-b313-vmm62-offline-fall.'),
     ],
     'snv_anga': [
         ('B216', 'meter_outage', 'B216.Å1_VM71 counter froze 2026-02-18; ontology patches post-outage from child B217 but captures pre-outage physical B216>B217 delta (~30 MWh). Excel uses STRUX register-diff which absorbs the freeze as zero consumption post-Feb 18.'),

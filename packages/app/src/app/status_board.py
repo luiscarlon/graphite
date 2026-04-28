@@ -101,12 +101,14 @@ STATUS_BOARD: dict[tuple[str, str], tuple[str, str]] = {
         "the BPS_V2 fractional pool — accepted at this stage.",
     ),
     ("snackviken", "VARME"): (
-        "yellow",
-        "Ontology looks good with a minor Excel-side bug still to chase. "
-        "B310/B311/B313 synchronized 117-day offline patched via "
-        "interpolate; B310 Jan 2026 net negative is expected (distribution "
-        "pool). A few building-level totals remain distorted by outage "
-        "windows that aren't fully reconstructable from sub-meters.",
+        "green",
+        "Ontology matches Excel within 1 percent at the building level; the "
+        "Jan 2026 B311/B313 drifts are 2026-01-14 sitewide catch-up "
+        "cluster fallout (114-day frozen counters then a single-day "
+        "flush). B327 under-counts by ~17 MWh/mo from the B326.VS1_VMM61 "
+        "double-count in Excel rows 37+38. Fjärrvärme intake "
+        "(SNV.VARME_INTAKE, 11 FV1 meters) closes the campus draw against "
+        "TN-side billing within 0.01 percent.",
     ),
 }
 
