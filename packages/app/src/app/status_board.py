@@ -37,11 +37,13 @@ STATUS_BOARD: dict[tuple[str, str], tuple[str, str]] = {
         "2025).",
     ),
     ("gartuna", "KYLA"): (
-        "orange",
-        "Could not build a reliable ontology from Excel: the workbook is "
-        "stale and its formulas produce negative building totals by "
-        "subtracting meters that are already dead. Sparse raw readings "
-        "further undermine any daily/hourly aggregation.",
+        "yellow",
+        "Ontology matches Excel at the monthly level. Caveats: B658 "
+        "reports ~12 MWh/month of real cooling that Excel's STRUX cache "
+        "misses, and B623's Excel row double-counts a south-distribution "
+        "meter that the ontology routes through the B600-KB2 pool only. "
+        "Four kyla meters (B638/B643/B821/B841) flat at zero throughout "
+        "the reference period, treated as unmetered.",
     ),
     ("gartuna", "KYLTORNSVATTEN"): (
         "green",

@@ -20,4 +20,4 @@ B612.KYLA_VIRT,B637.KB2_INT_VERK,hasSubMeter,0.9,,,excel_Kyla_r14
 B612.KYLA_VIRT,B638.KB1_INT_VERK1,hasSubMeter,0.9,,,excel_Kyla_r14
 B641.KYLA_VIRT,B637.KB2_INT_VERK,hasSubMeter,0.1,,,excel_Kyla_r29
 B641.KYLA_VIRT,B638.KB1_INT_VERK1,hasSubMeter,0.1,,,excel_Kyla_r29
-B634.KB1_PKYL,B634.KYLA_LOSSES,feeds,0.256,,,excel_Kyla_r26_power_to_energy_residual
+B634.KB1_PKYL,B634.KYLA_CONVERSION_RESIDUAL,feeds,0.256,,,excel_Kyla_r26_power_to_energy_residual
