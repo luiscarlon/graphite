@@ -70,14 +70,13 @@ STATUS_BOARD: dict[tuple[str, str], tuple[str, str]] = {
     ),
     ("snackviken", "EL"): (
         "red",
-        "Raw readings look clean, but the Excel workbook and the topology "
-        "derived from it are arbitrary and partly cooked: heavy reliance on "
-        "STRUX-only trunk meters (B209/B304/B313/B334) that have no BMS "
-        "equivalent, literal placeholder strings (‘Reservkraft pl7’) in "
-        "formula slots, typo'd meter IDs, and fractional-split coefficients "
-        "(R-factors) that the workbook applies to whole net formulas "
-        "rather than individual terms. Ontology mirrors the Excel shape "
-        "faithfully, but neither side is a reliable ground truth on its own.",
+        "STRUX-only trunks (B209/B304/B313/B334) and Excel R-factor "
+        "fractional pools (T26S/T29/T49 distributed across multiple "
+        "buildings) keep ontology and Excel from matching on six "
+        "buildings; all open issues blocked on a fractional-subtract "
+        "primitive. B324 substation intake (B324.EL_INTAKE = H3 + H4_1) "
+        "closes the campus conservation balance against AZ-total EL "
+        "within 0.01 percent; details in annotations.",
     ),
     ("snackviken", "KALLVATTEN"): (
         "yellow",

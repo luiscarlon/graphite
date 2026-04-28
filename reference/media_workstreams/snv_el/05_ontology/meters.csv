@@ -161,3 +161,5 @@ B325.T13-6-3,325 EL meter T13-6-3,,EL,False,snowflake=B325.T13-6-3; strux=B325.T
 B324.H3,324 EL meter H3,,EL,False,snowflake=B324.H3; strux=B324.H3,,
 B328.T19-3-2,399 EL meter T19-3-2,,EL,False,snowflake=B328.T19-3-2; strux=B328.T19-3-2,,
 B328.T20-3-2,399 EL meter T20-3-2,,EL,False,snowflake=B328.T20-3-2; strux=B328.T20-3-2,,
+B324.H4_1,EL meter H4_1 (TN intake B324),,EL,False,snowflake=B324.H4_1; strux=B324.H4-1,,
+B324.EL_INTAKE,EL virtual B324.EL_INTAKE,,EL,True,excel=Total SNV EL,,

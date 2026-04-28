@@ -51,8 +51,8 @@ EL,B316,2026-01,0.00,0.00,0.00,match,
 EL,B316,2026-02,0.00,0.00,0.00,match,
 EL,B317,2026-01,62941.47,62946.70,5.23,match,
 EL,B317,2026-02,134117.52,58642.60,-75474.93,excel_cooked_coefficient,Cross-building fractional pool: 0.5×T49-net. No views.sql primitive.
-EL,B318,2026-01,124906.27,122565.86,-2340.40,ontology_drift,Consistent −2.2 MWh drift both months (~1.9%). Cause not yet diagnosed.
-EL,B318,2026-02,115770.06,113561.74,-2208.32,ontology_drift,Consistent −2.2 MWh drift both months (~1.9%). Cause not yet diagnosed.
+EL,B318,2026-01,124906.27,122565.86,-2340.40,excel_bug,Excel uses B318.T21-6-2-A at +1.0 in both B318 (row 34) and B344 (row 53). Ontology splits 0.5/0.5 to avoid double-count; the 0.5 × T21-6-2-A ≈ 2.3 MWh/mo missing from B318 is the observed −1.9 % drift. Same family as B327 / B326.VS1_VMM61. See snv_el_T21_6_2_A_double_plus.
+EL,B318,2026-02,115770.06,113561.74,-2208.32,excel_bug,Excel uses B318.T21-6-2-A at +1.0 in both B318 (row 34) and B344 (row 53). Ontology splits 0.5/0.5 to avoid double-count; the 0.5 × T21-6-2-A ≈ 2.3 MWh/mo missing from B318 is the observed −1.9 % drift. Same family as B327 / B326.VS1_VMM61. See snv_el_T21_6_2_A_double_plus.
 EL,B319,2026-01,9536.52,9538.91,2.40,match,
 EL,B319,2026-02,8909.10,8907.07,-2.04,match,
 EL,B320,2026-01,0.00,0.00,0.00,match,
@@ -85,12 +85,12 @@ EL,B339 Kolfilter,2026-01,16774.53,16773.97,-0.56,match,
 EL,B339 Kolfilter,2026-02,17190.29,17183.19,-7.10,match,
 EL,B341,2026-01,224854.62,224859.12,4.50,match,
 EL,B341,2026-02,209131.00,209134.00,3.00,match,
-EL,B342,2026-01,116653.12,117463.00,809.88,ontology_drift,Consistent +0.8 MWh drift both months (~0.7%). Cause not yet diagnosed.
-EL,B342,2026-02,118049.25,118875.26,826.01,ontology_drift,Consistent +0.8 MWh drift both months (~0.7%). Cause not yet diagnosed.
+EL,B342,2026-01,116653.12,117463.00,809.88,data_source_drift,"Consistent +0.7 % gap (~810 kWh/mo) between ontology (BMS daily sum) and Excel cached value. None of the 3 +term meters (B308.T58-8-3, B342.T66, B342.T67) has anomalies, double-counting, or 2026-01-14 cluster impact. Same shape as GTN B652 data_source_drift."
+EL,B342,2026-02,118049.25,118875.26,826.01,data_source_drift,"Consistent +0.7 % gap (~810 kWh/mo) between ontology (BMS daily sum) and Excel cached value. None of the 3 +term meters (B308.T58-8-3, B342.T66, B342.T67) has anomalies, double-counting, or 2026-01-14 cluster impact. Same shape as GTN B652 data_source_drift."
 EL,B343,2026-01,0.00,0.00,0.00,match,
 EL,B343,2026-02,0.00,0.00,0.00,match,
-EL,B344,2026-01,54466.44,52119.59,-2346.86,under_investigation,"−8.6% drift; both + terms (T57-4-7, T21-6-2-A) also appear as hasSubMeter children of their naming parents. See open_questions.md §6."
-EL,B344,2026-02,55967.20,53731.54,-2235.66,under_investigation,"−8.6% drift; both + terms (T57-4-7, T21-6-2-A) also appear as hasSubMeter children of their naming parents. See open_questions.md §6."
+EL,B344,2026-01,54466.44,52119.59,-2346.86,excel_bug,Excel uses B318.T21-6-2-A at +1.0 in both B344 (row 53) and B318 (row 34). Ontology splits 0.5/0.5; the missing 0.5 × T21-6-2-A ≈ 2.3 MWh/mo from B344 is part of the observed −4 % drift (also compounded by T57-4-7 hasSubMeter chain). See snv_el_T21_6_2_A_double_plus.
+EL,B344,2026-02,55967.20,53731.54,-2235.66,excel_bug,Excel uses B318.T21-6-2-A at +1.0 in both B344 (row 53) and B318 (row 34). Ontology splits 0.5/0.5; the missing 0.5 × T21-6-2-A ≈ 2.3 MWh/mo from B344 is part of the observed −4 % drift (also compounded by T57-4-7 hasSubMeter chain). See snv_el_T21_6_2_A_double_plus.
 EL,B345,2026-01,0.00,0.00,0.00,match,
 EL,B345,2026-02,0.00,0.00,0.00,match,
 EL,B346,2026-01,0.00,0.00,0.00,match,
