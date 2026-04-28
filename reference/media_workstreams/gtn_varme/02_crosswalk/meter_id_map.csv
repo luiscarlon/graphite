@@ -8,7 +8,6 @@ B612.VP2_VMM62,B612.VP2_VMM62_E,B612.VP2_VMM62_E,yes,high,snowflake=B612.VP2_VMM
 B612.VP2_VMM63,B612.VP2_VMM63_E,B612.VP2_VMM63_E,yes,high,snowflake=B612.VP2_VMM63_E; strux=B612.VP2_VMM63_E; seen_in=flow_schema|excel_formulas|snowflake
 B612.VP2_VMM64,B612.VP2_VMM64_E,B612.VP2_VMM64_E,yes,high,snowflake=B612.VP2_VMM64_E; strux=B612.VP2_VMM64_E; seen_in=excel_formulas|snowflake
 B612.VP2_VMM65,B612.VP2_VMM65,B612.VP2_VMM65,yes,high,snowflake=B612.VP2_VMM65; strux=B612.VP2_VMM65; seen_in=excel_formulas|snowflake
-B612.VÅ9_VMM41,B612.VÅ9_VMM41_E,,no,high,snowflake=B612.VÅ9_VMM41_E; seen_in=flow_schema|snowflake
 B613.VP1_VMM61,B613.VP1_VMM61,B613.VP1_VMM61,yes,high,snowflake=B613.VP1_VMM61; strux=B613.VP1_VMM61; seen_in=flow_schema|excel_formulas|snowflake
 B613.VP1_VMM62,,,no,low,seen_in=flow_schema; PDF-only; no Snowflake data
 B613.VP2_VMM61,B613.VP2_VMM61,B613.VP2_VMM61,yes,high,snowflake=B613.VP2_VMM61; strux=B613.VP2_VMM61; seen_in=excel_formulas|snowflake
@@ -38,8 +37,6 @@ B641.VP2_VMM61,B641.VP2_VMM61_E,B641.VP2_VMM61_E,yes,high,snowflake=B641.VP2_VMM
 B642.VS1_VMM61,B642.VS1_VMM61_E,B642.VS1_VMM61_E,yes,high,snowflake=B642.VS1_VMM61_E; strux=B642.VS1_VMM61_E; seen_in=flow_schema|excel_formulas|snowflake
 B643.VP1_VMM61,B643.VP1_VMM61_E,B643.VP1_VMM61_E,yes,high,snowflake=B643.VP1_VMM61_E; strux=B643.VP1_VMM61_E; seen_in=flow_schema|excel_formulas|snowflake
 B643.VP2_VMM61,B643.VP2_VMM61_E,B643.VP2_VMM61_E,yes,high,snowflake=B643.VP2_VMM61_E; strux=B643.VP2_VMM61_E; seen_in=flow_schema|excel_formulas|snowflake
-B643.VÅ9_VMM41,B643.VÅ9_VMM41_E,,no,high,snowflake=B643.VÅ9_VMM41_E; seen_in=flow_schema|snowflake
-B643.VÅ9_VMM42,B643.VÅ9_VMM42_E,,no,high,snowflake=B643.VÅ9_VMM42_E; seen_in=flow_schema|snowflake
 B650.VP1_VMM61,B650.VP1_VMM61_E,B650.VP1_VMM61_E,yes,high,snowflake=B650.VP1_VMM61_E; strux=B650.VP1_VMM61_E; seen_in=flow_schema|excel_formulas|snowflake
 B650.VP3_VMM61,B650.VP3_VMM61_E,B650.VP3_VMM61_E,yes,high,snowflake=B650.VP3_VMM61_E; strux=B650.VP3_VMM61_E; seen_in=flow_schema|excel_formulas|snowflake
 B652.VS1_VMM61,B652.VS1_VMM61,B652.VS1_VMM61,yes,high,snowflake=B652.VS1_VMM61; strux=B652.VS1_VMM61; seen_in=flow_schema|excel_formulas|snowflake
@@ -54,7 +51,6 @@ B674.VÅ9_VMM42,,,no,low,seen_in=flow_schema; PDF-only; no Snowflake data
 B821.VP1_VMM61,B821.VP1_VMM61_E,B821.VP1_VMM61_E,yes,high,snowflake=B821.VP1_VMM61_E; strux=B821.VP1_VMM61_E; seen_in=flow_schema|excel_formulas|snowflake; PDF labels this VS1; merged to VP1 (same physical meter)
 B833.VP1_VMM61,B833.VP1_VMM61_E,B833.VP1_VMM61_E,yes,high,snowflake=B833.VP1_VMM61_E; strux=B833.VP1_VMM61_E; seen_in=flow_schema|excel_formulas|snowflake
 B833.VP1_VMM62,B833.VP1_VMM62_E,B833.VP1_VMM62_E,yes,high,snowflake=B833.VP1_VMM62_E; strux=B833.VP1_VMM62_E; seen_in=flow_schema|excel_formulas|snowflake
-B833.VÅ9_VMM41,B833.VÅ9_VMM41_E,,no,high,snowflake=B833.VÅ9_VMM41_E; seen_in=flow_schema|snowflake
 B834.VP1_VMM61,B834.VP1_VMM61_E,B834.VP1_VMM61_E,yes,high,snowflake=B834.VP1_VMM61_E; strux=B834.VP1_VMM61_E; seen_in=flow_schema|excel_formulas|snowflake
 B841.VP1_VMM61,B841.VP1_VMM61_E,B841.VP1_VMM61_E,yes,high,snowflake=B841.VP1_VMM61_E; strux=B841.VP1_VMM61_E; seen_in=flow_schema|excel_formulas|snowflake
 B921.VP1_VMM61,B921.VP1_VMM61,B921.VP1_VMM61,yes,high,snowflake=B921.VP1_VMM61; strux=B921.VP1_VMM61; seen_in=flow_schema|excel_formulas|snowflake
