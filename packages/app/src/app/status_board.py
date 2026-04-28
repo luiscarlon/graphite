@@ -19,47 +19,45 @@ import streamlit as st
 STATUS_BOARD: dict[tuple[str, str], tuple[str, str]] = {
     ("gartuna", "ANGA"): (
         "yellow",
-        "Ontology matches Excel at the monthly level. Many data-quality "
-        "events patched. Remaining unresolved: B642.Å1_VMM72 over-reads "
-        "Jan–Jun 2025 (counter miscalibration, self-resolved 2025-07-01) "
-        "and leaf meters B613/B641/B841 dead throughout — no children to "
-        "patch from.",
+        "Ontology matches Excel at the monthly level, but ~31 percent of "
+        "site steam intake isn't captured by downstream meters (60 "
+        "percent gap on the north spine alone). Needs on-site "
+        "verification of suspected unmetered or undocumented branches; "
+        "details in annotations.",
     ),
     ("gartuna", "EL"): (
-        "green",
-        "Ontology matches monthly report. 11 Schneider counter rollovers "
-        "stitched via rolling_sum. 0 validation violations.",
+        "yellow",
+        "Ontology matches Excel at the monthly level modulo sub-kWh "
+        "rounding drifts, plus ~9 percent of campus intake unaccounted "
+        "by any building meter and a couple of small Excel-side formula "
+        "bugs. Open items need Excel-side cleanup; details in "
+        "annotations.",
     ),
     ("gartuna", "KALLVATTEN"): (
         "green",
-        "Ontology matches monthly report. Two offline+catch-up events on "
-        "B600N.KV1_VM20 patched via interpolate (Jul 30–31 and Aug 31–Sep 1 "
-        "2025).",
+        "Ontology matches Excel at the monthly level. The B600 intake "
+        "and B921 avräkning rows are routed through dedicated virtuals "
+        "by design.",
     ),
     ("gartuna", "KYLA"): (
         "yellow",
-        "Ontology matches Excel at the monthly level. Caveats: B658 "
-        "reports ~12 MWh/month of real cooling that Excel's STRUX cache "
-        "misses, and B623's Excel row double-counts a south-distribution "
-        "meter that the ontology routes through the B600-KB2 pool only. "
-        "Four kyla meters (B638/B643/B821/B841) flat at zero throughout "
-        "the reference period, treated as unmetered.",
+        "Ontology matches Excel at the monthly level. Two known Excel-"
+        "side issues remain (stale STRUX cache on B658 and a double-"
+        "count on B623); both need Excel workbook fixes rather than "
+        "ontology changes.",
     ),
     ("gartuna", "KYLTORNSVATTEN"): (
         "green",
-        "Ontology matches monthly report. B614-V2-GF4 reports on a ~2-day "
-        "cadence with bursty reads — signature is consistent with a "
-        "float-valve makeup-water meter on a cooling-tower basin, but "
-        "whether the pattern is physical duty-cycling or a sensor-sampling "
-        "artifact is still unconfirmed.",
+        "Ontology matches Excel at the monthly level. The bi-daily "
+        "B614-V2-GF4 reporting cadence is unconfirmed (sensor sampling "
+        "versus physical duty-cycling) but doesn't affect monthly totals.",
     ),
     ("gartuna", "VARME"): (
         "green",
-        "Ontology matches monthly report. Two major data-quality events "
-        "resolved: Jan 8–9 2026 campus-wide counter reset restructured "
-        "across all 43 VARME meters via slice+rolling_sum, and the "
-        "B621/B643 multi-day gateway outages (Mar 10–24 and Mar 31–Apr 10 "
-        "2025) patched via interpolate. 0 validation violations.",
+        "Ontology matches Excel at the monthly level after the major "
+        "data-quality events were patched. Structural caveat: B621 has "
+        "~91 percent of intake unaccounted by downstream meters, "
+        "suggesting unmetered branches that need on-site verification.",
     ),
     ("snackviken", "ANGA"): (
         "yellow",
