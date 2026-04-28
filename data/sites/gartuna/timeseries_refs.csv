@@ -220,7 +220,8 @@ B661.KV1_VM21:d.A,B661.KV1_VM21.volume,daily,counter,raw,False,,2025-11-20,ion_s
 B661.KV1_VM21:d.B,B661.KV1_VM21.volume,daily,counter,raw,False,2025-11-20,2026-02-02,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B661.KV1_VM21,,,
 B661.KV1_VM21:d.C,B661.KV1_VM21.volume,daily,counter,raw,False,2026-02-02,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B661.KV1_VM21,,,
 B661.KV1_VM21:d,B661.KV1_VM21.volume,daily,counter,derived,True,,,,,,,B661.KV1_VM21:d.A|B661.KV1_VM21:d.B|B661.KV1_VM21:d.C,rolling_sum
-B612.KB1_PKYL:d,B612.KB1_PKYL.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B612.KB1_PKYL,,,
+B612.KB1_PKYL:d,B612.KB1_PKYL.energy,daily,counter,raw,False,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B612.KB1_PKYL,,,
+B612.KB1_PKYL:d.daily,B612.KB1_PKYL.energy,daily,counter,derived,True,2025-09-12,2026-02-28,,,,,B612.KB1_PKYL:d,interpolate
 B614.KB1_INT_VERK:d,B614.KB1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B614.KB1_INT_VERK,,,
 B615.KB1_INT_VERK1:d,B615.KB1_INT_VERK1.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B615.KB1_INT_VERK1,,,
 B616.KB1_PKYL:d,B616.KB1_PKYL.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B616.KB1_PKYL,,,
@@ -240,7 +241,8 @@ B661.KB1_INTVERK:d,B661.KB1_INTVERK.energy,daily,counter,raw,True,,,ion_sweden_b
 B661.KB1_Pkyl_Ack:d,B661.KB1_Pkyl_Ack.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B661.KB1_Pkyl_Ack,,,
 B674.KB1_PKYL2_Ack:d,B674.KB1_PKYL2_Ack.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B674.KB1_PKYL2_Ack,,,
 B821.KB2_VMM51:d,B821.KB2_VMM51.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B821.KB2_VMM51,,,
-B833.KB1_GF4:d,B833.KB1_GF4.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B833.KB1_GF4,,,
+B833.KB1_GF4:d,B833.KB1_GF4.energy,daily,counter,raw,False,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B833.KB1_GF4,,,
+B833.KB1_GF4:d.daily,B833.KB1_GF4.energy,daily,counter,derived,True,2025-09-08,2026-02-28,,,,,B833.KB1_GF4:d,interpolate
 B834.KB2_INT_VERK:d,B834.KB2_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B834.KB2_INT_VERK,,,
 B841.KB2_VM51:d,B841.KB2_VM51.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B841.KB2_VM51,,,
 B611.V2_VM21:d,B611.V2_VM21.volume,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B611.V2_VM21,,,

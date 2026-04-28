@@ -52,11 +52,16 @@ WITH RECURSIVE
 -- Σ hasSubMeter children's measured flow, per real parent+hour.
 -- Used by the recursive term to strip out the already-metered portion
 -- of a parent's flow before sharing the remainder to virtual children.
+-- A hasSubMeter relation may carry a flow_coefficient; missing/NULL
+-- defaults to 1.0 (full subtraction). Fractional coefficients allow
+-- splitting a sub across multiple parents (e.g. a pool that distributes
+-- its remainder 90/10 to two siblings can subtract 0.9× the child from
+-- one and 0.1× from the other).
 sub_total AS (
     SELECT
         r.parent_meter_id,
         mf.timestamp,
-        SUM(mf.delta_kwh) AS total
+        SUM(mf.delta_kwh * COALESCE(r.flow_coefficient, 1.0)) AS total
     FROM meter_relations r
     JOIN measured_flow mf ON mf.meter_id = r.child_meter_id
     WHERE r.relation_type = 'hasSubMeter'
@@ -122,7 +127,7 @@ hs_total AS (
     SELECT
         r.parent_meter_id,
         mf.timestamp,
-        SUM(mf.delta_kwh) AS total
+        SUM(mf.delta_kwh * COALESCE(r.flow_coefficient, 1.0)) AS total
     FROM meter_relations r
     JOIN meter_flow mf ON mf.meter_id = r.child_meter_id
     WHERE r.relation_type = 'hasSubMeter'

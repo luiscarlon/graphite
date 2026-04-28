@@ -71,8 +71,13 @@ def _edges_cotemporal(edges: list[MeterRelation]) -> bool:
 
 
 def check_feeds_coefficients(ds: Dataset) -> list[Violation]:
-    """feeds edges require a positive flow_coefficient; hasSubMeter forbids one.
-    Outgoing flow_coefficients from any parent must sum to 1.0 (± EPS).
+    """feeds edges require a positive flow_coefficient summing to 1.0 per
+    parent. hasSubMeter may carry an optional flow_coefficient in (0, 1]
+    (NULL = 1.0, full subtraction); fractional values let the same child
+    be subtracted at different shares under multiple parents (e.g. a
+    plant residual split 0.9/0.1 between two siblings would attach the
+    same metered consumer at k=0.9 under one parent and k=0.1 under the
+    other, summing to 1.0 of the child's flow at the campus level).
     """
     violations: list[Violation] = []
     sums: dict[str, float] = defaultdict(float)
@@ -111,20 +116,21 @@ def check_feeds_coefficients(ds: Dataset) -> list[Violation]:
                 )
             sums[r.parent_meter_id] += r.flow_coefficient
         elif r.relation_type == "hasSubMeter" and r.flow_coefficient is not None:
-            violations.append(
-                Violation(
-                    rule="hassubmeter_forbids_flow_coefficient",
-                    message=(
-                        f"hasSubMeter {r.parent_meter_id}->{r.child_meter_id} "
-                        f"carries a flow_coefficient ({r.flow_coefficient})"
-                    ),
-                    context={
-                        "parent": r.parent_meter_id,
-                        "child": r.child_meter_id,
-                        "flow_coefficient": r.flow_coefficient,
-                    },
+            if r.flow_coefficient <= 0 or r.flow_coefficient > 1.0 + EPS:
+                violations.append(
+                    Violation(
+                        rule="hassubmeter_flow_coefficient_out_of_range",
+                        message=(
+                            f"hasSubMeter {r.parent_meter_id}->{r.child_meter_id} "
+                            f"flow_coefficient {r.flow_coefficient} outside (0, 1]"
+                        ),
+                        context={
+                            "parent": r.parent_meter_id,
+                            "child": r.child_meter_id,
+                            "flow_coefficient": r.flow_coefficient,
+                        },
+                    )
                 )
-            )
 
     for parent, total in sums.items():
         if abs(total - 1.0) > EPS:

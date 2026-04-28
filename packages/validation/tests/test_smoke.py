@@ -91,8 +91,11 @@ def test_feeds_requires_flow_coefficient() -> None:
     assert "feeds_requires_flow_coefficient" in _rules(validate(ds))
 
 
-def test_hassubmeter_forbids_flow_coefficient() -> None:
-    """`hasSubMeter` is a physical containment edge — flow_coefficients don't apply."""
+def test_hassubmeter_flow_coefficient_range() -> None:
+    """`hasSubMeter` may carry a flow_coefficient in (0, 1] (NULL = 1.0,
+    full sub). Fractional values let the same child be subtracted at
+    different shares under multiple parents. Out-of-range values
+    (<= 0 or > 1) violate."""
     ds = Dataset(
         campuses=[C],
         buildings=[B],
@@ -105,11 +108,29 @@ def test_hassubmeter_forbids_flow_coefficient() -> None:
                 parent_meter_id="P",
                 child_meter_id="Q",
                 relation_type="hasSubMeter",
-                flow_coefficient=0.5,  # should not be set
+                flow_coefficient=0.9,  # valid fractional sub
             ),
         ],
     )
-    assert "hassubmeter_forbids_flow_coefficient" in _rules(validate(ds))
+    assert "hassubmeter_flow_coefficient_out_of_range" not in _rules(validate(ds))
+
+    ds_bad = Dataset(
+        campuses=[C],
+        buildings=[B],
+        meters=[
+            Meter(meter_id="P", name="P", building_id="B1", media_type_id="EL"),
+            Meter(meter_id="Q", name="Q", building_id="B1", media_type_id="EL"),
+        ],
+        relations=[
+            MeterRelation(
+                parent_meter_id="P",
+                child_meter_id="Q",
+                relation_type="hasSubMeter",
+                flow_coefficient=1.5,  # out of (0, 1] range
+            ),
+        ],
+    )
+    assert "hassubmeter_flow_coefficient_out_of_range" in _rules(validate(ds_bad))
 
 
 def test_feeds_flow_coefficients_sum_to_one() -> None:

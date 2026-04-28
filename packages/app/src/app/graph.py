@@ -125,7 +125,12 @@ def to_dot(ds: Dataset, as_of: date | None = None) -> str:
 
         lines.append("  }")
 
-    # Edges. flow_coefficient lives on the feeds relation.
+    # Edges. flow_coefficient is shown on both feeds and hasSubMeter when
+    # set. hasSubMeter defaults to k=1.0 in views.sql when NULL — only show
+    # the label and a distinct line style when a fractional coefficient is
+    # explicitly set, so a regular full sub stays visually quiet and a
+    # split sub (same child under multiple parents at e.g. 0.9 / 0.1)
+    # reads at a glance as "partial".
     for r in relations:
         if r.relation_type == "feeds":
             label = (
@@ -135,7 +140,13 @@ def to_dot(ds: Dataset, as_of: date | None = None) -> str:
             )
             attrs = f'style=dashed, color="{COLOR_FEEDS}"{label}'
         else:  # hasSubMeter
-            attrs = f'color="{COLOR_SUB}"'
+            if r.flow_coefficient is not None:
+                attrs = (
+                    f'style="dashed,bold", color="{COLOR_SUB}", '
+                    f'label="−{r.flow_coefficient}×", fontcolor="{COLOR_SUB}"'
+                )
+            else:
+                attrs = f'color="{COLOR_SUB}"'
         lines.append(f'  "{r.parent_meter_id}" -> "{r.child_meter_id}" [{attrs}];')
 
     lines.append("}")
