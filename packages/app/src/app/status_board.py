@@ -95,10 +95,13 @@ STATUS_BOARD: dict[tuple[str, str], tuple[str, str]] = {
     ),
     ("snackviken", "KYLA"): (
         "green",
-        "Ontology matches Excel. Some fractional-split coefficients "
-        "(feeds edges with k<1 into KYLA virtuals) are still suspicious "
-        "and worth a second pass — the math works out but the physical "
-        "justification is thin.",
+        "Ontology matches Excel at 100 percent (139/139 rows). KYLA is "
+        "distributed chillers per building (no centralized intake), so "
+        "the campus conservation panel skips KYLA by design after "
+        "dropping 4 fall-through campus tags (B304.KB2, B305.KB1, "
+        "B307.KB1, B307.KB1_VMM52). Fractional tenant splits routed "
+        "via feeds k<1 edges (B302/B303 share B304.KB2, B305/B307 "
+        "share B307.KB1).",
     ),
     ("snackviken", "SJOVATTEN"): (
         "yellow",
