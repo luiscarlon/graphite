@@ -53,9 +53,9 @@ def _annotation_layer(
     rows = []
     for a in ds.annotations:
         if a.valid_from is None or a.valid_to is None:
-            # Annotation CSVs now always carry dates (1900-01-01 /
-            # 9999-01-01 sentinels for open-ended windows). Anything
-            # still None here is malformed data; skip defensively.
+            # Open-ended annotations (always-valid observations) are
+            # stored with blank dates — they have no specific window
+            # to band, so skip them in the band layer.
             continue
         if meter_ids is not None and a.target_kind == "meter" and a.target_id not in meter_ids:
             continue
@@ -794,6 +794,152 @@ def _consumption_section(
             height=min(36 * (len(totals_view) + 1) + 2, 400),
         )
 
+    _drilldown_section(ds, conn, meter_df, date_range, rate_label, ann_bands)
+
+
+def _descendant_meters(ds: Dataset, roots: set[str]) -> set[str]:
+    """Recursive descent through hasSubMeter and feeds edges (ignores temporal windows)."""
+    children: dict[str, list[str]] = {}
+    for r in ds.relations:
+        children.setdefault(r.parent_meter_id, []).append(r.child_meter_id)
+    seen: set[str] = set()
+    stack = list(roots)
+    while stack:
+        mid = stack.pop()
+        if mid in seen:
+            continue
+        seen.add(mid)
+        stack.extend(children.get(mid, []))
+    return seen
+
+
+def _drilldown_section(
+    ds: Dataset,
+    conn,
+    meter_df: pd.DataFrame,
+    date_range: tuple[date, date] | None,
+    rate_label: str,
+    ann_bands: pd.DataFrame | None,
+) -> None:
+    st.markdown("**Drill-down: building or meter + descendants**")
+
+    building_opts = [f"building: {b.building_id}" for b in sorted(ds.buildings, key=lambda b: b.building_id)]
+    meter_opts = [f"meter: {m.meter_id}" for m in sorted(ds.meters, key=lambda m: m.meter_id)]
+    options = building_opts + meter_opts
+    if not options:
+        st.info("No buildings or meters in scope.")
+        return
+
+    cols = st.columns([3, 1, 1])
+    with cols[0]:
+        target = st.selectbox(
+            "Target", options, index=0, key="drilldown_target",
+            help="All meter series for the target plus every descendant via hasSubMeter / feeds.",
+        )
+    with cols[1]:
+        include_virtuals = st.checkbox(
+            "Include virtuals", value=True, key="drilldown_virtuals",
+            help="Use meter_flow (synthesized for virtual meters); off → measured_flow only.",
+        )
+    with cols[2]:
+        sign_subs = st.checkbox(
+            "Sign children −", value=True, key="drilldown_sign",
+            help="Plot in-scope children (hasSubMeter / feeds of another in-scope meter) as negative; sources stay positive.",
+        )
+
+    kind, _, ident = target.partition(": ")
+    if kind == "building":
+        roots = {m.meter_id for m in ds.meters if m.building_id == ident}
+    else:
+        roots = {ident}
+    members = _descendant_meters(ds, roots)
+    if not members:
+        st.info("No meters under target.")
+        return
+
+    # A meter is "negative" if any of its parents is also in scope —
+    # i.e. its flow gets subtracted from another visible meter's net.
+    # Roots (no in-scope parent) stay positive.
+    children_with_scoped_parent = {
+        r.child_meter_id for r in ds.relations
+        if r.parent_meter_id in members and r.child_meter_id in members
+    }
+
+    src = meter_df if include_virtuals else conn.execute(
+        "SELECT meter_id, timestamp, delta_kwh FROM measured_flow"
+    ).fetchdf()
+    src = src.copy()
+    src["timestamp"] = pd.to_datetime(src["timestamp"])
+    scoped = src[src["meter_id"].isin(members)].copy()
+    if date_range:
+        scoped = scoped[
+            (scoped.timestamp.dt.date >= date_range[0])
+            & (scoped.timestamp.dt.date <= date_range[1])
+        ]
+    if scoped.empty:
+        st.info(f"No data for {target} ({len(members)} meters in scope).")
+        return
+
+    scoped["role"] = scoped["meter_id"].map(
+        lambda m: "subtract" if m in children_with_scoped_parent else "add"
+    )
+    if sign_subs:
+        scoped["delta_kwh"] = scoped.apply(
+            lambda r: -r["delta_kwh"] if r["role"] == "subtract" else r["delta_kwh"],
+            axis=1,
+        )
+
+    n_add = sum(1 for m in members if m not in children_with_scoped_parent)
+    n_sub = len(members) - n_add
+    st.caption(
+        f"{len(members)} meter(s) in scope — {n_add} additive, {n_sub} subtractive: "
+        f"{', '.join(sorted(members))}"
+    )
+
+    pick = alt.selection_point(fields=["meter_id"], name="picked", on="click")
+    chart = (
+        alt.Chart(scoped)
+        .mark_line()
+        .encode(
+            x=alt.X("timestamp:T", title=None),
+            y=alt.Y("delta_kwh:Q", title=f"Flow {rate_label}"),
+            color=alt.Color("meter_id:N", title="meter"),
+            strokeDash=alt.StrokeDash("role:N", title="role",
+                                      scale=alt.Scale(domain=["add", "subtract"], range=[[1, 0], [4, 3]])),
+            opacity=alt.condition(pick, alt.value(1.0), alt.value(0.15)),
+            tooltip=["meter_id", "role", "timestamp", "delta_kwh"],
+        )
+        .add_params(pick)
+        .properties(height=360)
+    )
+    dr = (scoped["timestamp"].min(), scoped["timestamp"].max())
+    filtered_bands = _filter_ann_bands(ann_bands, data_range=dr, meter_ids=members, ds=ds)
+    chart = _inject_ann_bands(chart, filtered_bands).interactive()
+    st.altair_chart(chart, width="stretch", key="drilldown_chart")
+
+    # Monthly pivot — rows = meters, columns = months. Values reflect
+    # the same sign convention as the chart (subs negative when toggled),
+    # so column totals match the chart's net per month.
+    pivot_src = scoped.copy()
+    pivot_src["month"] = pivot_src["timestamp"].dt.to_period("M").astype(str)
+    pivot = (
+        pivot_src.pivot_table(
+            index="meter_id", columns="month", values="delta_kwh",
+            aggfunc="sum", fill_value=0,
+        )
+        .round(0)
+    )
+    # Stable row order: additive meters first, then subtractive — both alphabetical.
+    add_rows = sorted(m for m in pivot.index if m not in children_with_scoped_parent)
+    sub_rows = sorted(m for m in pivot.index if m in children_with_scoped_parent)
+    pivot = pivot.reindex(add_rows + sub_rows)
+    pivot["total"] = pivot.sum(axis=1)
+    pivot.loc["Σ"] = pivot.sum(axis=0)
+    st.dataframe(
+        pivot.style.format("{:,.0f}", na_rep="—"),
+        width="stretch",
+    )
+
 
 def _annotations_picker(ds: Dataset) -> tuple[pd.DataFrame | None, dict | None]:
     """Returns (bands_df, filter_hints) where filter_hints has meters, buildings, date_range."""
@@ -844,18 +990,19 @@ def _annotations_picker(ds: Dataset) -> tuple[pd.DataFrame | None, dict | None]:
     sel_annotations = [ds.annotations[i] for i in orig_indices]
     rows = []
     for a in sel_annotations:
-        # Annotation CSVs store sentinels (1900-01-01 / 9999-01-01)
-        # for open-ended windows, so valid_from/valid_to are never None
-        # by convention — but guard defensively.
-        if a.valid_from is None or a.valid_to is None:
+        # Both blank → always-valid observation with no specific window;
+        # nothing meaningful to band, so skip. Half-open windows (one
+        # side blank) are kept and clipped to the visible range later
+        # in _filter_ann_bands.
+        if a.valid_from is None and a.valid_to is None:
             continue
-        start = pd.Timestamp(a.valid_from)
-        end = pd.Timestamp(a.valid_to)
+        start = pd.Timestamp(a.valid_from) if a.valid_from else pd.NaT
+        end = pd.Timestamp(a.valid_to) if a.valid_to else pd.NaT
         # Single-date annotations (start == end, e.g. rollover events)
         # would otherwise render as a single zero-width rule that's
         # easy to miss. Widen to a 1-day band so both start and end
         # rules are drawn and the event is visible.
-        if end == start:
+        if pd.notna(start) and pd.notna(end) and end == start:
             end = start + pd.Timedelta(days=1)
         rows.append({
             "start": start,
@@ -928,8 +1075,13 @@ def _filter_ann_bands(
         return None
     filtered = ann_bands.copy()
     if data_range:
+        # Clip half-open windows (NaT start or end) to the visible range
+        # before filtering — keeps the band drawn from a known edge to
+        # the chart edge instead of stretching the axis to ±sentinel.
+        filtered["start"] = filtered["start"].fillna(data_range[0])
+        filtered["end"] = filtered["end"].fillna(data_range[1])
         filtered = filtered[
-            (filtered["start"] >= data_range[0]) & (filtered["start"] <= data_range[1])
+            (filtered["end"] >= data_range[0]) & (filtered["start"] <= data_range[1])
         ]
     if meter_ids and ds:
         meter_buildings = {m.meter_id: m.building_id for m in ds.meters}
