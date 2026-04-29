@@ -491,7 +491,14 @@ def main() -> None:
     st.subheader("Consumption")
     _consumption_section(ds, selection, ann_bands)
 
-    if any(mm.target_kind == "campus" for mm in ds.meter_measures):
+    # Only show conservation if there's at least one campus-tagged meter
+    # that is an intake root — i.e., not a child of any relation. Some
+    # media (e.g. SNV KALLVATTEN) tag downstream leaves at campus level
+    # for accounting reasons; without a real intake root the panel
+    # renders a buildings-only chart with nothing to compare against.
+    campus_meter_ids = {mm.meter_id for mm in ds.meter_measures if mm.target_kind == "campus"}
+    children = {r.child_meter_id for r in ds.relations}
+    if campus_meter_ids - children:
         st.subheader("Campus conservation")
         _conservation_section(ds, selection)
 
