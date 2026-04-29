@@ -58,10 +58,18 @@ CURATED: dict[str, list] = {
     'gtn_kyla': [
         ('B658', 'excel_stale', 'Meter live but Excel attributes 0 — known "Excel=0 but meter live" misallocation.'),
         ('B623', 'excel_bug', 'B623 double-counted: appears as + term for B623 AND inside the B600-KB2 pool formula. Conservation violation in the source; topology can only match one side.'),
-        ('B612', 'excel_cooked_coefficient', 'Excel uses fractional 0.9×B637 subtraction; views.sql has no fractional-subtract primitive so 1–3 MWh residuals are expected.'),
-        ('B641', 'excel_cooked_coefficient', 'Excel uses fractional 0.1×B637 subtraction; views.sql has no fractional-subtract primitive so 1–3 MWh residuals are expected.'),
+        # Fractional 0.9 / 0.1 split of B637 (and B638) is modelled via
+        # `hasSubMeter k=0.9` / `k=0.1` on B612.KYLA_VIRT and B641.KYLA_VIRT —
+        # matches Excel exactly. Curated `match` override needed for B641
+        # because the classifier's noise-floor branches don't fire on negative
+        # Excel cells (B641 KYLA = -1.75 / -1.80 — net consumer of the
+        # B637 sub).
+        ('B612', 'match', 'Fractional 0.9×B637 + 0.9×B638 subs modelled via hasSubMeter k=0.9 on B612.KYLA_VIRT — matches Excel exactly.'),
+        ('B641', '2026-01', 'match', 'Fractional 0.1×B637 + 0.1×B638 subs modelled via hasSubMeter k=0.1 on B641.KYLA_VIRT — matches Excel exactly (diff 0.00 MWh; curated override because classifier doesn\'t auto-match negative Excel cells).'),
+        ('B641', '2026-02', 'trailing_day_gap', 'Trailing single-day gap: the B612.KB1_PKYL daily-fill derived ref (interpolate) ends 2026-02-27 because its valid_to anchor is the 2026-02-28 source reading itself. The 0.1 × B637 sub on Feb 28 (~0.04 MWh) is therefore not applied to B641 and ends up in B612 instead. Negligible. Will resolve once a March 2026 raw reading lands and we extend valid_to.'),
         ('B611', 'data_quality_artifact', 'Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.'),
-        ('B833', 'data_quality_artifact', 'Bi-daily BMS sensor (B833.KB1_GF4 reads ~31 times over 59 days). Negative residual is a sampling artifact.'),
+        ('B833', '2026-01', 'match', 'Bi-daily BMS sensor (B833.KB1_GF4 reads ~31 times over 59 days). Diff exactly 0.00 — curated override because classifier doesn\'t auto-match negative Excel cells.'),
+        ('B833', '2026-02', 'trailing_day_gap', 'Trailing single-day gap: the B833.KB1_GF4 daily-fill ref ends 2026-02-27. The B834 sub on Feb 28 (~0.03 MWh) isn\'t applied. Will resolve once a March 2026 raw reading lands.'),
     ],
     'gtn_el': [
         ('B664', 'excel_stale', 'Excel missed T42-2-1, so it lands 0 here. PME has the meter (~4.9 MWh/mo); ontology credits B664. Mirror of B665.'),
@@ -73,17 +81,19 @@ CURATED: dict[str, list] = {
     'snv_el': [
         # STRUX-only buildings
         ('B209', 'strux_only_meter', 'B209.T21 / T32 / T83 STRUX-only; topology cannot contribute BMS flow.'),
-        ('B304', 'strux_only_meter', 'B304 formula depends on STRUX-only summary meters absent from BMS.'),
+        ('B304', 'strux_only_meter', 'B304 EL formula has only 2 +terms — B313.T26S-3-12 and B336.T40-3-1 — and neither meter ID exists in the Snowflake BMS dump at all (verified: zero rows). Onto = 0 because both ts_refs would need readings we don\'t have. Excel\'s ~4.5 MWh/mo comes entirely from STRUX manual entries. Same family as B334 T87-T92 and the B313.T26S residual feeding B310/B311. Could be closed by injecting STRUX values for these meters via a structured extraction pipeline — see open_questions.md §5.'),
         ('B334', 'strux_only_meter', 'T87-T92 summaries are STRUX-only (no BMS data); ~95% gap vs Excel.'),
-        ('B204', 'excel_cooked_coefficient', 'Cross-building fractional pool: 0.75 × B209.T32-4-2. No views.sql primitive.'),
-        ('B205', 'excel_cooked_coefficient', 'Cross-building fractional pool: 0.25 × B209.T32-4-2. No views.sql primitive.'),
-        ('B310', 'excel_cooked_coefficient', 'Cross-building fractional pools: 0.5×T26S-net, 1/3×T29, 0.4×T49-net. No views.sql primitive.'),
-        ('B311', 'excel_cooked_coefficient', 'Cross-building fractional pools: 0.5×T26S-net, 2/3×T29. No views.sql primitive.'),
-        ('B313', 'excel_cooked_coefficient', 'Cross-building fractional pool: 0.1×T49-net. No views.sql primitive.'),
-        ('B317', 'excel_cooked_coefficient', 'Cross-building fractional pool: 0.5×T49-net. No views.sql primitive.'),
-        # Complex-formula anomalies from open_questions.md
-        ('B305', 'under_investigation', 'Complex-formula undercount (−23/−21 MWh). Hypothesis: sub-meter +terms zeroed by hasSubMeter edges to T10 stems. See open_questions.md §3.'),
-        ('B392', 'under_investigation', 'Complex-formula undercount (−23/−21 MWh) — same magnitude as B305, likely same root cause (helper-row sub-meters zeroed by hasSubMeter edges). See open_questions.md §3.'),
+        # Cross-building fractional pools (T32-4-2, T26S, T29, T49) are modelled
+        # via fractional `feeds` k<1.0 edges — same primitive GTN KYLA uses.
+        # B204, B205, B313, B317-Jan all match within noise floor → no entry needed.
+        # B310/B311 keep small drift from B313.T26S summary missing in BMS (only
+        # its 10 sub-meters report) — STRUX captures the unmetered residual we
+        # can't see. Same family as B334 T87-T92.
+        ('B310', 'strux_only_meter', 'Drift = 0.5 × B313.T26S unmetered residual. Verified by per-component reconstruction: Excel B310 = 0.5 × (T26S_strux − 10 BMS subs in B310 row) + 0.333×T29 + 0.4×T49.net + T27.net + T28.net = 225,234 implies T26S_strux ≈ 74.6 MWh/mo. BMS sub-feeders sum to ~63 MWh, leaving ~12 MWh STRUX-only residual that splits 50/50 with B311 — both buildings reconcile to the same implied T26S_strux. Mechanism: the `B313.T26S → B310.EL_VIRT feeds k=0.5` edge in meter_relations is dead because T26S has no measured flow; views.sql\'s recursive `flow` requires a measured base for feeds to fire, and T26S never enters the recursion. Same family as B304 (T26S-3-12 / T40-3-1 absent) and B334 T87-T92. Could be closed by injecting STRUX value for B313.T26S as a virtual ts_ref — see open_questions.md §5.'),
+        ('B311', 'strux_only_meter', 'Drift = 0.5 × B313.T26S unmetered residual. Same root cause as B310: T26S has no measured flow in Snowflake so the `feeds k=0.5` edge to B311.EL_VIRT is dead. Excel B311 reconstructs as 0.5 × (T26S_strux − 8 BMS subs in B311 row) + 0.667×T29 + extras + T56.net + T79 + T80.net + T99-4-5 = 334,463 with the same T26S_strux ≈ 74.6 MWh/mo. The 8-kWh agreement between B310 and B311 drifts (5985 vs 5977) is the fingerprint of a single shared upstream cause.'),
+        ('B317', '2026-02', 'under_investigation', 'B317 EL Jan matches Excel within 5 kWh; Feb shows -75 MWh (-56%). All BMS data (T49 + 13 subs, T26S-3-16/3-20) is internally consistent and reproduces Excel-Jan exactly via `0.5 × (T49 - 5 subs) + T49-5-9 + T26S-3-16 + T26S-3-20`. Excel\'s extra 75 MWh in Feb is unaccounted for by BMS — likely a STRUX-side Feb entry on T26S-3-16/3-20 (both flat in BMS) or a STRUX value diverging from BMS for one T49 term. Needs facit spot-check.'),
+        ('B305', 'excel_bug', 'Excel uses B339.T77-4-5 at +1.0 in both B305 (row 22) and B392 (row 81). Ontology splits 0.5/0.5 across the two buildings to avoid double-count; B305 therefore receives 0.5 × T77-4-5 ≈ 23 MWh/mo less than Excel. The other 10 +terms in B305\'s formula deliver their full flow correctly (T10-7-3 / T10-7-7 carry no BMS data but Excel values for them appear ≈0). Same 50/50-split remediation as B318/B344. See snv_el_T77_4_5_double_plus.'),
+        ('B392', 'excel_bug', 'Excel uses B339.T77-4-5 at +1.0 in both B392 (row 81) and B305 (row 22). Ontology splits 0.5/0.5; B392 therefore receives 0.5 × T77-4-5 ≈ 23 MWh/mo less than Excel. The other +term (B334.T88-4-2) contributes correctly. Same 50/50-split remediation as B318/B344. See snv_el_T77_4_5_double_plus.'),
         ('B330', 'ontology_drift', 'Small drift (−4 to −11 MWh, ~0.5–1.7%). Cause not yet diagnosed.'),
         ('B337', 'ontology_drift', 'Small drift (−11 MWh Jan only, ~2.4%). Cause not yet diagnosed.'),
         ('B318', 'excel_bug', 'Excel uses B318.T21-6-2-A at +1.0 in both B318 (row 34) and B344 (row 53). Ontology splits 0.5/0.5 to avoid double-count; the 0.5 × T21-6-2-A ≈ 2.3 MWh/mo missing from B318 is the observed −1.9 % drift. Same family as B327 / B326.VS1_VMM61. See snv_el_T21_6_2_A_double_plus.'),
@@ -91,7 +101,7 @@ CURATED: dict[str, list] = {
         ('B307', 'under_investigation', 'Complex-formula overcount (+35%). Hypothesis: T10-1/T11-1 summary meters diverge from their children sum in Snowflake. See open_questions.md §2.'),
         ('B339', 'under_investigation', 'Complex-formula overcount (+45% to +50%). Same pattern as B307. See open_questions.md §4.'),
         ('B344', 'excel_bug', 'Excel uses B318.T21-6-2-A at +1.0 in both B344 (row 53) and B318 (row 34). Ontology splits 0.5/0.5; the missing 0.5 × T21-6-2-A ≈ 2.3 MWh/mo from B344 is part of the observed −4 % drift (also compounded by T57-4-7 hasSubMeter chain). See snv_el_T21_6_2_A_double_plus.'),
-        ('B341', 'excel_cooked_coefficient', 'B341 formula W-column literal "Reservkraft pl7" (not a meter ID). Accidentally evaluates to zero; matches within 0.002%.'),
+        ('B341', 'match', 'B341 formula W-column literal "Reservkraft pl7" (not a meter ID). Accidentally evaluates to zero; matches within 0.002%.'),
     ],
     'snv_sjovatten': [
         ('B301', 'excel_cooked_coefficient', 'B301 = 0.09 × BPS_V2. BPS_V2 is a sheet-level residual (B342 inlets − 15 direct consumers) with monthly-variable R factors; not mirrored in the ontology. See open_questions.md.'),
@@ -128,9 +138,9 @@ CURATED: dict[str, list] = {
     'snv_varme': [
         ('B327', 'excel_bug', 'Excel row 38 double-counts B326.VS1_VMM61 (already + term in row 37 for B326). Meter can have only one building attribution; assigned to B326 per decisions.md. B327 under-counts by Δ(B326.VS1_VMM61) ≈ 17 MWh/month.'),
         ('B310', '2026-02', 'match', 'Negative Excel value (−155 MWh) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).'),
-        ('B310', '2026-01', 'meter_outage', '2026-01-14 catch-up cluster: B310.VP2_VMM61 (+parent) lost ~1987 MWh from interpolate spread of the Sept-Jan freeze; B313.VP1_VMM62 / B311.VP1_VMM64 (subs) under-subtract by ~450 MWh combined. Net B310 Jan ontology ~1353 MWh below Excel. See ann-snv-varme-b310-vp2-offline-fall and the matching b311/b313 entries.'),
-        ('B311', '2026-01', 'meter_outage', '2026-01-14 catch-up cluster: B311.VP1_VMM64 was flat 117 days then a single-day +45.6 MWh flush on 2026-01-14. The rolling_sum aggregation absorbs the spike, leaving Jan ontology ~40 MWh below Excel. See ann-snv-varme-b311-vmm64-offline-fall.'),
-        ('B313', '2026-01', 'meter_outage', '2026-01-14 catch-up cluster: B313.VP1_VMM62 was flat 114 days then a single-day +404.8 MWh flush on 2026-01-14. The rolling_sum aggregation absorbs the spike, leaving Jan ontology ~356 MWh below Excel. See ann-snv-varme-b313-vmm62-offline-fall.'),
+        ('B310', '2026-01', 'meter_outage', 'B310 = +VP2_VMM61 − B311.VP1_VMM64 − B313.VP1_VMM62 − subs. All three patched via slice/interpolate/slice across the 2025-09 → 2026-01-14 freeze; the interpolates spread each meter\'s catch-up flush linearly across the freeze window for plausible daily Sept-Jan reporting, which removes those flushes from Jan 2026 monthly totals. Excel STRUX register-diff books all three flushes in Jan. Net diff −1353 MWh ≈ VP2 spread (~1987 MWh) net of sub spreads (~450 MWh). Patch is intentional. See ann-snv-varme-b310-vp2-offline-fall.'),
+        ('B311', '2026-01', 'meter_outage', 'Patched via slice/interpolate/slice 2025-09-20 → 2026-01-14: B311.VP1_VMM64 flat 117 days then flushed +45.6 MWh on 2026-01-14. Interpolate distributes the flush linearly across the freeze window for plausible daily reporting, which removes it from Jan 2026 monthly totals; Excel STRUX register-diff books the full flush in Jan. ~40 MWh diff = the share of the flush attributed to Sept-Dec by the patch. Patch is intentional. See ann-snv-varme-b311-vmm64-offline-fall.'),
+        ('B313', '2026-01', 'meter_outage', 'Patched via slice/interpolate/slice 2025-09-22 → 2026-01-14: B313.VP1_VMM62 flat 114 days then flushed +404.8 MWh on 2026-01-14. Interpolate distributes the flush linearly across the freeze window for plausible daily reporting, which removes it from Jan 2026 monthly totals; Excel STRUX register-diff books the full flush in Jan. ~356 MWh diff = the share of the flush attributed to Sept-Dec by the patch. Patch is intentional. See ann-snv-varme-b313-vmm62-offline-fall.'),
     ],
     'snv_anga': [
         ('B216', 'meter_outage', 'B216.Å1_VM71 counter froze 2026-02-18; ontology patches post-outage from child B217 but captures pre-outage physical B216>B217 delta (~30 MWh). Excel uses STRUX register-diff which absorbs the freeze as zero consumption post-Feb 18.'),

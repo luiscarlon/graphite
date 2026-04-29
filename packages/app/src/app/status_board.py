@@ -7,6 +7,9 @@ source of truth for:
   are selected (see `app.main`); and
 - the `pages/1_Work_status.py` page that lists the whole board.
 
+Each entry's text describes the open items remaining for that
+workstream.
+
 Edit entries here as the workstreams progress. Status is one of
 "green" | "yellow" | "orange" | "red"; anything else (or a missing
 entry) renders nothing.
@@ -19,110 +22,111 @@ import streamlit as st
 STATUS_BOARD: dict[tuple[str, str], tuple[str, str]] = {
     ("gartuna", "ANGA"): (
         "yellow",
-        "Ontology matches Excel at the monthly level, but ~31 percent of "
-        "site steam intake isn't captured by downstream meters (60 "
-        "percent gap on the north spine alone). Needs on-site "
-        "verification of suspected unmetered or undocumented branches; "
-        "details in annotations.",
+        "B616 excel_stale: meter is live (~900 MWh/month) but Excel "
+        "attributes 0 — Excel-side cleanup. Investigation of any "
+        "remaining campus-vs-buildings gap (B600.ANGA_INTAKE virtual "
+        "currently sums to a small negative residual that may indicate "
+        "missing sub-meters or a counter-direction issue).",
     ),
     ("gartuna", "EL"): (
         "yellow",
-        "Ontology matches Excel at the monthly level modulo sub-kWh "
-        "rounding drifts, plus ~9 percent of campus intake unaccounted "
-        "by any building meter and a couple of small Excel-side formula "
-        "bugs. Open items need Excel-side cleanup; details in "
-        "annotations.",
+        "(1) Excel-side cleanup of three small formula bugs (B664/B665 "
+        "missed T42-2-1, B612 double-subtracts T8-A3-A14-112). (2) "
+        "Either accept the ~9 percent campus intake unaccounted as "
+        "typical industrial-park unmetered (lighting, signage, "
+        "controls, transformer losses) or sweep BMS for unmodelled "
+        "meters and ingest the safe ones.",
     ),
     ("gartuna", "KALLVATTEN"): (
         "green",
-        "Ontology matches Excel at the monthly level. The B600 intake "
-        "and B921 avräkning rows are routed through dedicated virtuals "
-        "by design.",
+        "No open items. B600 substation intake virtual and B921 "
+        "avräkning aggregator are intentional design choices reflecting "
+        "Telge Nät's billing structure.",
     ),
     ("gartuna", "KYLA"): (
         "yellow",
-        "Ontology matches Excel at the monthly level. Two known Excel-"
-        "side issues remain (stale STRUX cache on B658 and a double-"
-        "count on B623); both need Excel workbook fixes rather than "
-        "ontology changes.",
+        "(1) Excel-side fixes: refresh stale STRUX cache on B658 "
+        "(attributes 0 but meter is live) and resolve the B623 "
+        "double-count (appears as +term for B623 AND inside the "
+        "B600-KB2 pool formula). (2) Investigate B621 and B622 "
+        "Feb 2026 ontology_drift (uncategorized). (3) B611 negative "
+        "data_quality_artifact: B653 pool meter died 2025-10-09; "
+        "consider retiring the dead pool relation. The B641/B833 Feb "
+        "trailing_day_gaps will resolve on next March 2026 raw "
+        "reading.",
     ),
     ("gartuna", "KYLTORNSVATTEN"): (
         "green",
-        "Ontology matches Excel at the monthly level. The bi-daily "
-        "B614-V2-GF4 reporting cadence is unconfirmed (sensor sampling "
-        "versus physical duty-cycling) but doesn't affect monthly totals.",
+        "Investigate whether B614-V2-GF4's bi-daily reporting cadence "
+        "is sensor sampling or physical duty-cycling. Doesn't affect "
+        "monthly totals.",
     ),
     ("gartuna", "VARME"): (
         "green",
-        "Ontology matches Excel at the monthly level after the major "
-        "data-quality events were patched. Structural caveat: B621 has "
-        "~91 percent of intake unaccounted by downstream meters, "
-        "suggesting unmetered branches that need on-site verification.",
+        "Matches Excel on 95 of 96 building-month rows. The single "
+        "non-match is B833 Feb 2026, where the ontology's outage patch "
+        "(B833.VP1 frozen) captures ~23 MWh that Excel's frozen "
+        "counter misses — Excel-side counter refresh would close it.",
     ),
     ("snackviken", "ANGA"): (
         "yellow",
-        "B217.Å1_VMM71 register-corruption window patched via "
-        "slice+interpolate+slice. Persistent negative residuals on the B310 "
-        "pool are an Excel accounting design, not an ontology error. "
-        "B307.Å1_VMM71 trunk counter frozen Jan–Oct 2025 then ticks normally; "
-        "post-unfreeze totals lag Excel by ~3 months — both annotated, not "
-        "patched.",
+        "(1) Excel-side fix for B307 double-subtract of B330.Å1_VMM71 "
+        "(rows 23 and 46 both list it as a − term). (2) Decide on "
+        "B216/B308 frozen-counter handling — current ontology patches "
+        "from child meters; Excel STRUX register-diff treats the "
+        "freeze as zero post-freeze. Alignment requires either an "
+        "ontology mode mirroring STRUX or accepting the documented "
+        "~30 MWh divergence. (3) Investigate B317 Jan 2026 −119 MWh "
+        "(−79 percent) drift, currently uncategorized. B310 negative "
+        "residuals stay as documented pool-accounting design.",
     ),
     ("snackviken", "EL"): (
-        "red",
-        "STRUX-only trunks (B209/B304/B313/B334) and Excel R-factor "
-        "fractional pools (T26S/T29/T49 distributed across multiple "
-        "buildings) keep ontology and Excel from matching on six "
-        "buildings; all open issues blocked on a fractional-subtract "
-        "primitive. B324 substation intake (B324.EL_INTAKE = H3 + H4_1) "
-        "sums to AZ-total EL within 0.01 percent (7922 MWh Jan). "
-        "Conservation panel master is B324.H4_1 = building distribution "
-        "side (4509 MWh Jan vs Sigma buildings 4206 MWh, 6.7 percent "
-        "residual); B324.H3 Elpanna boiler (3413 MWh, produces AANGA) "
-        "is targeted at building B324 so it does not inflate the panel "
-        "(matches Excel which also reports B324 EL = 0).",
+        "yellow",
+        "(1) Excel-side cleanup of 4 double-plus formulas (B305/B318/"
+        "B344/B392 each duplicate the same +meter; ontology splits "
+        "50/50 to avoid double-count). (2) Inject STRUX values for 3 "
+        "absent summary meters (B313.T26S, T26S-3-12, T40-3-1) — "
+        "closes B304/B310/B311 strux_only_meter rows. (3) Spot-check "
+        "the B317 February +75 MWh divergence (Jan reproduces Excel "
+        "exactly via BMS; Feb diverges with no obvious cause). "
+        "Substation conservation residual 6.7 percent is typical "
+        "industrial-park unmetered — accept as-is.",
     ),
     ("snackviken", "KALLVATTEN"): (
         "yellow",
-        "30 root building-inlet meters sum to TN-billed total within 3 "
-        "percent (22.7 / 18.9 thousand m3 Jan/Feb 2026 vs TN 23.3 / 19.9). "
-        "Excel-side double-subtract bugs (B313/B315 in B310/B311/B314 pool "
-        "formulas) explain all building-level mismatches above noise; "
-        "B313/B317/B389 Jan drifts are 2026-01-14 catch-up cluster fallout "
-        "(same family as VARME). SNV KV is distributed wells (no substation "
-        "pattern), so no campus intake virtual; TN-billing reconciliation "
-        "documented in ann-snv-kv-tn-billing-reconciliation.",
+        "Excel-side cleanup of 6 double-subtract bugs (B313/B315 "
+        "listed in multiple pool formulas — workbook fixes, not "
+        "ontology). The 4 catch-up-cluster rows on B313/B317/B389 Jan "
+        "2026 are accepted patch behavior (interpolate spreads the "
+        "Jan 14 flush back across the freeze window). TN-billing 3 "
+        "percent reconciliation documented in ann-snv-kv-tn-billing-"
+        "reconciliation.",
     ),
     ("snackviken", "KYLA"): (
         "green",
-        "Ontology matches Excel at 100 percent (139/139 rows). KYLA is "
-        "distributed chillers per building (no centralized intake), so "
-        "the campus conservation panel skips KYLA by design after "
-        "dropping 4 fall-through campus tags (B304.KB2, B305.KB1, "
-        "B307.KB1, B307.KB1_VMM52). Fractional tenant splits routed "
-        "via feeds k<1 edges (B302/B303 share B304.KB2, B305/B307 "
-        "share B307.KB1).",
+        "100 percent match (139/139 rows). KYLA is distributed "
+        "chillers per building, no centralized intake; the conservation "
+        "panel correctly skips KYLA by design. No open items.",
     ),
     ("snackviken", "SJOVATTEN"): (
         "yellow",
-        "Lake intake routed via SNV.SJOVATTEN_INTAKE = B342.V2_VM90_V "
-        "+ V2_VM91_V intagsmätare (485 / 511 thousand m3 Jan/Feb 2026, "
-        "matches Excel sigma buildings exactly). Conservation panel "
-        "~40 percent residual = STRUX-only consumers (BScania ~144k, "
-        "BKringlan ~25k, B304 ~30k m3) plus BPS_V2 fractional pool "
-        "(B301/B302/B303/B307/B344) blocked on a fractional-subtract "
-        "primitive. V91 register reset 2025-02-17 stitched via "
-        "rolling_sum (outside Jan/Feb facit window).",
+        "STRUX injection for 10 absent meters — 7 BPS_V2 drain meters "
+        "needed to reproduce the BPS_V2 sheet residual from BMS "
+        "(B342 inlets minus 15 direct consumers, of which 7 are "
+        "STRUX-only) plus the 3 STRUX-only consumers (BScania, "
+        "BKringlan, B304). Lake intake side already matches Excel "
+        "exactly. The 0.09/0.18/0.18/0.46/0.09 BPS_V2 fractional split "
+        "would route correctly via `feeds k<1.0` once BPS_V2 is "
+        "computable.",
     ),
     ("snackviken", "VARME"): (
         "green",
-        "Ontology matches Excel within 1 percent at the building level; the "
-        "Jan 2026 B311/B313 drifts are 2026-01-14 sitewide catch-up "
-        "cluster fallout (114-day frozen counters then a single-day "
-        "flush). B327 under-counts by ~17 MWh/mo from the B326.VS1_VMM61 "
-        "double-count in Excel rows 37+38. Fjärrvärme intake "
-        "(SNV.VARME_INTAKE, 11 FV1 meters) closes the campus draw against "
-        "TN-side billing within 0.01 percent.",
+        "Excel-side fix for B327 double-count of B326.VS1_VMM61 (rows "
+        "37+38 both list it as +term — workbook cleanup). The catch-up-"
+        "cluster meter_outage rows on B310/B311/B313 Jan 2026 are "
+        "accepted patch behavior (interpolate intentionally distributes "
+        "the Jan 14 flush for daily reporting at the cost of monthly "
+        "totals).",
     ),
 }
 

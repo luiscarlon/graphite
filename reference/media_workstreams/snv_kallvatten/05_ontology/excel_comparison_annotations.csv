@@ -27,7 +27,7 @@ KALLVATTEN,B304,2026-01,89.03,89.03,0.00,match,
 KALLVATTEN,B304,2026-02,82.63,82.63,0.00,match,
 KALLVATTEN,B305,2026-01,625.88,625.88,0.00,match,
 KALLVATTEN,B305,2026-02,656.33,656.33,0.00,match,
-KALLVATTEN,B307,2026-01,821.70,821.70,-0.00,match,
+KALLVATTEN,B307,2026-01,821.70,821.70,0.00,match,
 KALLVATTEN,B307,2026-02,801.13,801.13,0.00,match,
 KALLVATTEN,B308,2026-01,928.85,928.85,0.00,match,
 KALLVATTEN,B308,2026-02,595.23,595.23,0.00,match,
@@ -117,8 +117,8 @@ KALLVATTEN,B385,2026-01,1.73,1.73,0.00,match,
 KALLVATTEN,B385,2026-02,1.60,1.60,0.00,match,
 KALLVATTEN,B386,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B386,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B389,2026-01,0.00,162.85,162.85,meter_outage,Winter offline + catch-up flush: B389.BRV1_VMM21 flat 47d 2025-12-16 → 2026-02-03 with single-day flush on Feb 3. Patched via 3-segment slice/interpolate/slice + rolling_sum. Jan +163 m³ vs Excel 0 reflects the patch spreading consumption backwards into Jan while Excel sees no Jan consumption. Same family as the 2026-01-14 sitewide cluster.
-KALLVATTEN,B389,2026-02,454.62,209.22,-245.40,meter_outage,Winter offline + catch-up flush: B389.BRV1_VMM21 flat 47d 2025-12-16 → 2026-02-03 with single-day flush on Feb 3. Patched via 3-segment slice/interpolate/slice + rolling_sum. Feb -245 m³ vs Excel reflects the patch spreading consumption across the gap while Excel sees only the Feb 3 spike + post-Feb 3 actuals. Same family as the 2026-01-14 sitewide cluster.
+KALLVATTEN,B389,2026-01,0.00,162.85,162.85,meter_outage,"Winter offline + catch-up flush: B389.BRV1_VMM21 flat 47d 2025-12-16 → 2026-02-03 with single-day flush on Feb 3. Patched via 3-segment slice/interpolate/slice + rolling_sum. The Jan +163 m³ / Feb -245 m³ ontology-vs-Excel split reflects the patch spreading consumption across the gap while Excel sees only the Feb 3 spike. Same family as the 2026-01-14 sitewide cluster. See ann-snv-kv-b389-swap (mislabeled — actually outage, no register swap)."
+KALLVATTEN,B389,2026-02,454.62,209.22,-245.40,meter_outage,"Winter offline + catch-up flush: B389.BRV1_VMM21 flat 47d 2025-12-16 → 2026-02-03 with single-day flush on Feb 3. Patched via 3-segment slice/interpolate/slice + rolling_sum. The Jan +163 m³ / Feb -245 m³ ontology-vs-Excel split reflects the patch spreading consumption across the gap while Excel sees only the Feb 3 spike. Same family as the 2026-01-14 sitewide cluster. See ann-snv-kv-b389-swap (mislabeled — actually outage, no register swap)."
 KALLVATTEN,B390,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B390,2026-02,0.00,0.00,0.00,match,
 KALLVATTEN,B392,2026-01,0.20,0.20,0.00,match,

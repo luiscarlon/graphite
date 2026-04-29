@@ -27,13 +27,13 @@ VARME,B308,2026-01,592.84,592.84,0.00,match,
 VARME,B308,2026-02,587.86,587.86,0.00,match,
 VARME,B309,2026-01,0.00,0.00,0.00,match,
 VARME,B309,2026-02,0.00,0.00,0.00,match,
-VARME,B310,2026-01,952.07,-401.19,-1353.26,meter_outage,2026-01-14 catch-up cluster: B310.VP2_VMM61 (+parent) lost ~1987 MWh from interpolate spread of the Sept-Jan freeze; B313.VP1_VMM62 / B311.VP1_VMM64 (subs) under-subtract by ~450 MWh combined. Net B310 Jan ontology ~1353 MWh below Excel. See ann-snv-varme-b310-vp2-offline-fall and the matching b311/b313 entries.
-VARME,B310,2026-02,-154.72,-154.72,-0.00,match,Negative Excel value (−155 MWh) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).
-VARME,B311,2026-01,512.94,472.81,-40.13,meter_outage,"2026-01-14 catch-up cluster: B311.VP1_VMM64 was flat 117 days then a single-day +45.6 MWh flush on 2026-01-14. The rolling_sum aggregation absorbs the spike, leaving Jan ontology ~40 MWh below Excel. See ann-snv-varme-b311-vmm64-offline-fall."
+VARME,B310,2026-01,952.07,-401.19,-1353.26,meter_outage,"B310 = +VP2_VMM61 − B311.VP1_VMM64 − B313.VP1_VMM62 − subs. All three patched via slice/interpolate/slice across the 2025-09 → 2026-01-14 freeze; the interpolates spread each meter's catch-up flush linearly across the freeze window for plausible daily Sept-Jan reporting, which removes those flushes from Jan 2026 monthly totals. Excel STRUX register-diff books all three flushes in Jan. Net diff −1353 MWh ≈ VP2 spread (~1987 MWh) net of sub spreads (~450 MWh). Patch is intentional. See ann-snv-varme-b310-vp2-offline-fall."
+VARME,B310,2026-02,-154.72,-154.72,0.00,match,Negative Excel value (−155 MWh) — B310 is the 27-term distribution pool. Ontology mirrors Excel exactly (diff ≈ 0).
+VARME,B311,2026-01,512.94,472.81,-40.13,meter_outage,"Patched via slice/interpolate/slice 2025-09-20 → 2026-01-14: B311.VP1_VMM64 flat 117 days then flushed +45.6 MWh on 2026-01-14. Interpolate distributes the flush linearly across the freeze window for plausible daily reporting, which removes it from Jan 2026 monthly totals; Excel STRUX register-diff books the full flush in Jan. ~40 MWh diff = the share of the flush attributed to Sept-Dec by the patch. Patch is intentional. See ann-snv-varme-b311-vmm64-offline-fall."
 VARME,B311,2026-02,520.29,520.29,-0.00,match,
 VARME,B312,2026-01,9.93,9.93,0.00,match,
 VARME,B312,2026-02,12.77,12.77,0.00,match,
-VARME,B313,2026-01,399.66,44.16,-355.50,meter_outage,"2026-01-14 catch-up cluster: B313.VP1_VMM62 was flat 114 days then a single-day +404.8 MWh flush on 2026-01-14. The rolling_sum aggregation absorbs the spike, leaving Jan ontology ~356 MWh below Excel. See ann-snv-varme-b313-vmm62-offline-fall."
+VARME,B313,2026-01,399.66,44.16,-355.50,meter_outage,"Patched via slice/interpolate/slice 2025-09-22 → 2026-01-14: B313.VP1_VMM62 flat 114 days then flushed +404.8 MWh on 2026-01-14. Interpolate distributes the flush linearly across the freeze window for plausible daily reporting, which removes it from Jan 2026 monthly totals; Excel STRUX register-diff books the full flush in Jan. ~356 MWh diff = the share of the flush attributed to Sept-Dec by the patch. Patch is intentional. See ann-snv-varme-b313-vmm62-offline-fall."
 VARME,B313,2026-02,68.25,68.25,0.00,match,
 VARME,B314,2026-01,86.25,86.25,0.00,match,
 VARME,B314,2026-02,89.44,89.44,0.00,match,
