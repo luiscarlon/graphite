@@ -39,7 +39,7 @@ KALLVATTEN,B311,2026-01,254.12,2096.88,1842.76,excel_bug,Row 27 (16-term pool) s
 KALLVATTEN,B311,2026-02,1754.38,1769.60,15.22,excel_bug,Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.
 KALLVATTEN,B312,2026-01,48.35,48.35,0.00,match,
 KALLVATTEN,B312,2026-02,44.76,44.76,0.00,match,
-KALLVATTEN,B313,2026-01,131.40,39.50,-91.89,ontology_drift,Drift of -92 (69.9%). Cause not yet classified.
+KALLVATTEN,B313,2026-01,131.40,39.50,-91.89,meter_outage,"2026-01-14 catch-up cluster: B313.KV1_VMM22_V flat 114d 2025-09-21 → 2026-01-14, single-day flush absorbed by interpolate. Same family as VARME B313.VP1_VMM62."
 KALLVATTEN,B313,2026-02,37.80,37.80,0.00,match,
 KALLVATTEN,B314,2026-01,-67.06,1.12,68.18,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
 KALLVATTEN,B314,2026-02,21.43,6.21,-15.22,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
@@ -47,7 +47,7 @@ KALLVATTEN,B315,2026-01,23.72,23.72,0.00,match,
 KALLVATTEN,B315,2026-02,15.22,15.22,0.00,match,
 KALLVATTEN,B316,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B316,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B317,2026-01,116.15,30.50,-85.65,ontology_drift,Drift of -86 (73.7%). Cause not yet classified.
+KALLVATTEN,B317,2026-01,116.15,30.50,-85.65,meter_outage,"2026-01-14 catch-up cluster: B317.KV1_VMM21_V flat 114d 2025-09-21 → 2026-01-14, single-day flush absorbed by interpolate. Same family as VARME B311.VP1_VMM64."
 KALLVATTEN,B317,2026-02,25.58,25.58,0.00,match,
 KALLVATTEN,B318,2026-01,128.56,128.56,0.00,match,
 KALLVATTEN,B318,2026-02,130.34,130.34,0.00,match,
@@ -117,8 +117,8 @@ KALLVATTEN,B385,2026-01,1.73,1.73,0.00,match,
 KALLVATTEN,B385,2026-02,1.60,1.60,0.00,match,
 KALLVATTEN,B386,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B386,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B389,2026-01,0.00,162.85,162.85,ontology_drift,Drift of 163 (0.0%). Cause not yet classified.
-KALLVATTEN,B389,2026-02,454.62,209.22,-245.40,ontology_drift,Drift of -245 (54.0%). Cause not yet classified.
+KALLVATTEN,B389,2026-01,0.00,162.85,162.85,meter_outage,Winter offline + catch-up flush: B389.BRV1_VMM21 flat 47d 2025-12-16 → 2026-02-03 with single-day flush on Feb 3. Patched via 3-segment slice/interpolate/slice + rolling_sum. Jan +163 m³ vs Excel 0 reflects the patch spreading consumption backwards into Jan while Excel sees no Jan consumption. Same family as the 2026-01-14 sitewide cluster.
+KALLVATTEN,B389,2026-02,454.62,209.22,-245.40,meter_outage,Winter offline + catch-up flush: B389.BRV1_VMM21 flat 47d 2025-12-16 → 2026-02-03 with single-day flush on Feb 3. Patched via 3-segment slice/interpolate/slice + rolling_sum. Feb -245 m³ vs Excel reflects the patch spreading consumption across the gap while Excel sees only the Feb 3 spike + post-Feb 3 actuals. Same family as the 2026-01-14 sitewide cluster.
 KALLVATTEN,B390,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B390,2026-02,0.00,0.00,0.00,match,
 KALLVATTEN,B392,2026-01,0.20,0.20,0.00,match,

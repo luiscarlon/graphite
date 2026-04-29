@@ -84,9 +84,14 @@ STATUS_BOARD: dict[tuple[str, str], tuple[str, str]] = {
     ),
     ("snackviken", "KALLVATTEN"): (
         "yellow",
-        "Raw readings look good. A few Excel-side bugs (formula structure "
-        "and +/− term handling) produce small per-building discrepancies; "
-        "ontology matches within noise once those are accounted for.",
+        "30 root building-inlet meters sum to TN-billed total within 3 "
+        "percent (22.7 / 18.9 thousand m3 Jan/Feb 2026 vs TN 23.3 / 19.9). "
+        "Excel-side double-subtract bugs (B313/B315 in B310/B311/B314 pool "
+        "formulas) explain all building-level mismatches above noise; "
+        "B313/B317/B389 Jan drifts are 2026-01-14 catch-up cluster fallout "
+        "(same family as VARME). SNV KV is distributed wells (no substation "
+        "pattern), so no campus intake virtual; TN-billing reconciliation "
+        "documented in ann-snv-kv-tn-billing-reconciliation.",
     ),
     ("snackviken", "KYLA"): (
         "green",

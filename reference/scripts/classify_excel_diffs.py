@@ -108,6 +108,9 @@ CURATED: dict[str, list] = {
         ('B311', 'excel_bug', 'Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.'),
         ('B314', 'excel_bug', 'Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack.'),
         ('B202', 'match', 'Negative Excel value (row 10 — B202 subtracts both B201 and B203 meters and under-counts by design). Ontology mirrors Excel exactly (diff = 0).'),
+        ('B313', '2026-01', 'meter_outage', '2026-01-14 catch-up cluster: B313.KV1_VMM22_V flat 114d 2025-09-21 → 2026-01-14, single-day flush absorbed by interpolate. Same family as VARME B313.VP1_VMM62.'),
+        ('B317', '2026-01', 'meter_outage', '2026-01-14 catch-up cluster: B317.KV1_VMM21_V flat 114d 2025-09-21 → 2026-01-14, single-day flush absorbed by interpolate. Same family as VARME B311.VP1_VMM64.'),
+        ('B389', 'meter_outage', 'Winter offline + catch-up flush: B389.BRV1_VMM21 flat 47d 2025-12-16 → 2026-02-03 with single-day flush on Feb 3. Patched via 3-segment slice/interpolate/slice + rolling_sum. The Jan +163 m³ / Feb -245 m³ ontology-vs-Excel split reflects the patch spreading consumption across the gap while Excel sees only the Feb 3 spike. Same family as the 2026-01-14 sitewide cluster. See ann-snv-kv-b389-swap (mislabeled — actually outage, no register swap).'),
     ],
     'snv_kyla': [
         # All 140 building-months currently match; these curated entries
