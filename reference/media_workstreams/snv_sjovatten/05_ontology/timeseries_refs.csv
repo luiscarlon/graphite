@@ -14,3 +14,9 @@ B229.V2_VMM51:d,B229.V2_VMM51.energy,daily,counter,raw,True,,2026-02-20,ion_swed
 B230.V2_VMM51:d,B230.V2_VMM51.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B230.V2_VM51,,,
 B392.V2_VM21_V:d,B392.V2_VM21_V.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B392.V2_VM21_V,,,
 B409.V2_GF4:d,B409.V2_GF4.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B409.V2_GF4,,,
+B342.V2_VM90_V:d,B342.V2_VM90_V.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B342.V2_VM90_V,,,
+B342.V2_VM91_V:d.raw,B342.V2_VM91_V.energy,daily,counter,raw,False,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B342.V2_VM91_V,,,
+
+B342.V2_VM91_V:d.A,B342.V2_VM91_V.energy,daily,counter,raw,False,,2025-02-17,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B342.V2_VM91_V,,,
+B342.V2_VM91_V:d.B,B342.V2_VM91_V.energy,daily,counter,raw,False,2025-02-17,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B342.V2_VM91_V,,,
+B342.V2_VM91_V:d,B342.V2_VM91_V.energy,daily,counter,derived,True,,,,,,,B342.V2_VM91_V:d.A|B342.V2_VM91_V:d.B,rolling_sum

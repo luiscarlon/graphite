@@ -373,3 +373,6 @@ B339.FV1_VMM61_E,VARME meter FV1_VMM61_E (TN intake B339),,VARME,False,snowflake
 SNV.VARME_INTAKE,VARME virtual SNV.VARME_INTAKE,,VARME,True,excel=Kontroll FV-mätare,,
 B324.H4_1,EL meter H4_1 (TN intake B324),,EL,False,snowflake=B324.H4_1; strux=B324.H4-1,,
 B324.EL_INTAKE,EL virtual B324.EL_INTAKE,,EL,True,excel=Total SNV EL,,
+B342.V2_VM90_V,SJOVATTEN meter V2_VM90_V (intagsmätare 1),,SJOVATTEN,False,snowflake=B342.V2_VM90_V; strux=B342.V2_VM90_V,,
+B342.V2_VM91_V,SJOVATTEN meter V2_VM91_V (intagsmätare 2),,SJOVATTEN,False,snowflake=B342.V2_VM91_V; strux=B342.V2_VM91_V,,
+SNV.SJOVATTEN_INTAKE,SJOVATTEN virtual SNV.SJOVATTEN_INTAKE,,SJOVATTEN,True,excel=Total SNV intagsmätare,,

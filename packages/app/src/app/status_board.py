@@ -102,11 +102,14 @@ STATUS_BOARD: dict[tuple[str, str], tuple[str, str]] = {
     ),
     ("snackviken", "SJOVATTEN"): (
         "yellow",
-        "Ontology looks reasonable. Certain buildings show negative net in "
-        "specific windows when the parent trunk's reading drops below its "
-        "childrens' sum. Remaining −100% rows in the Excel comparison are "
-        "on STRUX-only manual-entry meters (BScania, BKringlan, B304) and "
-        "the BPS_V2 fractional pool — accepted at this stage.",
+        "Lake intake routed via SNV.SJOVATTEN_INTAKE = B342.V2_VM90_V "
+        "+ V2_VM91_V intagsmätare (485 / 511 thousand m3 Jan/Feb 2026, "
+        "matches Excel sigma buildings exactly). Conservation panel "
+        "~40 percent residual = STRUX-only consumers (BScania ~144k, "
+        "BKringlan ~25k, B304 ~30k m3) plus BPS_V2 fractional pool "
+        "(B301/B302/B303/B307/B344) blocked on a fractional-subtract "
+        "primitive. V91 register reset 2025-02-17 stitched via "
+        "rolling_sum (outside Jan/Feb facit window).",
     ),
     ("snackviken", "VARME"): (
         "green",

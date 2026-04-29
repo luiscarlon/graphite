@@ -340,3 +340,20 @@ B324.EL_INTAKE,B325.T13-5-6,hasSubMeter,,,,snv_el_intake_fanout
 B324.EL_INTAKE,B325.T13-6-3,hasSubMeter,,,,snv_el_intake_fanout
 B324.EL_INTAKE,B328.T19-3-2,hasSubMeter,,,,snv_el_intake_fanout
 B324.EL_INTAKE,B328.T20-3-2,hasSubMeter,,,,snv_el_intake_fanout
+B342.V2_VM90_V,SNV.SJOVATTEN_INTAKE,feeds,1.0,,,B342_lake_intake
+B342.V2_VM91_V,SNV.SJOVATTEN_INTAKE,feeds,1.0,,,B342_lake_intake
+SNV.SJOVATTEN_INTAKE,B304-52-V2-AW026,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B305.V2_VMM21,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B308.V2_VM21-V,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B310.V2_GF4_1,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B325.V2_GF4_1,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B330.V2_GF4_1,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B334.V2_VM90_V,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B337.V2_GF4_1,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B339.V2_GF3_3,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B339.V2_GF3_4,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B339.V2_GF4,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B392.V2_VM21_V,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,B409.V2_GF4,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,TE-52-V2-GF4:1 Kringlan,hasSubMeter,,,,snv_sjovatten_intake_fanout
+SNV.SJOVATTEN_INTAKE,TE-52-V2-SCANIA,hasSubMeter,,,,snv_sjovatten_intake_fanout
