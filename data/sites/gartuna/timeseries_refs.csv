@@ -414,3 +414,4 @@ B833.VP1_VMM61:d.A,B833.VP1_VMM61.energy,daily,counter,derived,False,,2025-01-08
 B833.VP1_VMM61:d.B,B833.VP1_VMM61.energy,daily,counter,derived,False,2025-01-08,2026-02-19,,,,,B833.VP1_VMM61:d.raw,slice
 B833.VP1_VMM61:d.patch,B833.VP1_VMM61.energy,daily,counter,derived,False,2026-02-19,,,,,,B833.VP1_VMM62:d|B834.VP1_VMM61:d.raw,sum
 B833.VP1_VMM61:d,B833.VP1_VMM61.energy,daily,counter,derived,True,,,,,,,B833.VP1_VMM61:d.A|B833.VP1_VMM61:d.B|B833.VP1_VMM61:d.patch,rolling_sum
+B665.H2-1:d,B665.H2-1.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B660.H2_1,,,

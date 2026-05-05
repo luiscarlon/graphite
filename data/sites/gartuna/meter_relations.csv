@@ -214,3 +214,4 @@ B612.VP2_VMM65,B637.VP2_VMM61,hasSubMeter,,,,excel_formula_B612
 B612.VP2_VMM65,B613.VP2_VMM61,hasSubMeter,,,,excel_formula_B612
 B612.VP2_VMM65,B654.VP2_VMM61,hasSubMeter,,,,excel_formula_B612
 B614.VS1_VMM61,B642.VS1_VMM61,hasSubMeter,,,,excel_formula_B614
+B665.H2-1,B660.EL_INTAKE,feeds,1.0,,,B660_substation_intake
