@@ -486,8 +486,8 @@ KYLA,B420,2026-01,0.00,0.00,0.00,match,
 KYLA,B420,2026-02,0.00,0.00,0.00,match,
 KALLVATTEN,B201,2026-01,18.26,18.26,0.00,match,
 KALLVATTEN,B201,2026-02,17.74,17.74,0.00,match,
-KALLVATTEN,B202,2026-01,-192.48,-192.48,0.00,match,Negative Excel value (row 10 — B202 subtracts both B201 and B203 meters and under-counts by design). Ontology mirrors Excel exactly (diff = 0).
-KALLVATTEN,B202,2026-02,-256.23,-256.23,0.00,match,Negative Excel value (row 10 — B202 subtracts both B201 and B203 meters and under-counts by design). Ontology mirrors Excel exactly (diff = 0).
+KALLVATTEN,B202,2026-01,-192.48,-192.48,0.00,match,"Excel bug. B202.KV1_VM22_V is subtracted in B202's formula but never added anywhere else, so ~200 m³/month vanish and B202 goes negative."
+KALLVATTEN,B202,2026-02,-256.23,-256.23,0.00,match,"Same Excel bug as January. B202.KV1_VM22_V (~264 m³) vanishes from accounting."
 KALLVATTEN,B203,2026-01,0.21,0.21,0.00,match,
 KALLVATTEN,B203,2026-02,0.37,0.37,0.00,match,
 KALLVATTEN,B204,2026-01,10.08,10.08,0.00,match,
@@ -518,21 +518,21 @@ KALLVATTEN,B308,2026-01,928.85,928.85,0.00,match,
 KALLVATTEN,B308,2026-02,595.23,595.23,0.00,match,
 KALLVATTEN,B309,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B309,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B310,2026-01,2734.14,2146.66,-587.48,excel_bug,"Net of two known Excel bugs: (1) Row 26 subtracts B313.KV1_VMM22_V which is also subtracted by row 30 (B314) — ontology attaches it to B314 (shorter-formula-wins) so B310 over-counts by Δ(B313.KV1_VMM22_V) ≈ 120 m³/month vs Excel; (2) FIXED 2026-04-29: B310.KV1_VMM24_V (Excel: B310.KV1_VM24_V) reattached to B310 — Excel subtracts it on B311's row 27 but never adds it on B310's +side (rows S–W only contain VM20/21/22/23/27, omitting VM24). Adds +1025 m³ Jan / +917 m³ Feb to B310; B311 unchanged. ann-snv-kv-b313-double-subtract + ann-snv-kv-b310-vm24-missing-add."
-KALLVATTEN,B310,2026-02,1021.82,1965.29,943.47,excel_bug,"Net of two known Excel bugs: (1) Row 26 subtracts B313.KV1_VMM22_V which is also subtracted by row 30 (B314) — ontology attaches it to B314 (shorter-formula-wins) so B310 over-counts by Δ(B313.KV1_VMM22_V) ≈ 27 m³/month Feb vs Excel; (2) FIXED 2026-04-29: B310.KV1_VMM24_V (Excel: B310.KV1_VM24_V) reattached to B310 — Excel subtracts it on B311's row 27 but never adds it on B310's +side (rows S–W only contain VM20/21/22/23/27, omitting VM24). Adds +1025 m³ Jan / +917 m³ Feb to B310; B311 unchanged. ann-snv-kv-b313-double-subtract + ann-snv-kv-b310-vm24-missing-add."
-KALLVATTEN,B311,2026-01,254.12,2096.88,1842.76,excel_bug,Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.
-KALLVATTEN,B311,2026-02,1754.38,1769.60,15.22,excel_bug,Row 27 (16-term pool) subtracts B315.KV1_VMM21_V which is also subtracted by row 26 (B310). Meter attached to B310.KV1_VMM23_V; B311 over-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month.
+KALLVATTEN,B310,2026-01,2734.14,2146.66,-587.48,excel_bug,"Two Excel bugs. (1) B313.KV1_VM22_V is subtracted both here and at B314; we attach it to B314, so B310 over-counts by ~120 m³/month. (2) B310.KV1_VM24_V was missing from B310's +side in Excel; we added it 2026-04-29 (~+1025 m³ Jan, +917 m³ Feb)."
+KALLVATTEN,B310,2026-02,1021.82,1965.29,943.47,excel_bug,"Two Excel bugs. (1) B313.KV1_VM22_V is subtracted both here and at B314; we attach it to B314, so B310 over-counts by ~27 m³ in Feb. (2) B310.KV1_VM24_V was missing from B310's +side in Excel; we added it 2026-04-29 (+917 m³)."
+KALLVATTEN,B311,2026-01,254.12,2096.88,1842.76,excel_bug,"Excel bug. B315.KV1_VM21_V is subtracted both here and at B310; we attach it to B310, so B311 over-counts by ~20 m³/month."
+KALLVATTEN,B311,2026-02,1754.38,1769.60,15.22,excel_bug,"Excel bug. B315.KV1_VM21_V is subtracted both here and at B310; we attach it to B310, so B311 over-counts by ~15 m³ in Feb."
 KALLVATTEN,B312,2026-01,48.35,48.35,0.00,match,
 KALLVATTEN,B312,2026-02,44.76,44.76,0.00,match,
-KALLVATTEN,B313,2026-01,131.40,39.50,-91.89,meter_outage,"2026-01-14 catch-up cluster: B313.KV1_VMM22_V flat 114d 2025-09-21 → 2026-01-14, single-day flush absorbed by interpolate. Same family as VARME B313.VP1_VMM62."
+KALLVATTEN,B313,2026-01,131.40,39.50,-91.89,meter_outage,"Meter offline 2025-09-21 to 2026-01-14 on B313.KV1_VM22_V. Excel books the full catch-up in January; ontology spreads it evenly across the gap."
 KALLVATTEN,B313,2026-02,37.80,37.80,0.00,match,
-KALLVATTEN,B314,2026-01,-67.06,1.12,68.18,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
-KALLVATTEN,B314,2026-02,21.43,6.21,-15.22,excel_bug,"Row 30 lists B315.KV1_VMM21_V as a + term but row 31 also lists it as the sole + term for B315. Meter attributed to B315 (prefix-match); B314 under-counts by Δ(B315.KV1_VMM21_V) ≈ 20 MWh/month. Combined with the B313.KV1_VMM22_V subtraction that lands here (excel_bug from row 26), diff may stack."
+KALLVATTEN,B314,2026-01,-67.06,1.12,68.18,excel_bug,"Excel bug. B315.KV1_VM21_V is on both B314's +side and B315's +side. We attach it to B315, so B314 under-counts by ~20 m³/month."
+KALLVATTEN,B314,2026-02,21.43,6.21,-15.22,excel_bug,"Excel bug. B315.KV1_VM21_V is on both B314's +side and B315's +side. We attach it to B315, so B314 under-counts by ~15 m³ in Feb."
 KALLVATTEN,B315,2026-01,23.72,23.72,0.00,match,
 KALLVATTEN,B315,2026-02,15.22,15.22,0.00,match,
 KALLVATTEN,B316,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B316,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B317,2026-01,116.15,30.50,-85.65,meter_outage,"2026-01-14 catch-up cluster: B317.KV1_VMM21_V flat 114d 2025-09-21 → 2026-01-14, single-day flush absorbed by interpolate. Same family as VARME B311.VP1_VMM64."
+KALLVATTEN,B317,2026-01,116.15,30.50,-85.65,meter_outage,"Meter offline 2025-09-21 to 2026-01-14 on B317.KV1_VM21_V. Excel books the full catch-up in January; ontology spreads it evenly across the gap."
 KALLVATTEN,B317,2026-02,25.58,25.58,0.00,match,
 KALLVATTEN,B318,2026-01,128.56,128.56,0.00,match,
 KALLVATTEN,B318,2026-02,130.34,130.34,0.00,match,
@@ -602,8 +602,8 @@ KALLVATTEN,B385,2026-01,1.73,1.73,0.00,match,
 KALLVATTEN,B385,2026-02,1.60,1.60,0.00,match,
 KALLVATTEN,B386,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B386,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B389,2026-01,0.00,162.85,162.85,meter_outage,Winter offline + catch-up flush: B389.BRV1_VMM21 flat 47d 2025-12-16 → 2026-02-03 with single-day flush on Feb 3. Patched via 3-segment slice/interpolate/slice + rolling_sum. Jan +163 m³ vs Excel 0 reflects the patch spreading consumption backwards into Jan while Excel sees no Jan consumption. Same family as the 2026-01-14 sitewide cluster.
-KALLVATTEN,B389,2026-02,454.62,209.22,-245.40,meter_outage,Winter offline + catch-up flush: B389.BRV1_VMM21 flat 47d 2025-12-16 → 2026-02-03 with single-day flush on Feb 3. Patched via 3-segment slice/interpolate/slice + rolling_sum. Feb -245 m³ vs Excel reflects the patch spreading consumption across the gap while Excel sees only the Feb 3 spike + post-Feb 3 actuals. Same family as the 2026-01-14 sitewide cluster.
+KALLVATTEN,B389,2026-01,0.00,162.85,162.85,meter_outage,"Meter offline 2025-12-16 to 2026-02-03 on B389.BRV1_VM21. Excel sees zero in January; ontology spreads the catch-up backwards across the gap, putting ~163 m³ in January."
+KALLVATTEN,B389,2026-02,454.62,209.22,-245.40,meter_outage,"Same outage as January. Excel books the full catch-up on Feb 3; ontology has already spread it across the gap, so February is ~245 m³ lower."
 KALLVATTEN,B390,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B390,2026-02,0.00,0.00,0.00,match,
 KALLVATTEN,B392,2026-01,0.20,0.20,0.00,match,
