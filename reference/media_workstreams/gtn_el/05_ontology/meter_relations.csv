@@ -75,3 +75,8 @@ B660.EL_INTAKE,B833.T44,hasSubMeter,,,,B660_substation_intake
 B660.EL_INTAKE,B841.T38,hasSubMeter,,,,B660_substation_intake
 B660.EL_INTAKE,B951.H3-B,hasSubMeter,,,,B660_substation_intake
 B660.EL_INTAKE,B951.H4-A,hasSubMeter,,,,B660_substation_intake
+B665.H2-1,B660.EL_INTAKE,feeds,1.0,,,B660_substation_intake
+B951.H4-A,B951.T56,hasSubMeter,,,,b951_substation_breakers
+B951.H4-A,B951.T57,hasSubMeter,,,,b951_substation_breakers
+B951.H3-B,B951.T58,hasSubMeter,,,,b951_substation_breakers
+B951.H3-B,B951.T59,hasSubMeter,,,,b951_substation_breakers

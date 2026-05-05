@@ -1,7 +1,7 @@
 media_type_id,name,description,brick_meter_class,brick_substance
 ANGA,Steam,Steam energy (MWh) distributed via the site steam main.,Steam_Meter,Steam
 EL,Electrical,Electrical energy (kWh / MWh).,Electrical_Meter,
-VARME,Heating (district),District heating energy (MWh) delivered to per-building substations.,Heating_Meter,Hot_Water
-KYLA,Cooling (district),Cooling energy (MWh) delivered to per-building substations.,Chilled_Water_Meter,Chilled_Water
 KALLVATTEN,KALLVATTEN,,,
+KYLA,Cooling (district),Cooling energy (MWh) delivered to per-building substations.,Chilled_Water_Meter,Chilled_Water
 SJOVATTEN,SJOVATTEN,,,
+VARME,Heating (district),District heating energy (MWh) delivered to per-building substations.,Heating_Meter,Hot_Water

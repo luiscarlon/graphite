@@ -195,6 +195,8 @@ EL,B951,2026-01,0.00,0.00,0.00,match,
 EL,B951,2026-02,0.00,0.00,0.00,match,
 EL,BPARKING,2026-01,9398.32,9398.32,-0.00,match,
 EL,BPARKING,2026-02,9885.93,9885.92,-0.00,match,
+EL,BUNKNOWN,2026-01,0.00,329062.00,329062.00,ontology_drift,Drift of 329062 (0.0%). Cause not yet classified.
+EL,BUNKNOWN,2026-02,0.00,267521.56,267521.56,ontology_drift,Drift of 267522 (0.0%). Cause not yet classified.
 KALLVATTEN,B600,2026-01,21393.34,0.00,-21393.34,campus_attributed,No KALLVATTEN meter targets B600 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
 KALLVATTEN,B600,2026-02,21072.64,0.00,-21072.64,campus_attributed,No KALLVATTEN meter targets B600 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
 KALLVATTEN,B602,2026-01,0.00,0.00,0.00,match,
@@ -210,7 +212,7 @@ KALLVATTEN,B612,2026-02,1005.33,1005.33,0.00,match,
 KALLVATTEN,B613,2026-01,19.52,19.52,0.00,match,
 KALLVATTEN,B613,2026-02,19.10,19.10,0.00,match,
 KALLVATTEN,B614,2026-01,2925.27,2925.27,0.00,match,
-KALLVATTEN,B614,2026-02,3177.37,3177.37,-0.00,match,
+KALLVATTEN,B614,2026-02,3177.37,3177.37,0.00,match,
 KALLVATTEN,B615,2026-01,45.62,45.62,0.00,match,
 KALLVATTEN,B615,2026-02,21.09,21.09,0.00,match,
 KALLVATTEN,B616,2026-01,3377.06,3377.06,0.00,match,
@@ -291,8 +293,8 @@ KALLVATTEN,B850,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B850,2026-02,2.88,2.88,0.00,match,
 KALLVATTEN,B869,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B869,2026-02,0.00,0.00,0.00,match,
-KALLVATTEN,B921,2026-01,1927.48,0.00,-1927.48,avrakning_attributed,B921.KV1_VM21_V is the building's only KV meter and is fully attributed to GTN.KV_AVRAKNING (sewerage rebate aggregator) — all of B921's water exits via evaporation/process. Excel keeps a per-building line; ontology drains the meter to the avräkning aggregator.
-KALLVATTEN,B921,2026-02,1965.51,0.00,-1965.51,avrakning_attributed,B921.KV1_VM21_V is the building's only KV meter and is fully attributed to GTN.KV_AVRAKNING (sewerage rebate aggregator) — all of B921's water exits via evaporation/process. Excel keeps a per-building line; ontology drains the meter to the avräkning aggregator.
+KALLVATTEN,B921,2026-01,1927.48,0.00,-1927.48,ontology_drift,Drift of -1927 (100.0%). Cause not yet classified.
+KALLVATTEN,B921,2026-02,1965.51,0.00,-1965.51,ontology_drift,Drift of -1966 (100.0%). Cause not yet classified.
 KYLA,B602,2026-01,0.00,0.00,0.00,match,
 KYLA,B602,2026-02,0.00,0.00,0.00,match,
 KYLA,B603,2026-01,0.00,0.00,0.00,match,
@@ -301,7 +303,7 @@ KYLA,B604,2026-01,0.00,0.00,0.00,match,
 KYLA,B604,2026-02,0.00,0.00,0.00,match,
 KYLA,B611,2026-01,-20.88,-20.88,0.00,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
 KYLA,B611,2026-02,-12.01,-11.94,0.08,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
-KYLA,B612,2026-01,7.99,7.99,0.00,match,
+KYLA,B612,2026-01,7.99,7.99,-0.00,match,
 KYLA,B612,2026-02,13.77,13.77,0.00,match,
 KYLA,B613,2026-01,6.04,6.04,0.00,match,
 KYLA,B613,2026-02,7.65,7.65,0.01,match,
@@ -317,8 +319,8 @@ KYLA,B621,2026-01,1.83,1.83,0.00,match,
 KYLA,B621,2026-02,2.43,2.53,0.10,ontology_drift,Drift of 0 (4.1%). Cause not yet classified.
 KYLA,B622,2026-01,0.33,0.33,0.00,match,
 KYLA,B622,2026-02,0.44,0.46,0.02,ontology_drift,Drift of 0 (4.1%). Cause not yet classified.
-KYLA,B623,2026-01,3.67,0.00,-3.67,campus_attributed,"B623.KB1_INT_VERK1 reads cooling flow at the south distribution point, not B623 building's own consumption. Excel counts it twice: once in this B623 row (3.67 MWh) and once as an input to the B600-KB2 distribution pool, which then sends 100 percent of its flow on to B611, B613, B621 and B622. The energy only physically goes to those four buildings, so the ontology routes the meter through the pool only and leaves B623 at 0. Excel's per-row total is structurally double-counted on this line."
-KYLA,B623,2026-02,5.06,0.00,-5.06,campus_attributed,"Same as 2026-01: B623.KB1_INT_VERK1 is a distribution-point reading that Excel double-counts (5.06 MWh in the B623 row plus the same flow distributed via the B600-KB2 pool to B611/B613/B621/B622). The ontology counts it once via the pool only."
+KYLA,B623,2026-01,3.67,0.00,-3.67,campus_attributed,No KYLA meter targets B623 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
+KYLA,B623,2026-02,5.06,0.00,-5.06,campus_attributed,No KYLA meter targets B623 in the ontology — all meters tied to this Excel line are bucketed at campus level. Excel and ontology measure the same reading at different scopes.
 KYLA,B625,2026-01,0.00,0.00,0.00,match,
 KYLA,B625,2026-02,0.00,0.00,0.00,match,
 KYLA,B631,2026-01,9.31,9.31,0.00,match,
@@ -329,8 +331,8 @@ KYLA,B637,2026-01,17.50,17.50,0.00,match,
 KYLA,B637,2026-02,18.03,18.03,0.00,match,
 KYLA,B638,2026-01,0.00,0.00,0.00,match,
 KYLA,B638,2026-02,0.00,0.00,0.00,match,
-KYLA,B641,2026-01,-1.75,-1.75,0.00,match,
-KYLA,B641,2026-02,-1.80,-1.76,0.04,trailing_day_gap,"Trailing single-day gap: the B612.KB1_PKYL daily-fill derived ref (interpolate) ends 2026-02-27 because its valid_to anchor is the 2026-02-28 source reading itself. The 0.1 × B637 sub on Feb 28 (~0.04 MWh) is therefore not applied to B641 and ends up in B612 instead. Negligible. Will resolve once a March 2026 raw reading lands and we extend valid_to."
+KYLA,B641,2026-01,-1.75,-1.75,0.00,match,Fractional 0.1×B637 + 0.1×B638 subs modelled via hasSubMeter k=0.1 on B641.KYLA_VIRT — matches Excel exactly (diff 0.00 MWh; curated override because classifier doesn't auto-match negative Excel cells).
+KYLA,B641,2026-02,-1.80,-1.76,0.05,trailing_day_gap,Trailing single-day gap: the B612.KB1_PKYL daily-fill derived ref (interpolate) ends 2026-02-27 because its valid_to anchor is the 2026-02-28 source reading itself. The 0.1 × B637 sub on Feb 28 (~0.04 MWh) is therefore not applied to B641 and ends up in B612 instead. Negligible. Will resolve once a March 2026 raw reading lands and we extend valid_to.
 KYLA,B642,2026-01,0.00,0.00,0.00,match,
 KYLA,B642,2026-02,0.00,0.00,0.00,match,
 KYLA,B643,2026-01,0.00,0.00,0.00,match,
@@ -373,8 +375,8 @@ KYLA,B682,2026-01,0.00,0.00,0.00,match,
 KYLA,B682,2026-02,0.00,0.00,0.00,match,
 KYLA,B821,2026-01,0.00,0.00,0.00,match,
 KYLA,B821,2026-02,0.00,0.00,0.00,match,
-KYLA,B833,2026-01,-0.84,-0.84,0.00,match,
-KYLA,B833,2026-02,-1.04,-1.01,0.03,trailing_day_gap,"Trailing single-day gap: the B833.KB1_GF4 daily-fill ref ends 2026-02-27. The B834 sub on Feb 28 (~0.03 MWh) isn't applied. Will resolve once a March 2026 raw reading lands."
+KYLA,B833,2026-01,-0.84,-0.84,0.00,match,Bi-daily BMS sensor (B833.KB1_GF4 reads ~31 times over 59 days). Diff exactly 0.00 — curated override because classifier doesn't auto-match negative Excel cells.
+KYLA,B833,2026-02,-1.04,-1.01,0.03,trailing_day_gap,Trailing single-day gap: the B833.KB1_GF4 daily-fill ref ends 2026-02-27. The B834 sub on Feb 28 (~0.03 MWh) isn't applied. Will resolve once a March 2026 raw reading lands.
 KYLA,B834,2026-01,0.84,0.84,0.00,match,
 KYLA,B834,2026-02,1.04,1.04,0.00,match,
 KYLA,B835,2026-01,0.00,0.00,0.00,match,

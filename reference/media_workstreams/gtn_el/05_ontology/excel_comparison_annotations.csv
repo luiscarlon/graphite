@@ -99,3 +99,5 @@ EL,B951,2026-01,0.00,0.00,0.00,match,
 EL,B951,2026-02,0.00,0.00,0.00,match,
 EL,BPARKING,2026-01,9398.32,9398.32,-0.00,match,
 EL,BPARKING,2026-02,9885.93,9885.92,-0.00,match,
+EL,BUNKNOWN,2026-01,0.00,329062.00,329062.00,ontology_drift,Drift of 329062 (0.0%). Cause not yet classified.
+EL,BUNKNOWN,2026-02,0.00,267521.56,267521.56,ontology_drift,Drift of 267522 (0.0%). Cause not yet classified.
