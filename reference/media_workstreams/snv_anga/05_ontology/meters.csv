@@ -25,11 +25,12 @@ B313.Å1_VMM71,313 ANGA meter Å1_VMM71,B313,ANGA,False,snowflake=B313.Å1_VM71;
 B317.Å1_VMM71,317 ANGA meter Å1_VMM71,B317,ANGA,False,snowflake=B317.Å1_VMM71_E; strux=B317.Å1_VMM71_E,,
 B313.Å1_VMM72,313 ANGA meter Å1_VMM72,B313,ANGA,False,snowflake=B313.Å1_VMM72_E; strux=B313.Å1_VMM72_E,,2025-01-01
 B315.Å1_VMM71,315 ANGA meter Å1_VMM71,B315,ANGA,False,snowflake=B315.Å1_VMM71_E; strux=B315.Å1_VMM71_E,,
-B325.Panna2_MWH,325 ANGA meter Panna2_MWH,B325,ANGA,False,snowflake=B325.Panna2_MWH; strux=B325.Panna2_MWH,,
-B325.Panna3_MWH,325 ANGA meter Panna3_MWH,B325,ANGA,False,snowflake=B325.Panna3_MWH; strux=B325.Panna3_MWH,,
+B325.Panna2_MWH,ANGA meter Panna2_MWH (B325 panncentral),,ANGA,False,snowflake=B325.Panna2_MWH; strux=B325.Panna2_MWH,,
+B325.Panna3_MWH,ANGA meter Panna3_MWH (B325 panncentral),,ANGA,False,snowflake=B325.Panna3_MWH; strux=B325.Panna3_MWH,,
 B390.Å1_VMM70,390 ANGA meter Å1_VMM70,B390,ANGA,False,snowflake=B390.Å1_VMM70_E; strux=B390.Å1_VMM70_E,,
 B330.Å1_VMM72,330 ANGA meter Å1_VMM72,B330,ANGA,False,snowflake=B330.Å1_VMM72_E; strux=B330.Å1_VMM72_E,,
 B330.Å1_VMM73,330 ANGA meter Å1_VMM73,B330,ANGA,False,snowflake=B330.Å1_VMM73_E; strux=B330.Å1_VMM73_E,,
 B341.Å1_VMM71,341 ANGA meter Å1_VMM71,B341,ANGA,False,snowflake=B341.Å1_VMM71; strux=B341.Å1_VMM71,,2025-01-01
 B385.Å1_VMM71,385 ANGA meter Å1_VMM71,B385,ANGA,False,snowflake=B385.Å1_VMM71_E; strux=B385.Å1_VMM71_E,,
 B392.Å1_VMM71,392 ANGA meter Å1_VMM71,B392,ANGA,False,snowflake=B392.Å1_VMM71_E; strux=B392.Å1_VMM71_E,,
+SNV.ANGA_INTAKE,ANGA virtual SNV.ANGA_INTAKE,,ANGA,True,excel=B325 panncentral,,

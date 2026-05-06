@@ -25,8 +25,8 @@ B313.Å1_VMM71,313 ANGA meter Å1_VMM71,B313,ANGA,False,snowflake=B313.Å1_VM71;
 B317.Å1_VMM71,317 ANGA meter Å1_VMM71,B317,ANGA,False,snowflake=B317.Å1_VMM71_E; strux=B317.Å1_VMM71_E,,
 B313.Å1_VMM72,313 ANGA meter Å1_VMM72,B313,ANGA,False,snowflake=B313.Å1_VMM72_E; strux=B313.Å1_VMM72_E,,2025-01-01
 B315.Å1_VMM71,315 ANGA meter Å1_VMM71,B315,ANGA,False,snowflake=B315.Å1_VMM71_E; strux=B315.Å1_VMM71_E,,
-B325.Panna2_MWH,325 ANGA meter Panna2_MWH,B325,ANGA,False,snowflake=B325.Panna2_MWH; strux=B325.Panna2_MWH,,
-B325.Panna3_MWH,325 ANGA meter Panna3_MWH,B325,ANGA,False,snowflake=B325.Panna3_MWH; strux=B325.Panna3_MWH,,
+B325.Panna2_MWH,ANGA meter Panna2_MWH (B325 panncentral),,ANGA,False,snowflake=B325.Panna2_MWH; strux=B325.Panna2_MWH,,
+B325.Panna3_MWH,ANGA meter Panna3_MWH (B325 panncentral),,ANGA,False,snowflake=B325.Panna3_MWH; strux=B325.Panna3_MWH,,
 B390.Å1_VMM70,390 ANGA meter Å1_VMM70,B390,ANGA,False,snowflake=B390.Å1_VMM70_E; strux=B390.Å1_VMM70_E,,
 B330.Å1_VMM72,330 ANGA meter Å1_VMM72,B330,ANGA,False,snowflake=B330.Å1_VMM72_E; strux=B330.Å1_VMM72_E,,
 B330.Å1_VMM73,330 ANGA meter Å1_VMM73,B330,ANGA,False,snowflake=B330.Å1_VMM73_E; strux=B330.Å1_VMM73_E,,
@@ -399,3 +399,4 @@ B330.FV1_INT_VERK_E,VARME meter FV1_INT_VERK_E (TN intake B330),,VARME,False,sno
 B334.VP1_VMM1_E,VARME meter VP1_VMM1_E (TN intake B334),,VARME,False,snowflake=B334.VP1_VMM1_E,,
 B339.FV1_VMM61_E,VARME meter FV1_VMM61_E (TN intake B339),,VARME,False,snowflake=B339.FV1_VMM61_E,,
 SNV.VARME_INTAKE,VARME virtual SNV.VARME_INTAKE,,VARME,True,excel=Kontroll FV-mätare,,
+SNV.ANGA_INTAKE,ANGA virtual SNV.ANGA_INTAKE,,ANGA,True,excel=B325 panncentral,,

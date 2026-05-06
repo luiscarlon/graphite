@@ -5,7 +5,7 @@ KYLA,B603,2026-01,0.00,0.00,0.00,match,
 KYLA,B603,2026-02,0.00,0.00,0.00,match,
 KYLA,B604,2026-01,0.00,0.00,0.00,match,
 KYLA,B604,2026-02,0.00,0.00,0.00,match,
-KYLA,B611,2026-01,-20.88,-20.88,-0.00,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
+KYLA,B611,2026-01,-20.88,-20.88,0.00,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
 KYLA,B611,2026-02,-12.01,-11.94,0.08,data_quality_artifact,Dead pool meter (B653 died 2025-10-09) combined with active downstream sub-meters yields physically-nonsensical negative value. Topology faithful to the source.
 KYLA,B612,2026-01,7.99,7.99,-0.00,match,
 KYLA,B612,2026-02,13.77,13.77,0.00,match,
@@ -30,7 +30,7 @@ KYLA,B625,2026-02,0.00,0.00,0.00,match,
 KYLA,B631,2026-01,9.31,9.31,0.00,match,
 KYLA,B631,2026-02,8.50,8.50,0.00,match,
 KYLA,B634,2026-01,22.13,22.13,-0.00,match,
-KYLA,B634,2026-02,19.94,19.94,-0.00,match,
+KYLA,B634,2026-02,19.94,19.94,0.00,match,
 KYLA,B637,2026-01,17.50,17.50,0.00,match,
 KYLA,B637,2026-02,18.03,18.03,0.00,match,
 KYLA,B638,2026-01,0.00,0.00,0.00,match,

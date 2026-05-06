@@ -63,8 +63,8 @@ ANGA,B323,2026-01,0.00,0.00,0.00,match,
 ANGA,B323,2026-02,0.00,0.00,0.00,match,
 ANGA,B324,2026-01,0.00,0.00,0.00,match,
 ANGA,B324,2026-02,0.00,0.00,0.00,match,
-ANGA,B325,2026-01,3419.00,3419.00,0.00,match,
-ANGA,B325,2026-02,3391.68,3391.68,0.00,match,
+ANGA,B325,2026-01,3419.00,0.00,-3419.00,intake_at_campus,"B325 panncentral boilers (Panna2/Panna3) reattributed from building to campus per ÅNGA-intake convention (matches GTN ÅNGA B600N/B600S, SJOVATTEN B342, VARME FV1). Boiler output now feeds the campus conservation master line; B325-local steam consumption is part of the campus-vs-buildings gap."
+ANGA,B325,2026-02,3391.68,0.00,-3391.68,intake_at_campus,"B325 panncentral boilers (Panna2/Panna3) reattributed from building to campus per ÅNGA-intake convention (matches GTN ÅNGA B600N/B600S, SJOVATTEN B342, VARME FV1). Boiler output now feeds the campus conservation master line; B325-local steam consumption is part of the campus-vs-buildings gap."
 ANGA,B326,2026-01,0.00,0.00,0.00,match,
 ANGA,B326,2026-02,0.00,0.00,0.00,match,
 ANGA,B327,2026-01,25.71,25.71,0.00,match,

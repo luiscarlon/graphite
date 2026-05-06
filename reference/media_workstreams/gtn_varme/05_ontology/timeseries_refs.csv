@@ -164,3 +164,17 @@ B833.VP1_VMM61:d.A,B833.VP1_VMM61.energy,daily,counter,derived,False,,2025-01-08
 B833.VP1_VMM61:d.B,B833.VP1_VMM61.energy,daily,counter,derived,False,2025-01-08,2026-02-19,,,,,B833.VP1_VMM61:d.raw,slice
 B833.VP1_VMM61:d.patch,B833.VP1_VMM61.energy,daily,counter,derived,False,2026-02-19,,,,,,B833.VP1_VMM62:d|B834.VP1_VMM61:d.raw,sum
 B833.VP1_VMM61:d,B833.VP1_VMM61.energy,daily,counter,derived,True,,,,,,,B833.VP1_VMM61:d.A|B833.VP1_VMM61:d.B|B833.VP1_VMM61:d.patch,rolling_sum
+B611.FV1_INT_VERK:d,B611.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B611.FV1_INT_VERK,,,
+B612.FV1_INT_VERK:d,B612.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B612.FV1_INT_VERK,,,
+B614.VP1_VM1:d,B614.VP1_VM1.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B614.VP1_VM1,,,
+B616.FV1_INT_VERK:d,B616.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B616.FV1_INT_VERK,,,
+B621.FV1_INT_VERK:d,B621.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B621.FV1_INT_VERK,,,
+B625.FV1_INT_VERK:d,B625.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B625.FV1_INT_VERK,,,
+B634.FV1_INT_VERK:d,B634.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B634.FV1_INT_VERK,,,
+B643.FV1_INT_VERK:d,B643.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B643.FV1_INT_VERK,,,
+B650.FV1_INT_VERK:d,B650.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B650.FV1_INT_VERK,,,
+B674.FV1_INT_VERK:d,B674.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B674.FV1_INT_VERK,,,
+B821.FV1_INT_VERK:d,B821.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B821.FV1_INT_VERK,,,
+B833.FV1_VM61:d,B833.FV1_VM61.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B833.FV1_VM61,,,
+B841.FV1_INT_VERK:d,B841.FV1_INT_VERK.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B841.FV1_INT_VERK,,,
+B921.FV1_VMM81_E:d,B921.FV1_VMM81_E.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B921.FV1_VMM81_E,,,
