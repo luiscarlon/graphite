@@ -294,8 +294,8 @@ KALLVATTEN,B328,2026-01,0.00,0.00,0.00,match,
 KALLVATTEN,B328,2026-02,0.00,0.00,0.00,match,
 KALLVATTEN,B330,2026-01,2350.25,2350.25,0.00,match,
 KALLVATTEN,B330,2026-02,1910.70,1910.70,0.00,match,
-KALLVATTEN,B334,2026-01,4135.22,4135.22,0.00,match,
-KALLVATTEN,B334,2026-02,3369.49,3369.49,0.00,match,
+KALLVATTEN,B334,2026-01,4135.22,0.00,-4135.22,intake_at_campus,"B334.KV1_VMM21 reattributed from building to campus per KALLVATTEN-intake convention (matches GTN B600N/B600S, SJOVATTEN B342, VARME FV1, ÅNGA Panna2/3). Now feeds the SNV.KALLVATTEN_INTAKE virtual on the campus conservation master line."
+KALLVATTEN,B334,2026-02,3369.49,0.00,-3369.49,intake_at_campus,"B334.KV1_VMM21 reattributed from building to campus per KALLVATTEN-intake convention (matches GTN B600N/B600S, SJOVATTEN B342, VARME FV1, ÅNGA Panna2/3). Now feeds the SNV.KALLVATTEN_INTAKE virtual on the campus conservation master line."
 KALLVATTEN,B337,2026-01,1139.03,1139.03,0.00,match,
 KALLVATTEN,B337,2026-02,1098.19,1098.19,0.00,match,
 KALLVATTEN,B339,2026-01,328.16,328.16,0.00,match,

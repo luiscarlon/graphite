@@ -473,3 +473,7 @@ B310.FV1_VMM64:d.A,B310.FV1_VMM64.energy,daily,counter,derived,False,,2025-10-01
 B310.FV1_VMM64:d.patch,B310.FV1_VMM64.energy,daily,counter,derived,False,2025-10-01,2025-10-17,,,,,B310.FV1_VMM64:d.raw,interpolate
 B310.FV1_VMM64:d.B,B310.FV1_VMM64.energy,daily,counter,derived,False,2025-10-17,,,,,,B310.FV1_VMM64:d.raw,slice
 B310.FV1_VMM64:d,B310.FV1_VMM64.energy,daily,counter,derived,True,,,,,,,B310.FV1_VMM64:d.A|B310.FV1_VMM64:d.patch|B310.FV1_VMM64:d.B,rolling_sum
+B217.KV1_VMM001:d,B217.KV1_VMM001.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B217.KV1_VM001,,,
+B217.KV1_VMM002:d,B217.KV1_VMM002.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B217.KV1_VM002,,,
+B390.KV1_VMM25_V:d,B390.KV1_VMM25_V.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B390.KV1_VM25_V,,,
+B409.KV1_VMM21:d,B409.KV1_VMM21.energy,daily,counter,raw,True,,,ion_sweden_bms,OPS_WRK.ION_SWEDEN.DATALOG2,B409.KV1_VM21,,,
